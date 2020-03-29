@@ -21,5 +21,5 @@ If you’ve got something you’d like me to review, or a topic that you’d lik
 
 <h2> Site Info </h2>
 <p>
-This blog is powered by <a style="color: #C13929" href="https://jekyllrb.com/">Jekyll</a> Jekyll and it’s hosted on a Github Pages. The theme is a combination of <a style="color:#C13929" href="https://github.com/dbtek/dbyll">dbyll</a> by dbtek and custom parts that I hacked together myself. 
+This blog is powered by <a style="color: #C13929" href="https://jekyllrb.com/">Jekyll</a> and it’s hosted on a Github Pages. The theme is a combination of <a style="color:#C13929" href="https://github.com/dbtek/dbyll">dbyll</a> by dbtek and custom parts that I hacked together myself, and the fonts are a combination of Sans-Serif, Courier New and Merriweather.
 </p>

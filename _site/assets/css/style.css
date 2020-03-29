@@ -109,13 +109,15 @@ article{
 
 article {
 	padding: 0 5% 0;
+	padding-right: 20%;
 }
 
 article.home div a, article.home pre a { color: #2c3e50; }
 article.home div a:hover, article.home pre a:hover { color: #2c3e50; text-decoration: none; }
 article img { max-width: 100%; }
 
-h1,h2,h3,h4,h5,h6 { font-family: 'Ubuntu', sans-serif; }
+.img-circle {width:220px}
+
 article.home h1,
 article.home h2,
 article.home h3,
@@ -147,6 +149,8 @@ article.home h4 a:hover {
 footer {
 	padding-top: 15px;
 	font-family: 'Ubuntu';
+	position: fixed;
+	bottom: 0px;
 }
 
 /* nav-vertical-tabs component */
@@ -190,9 +194,9 @@ ul.dropdown-menu>li>a>i.fa {
 }
 
 h1 { font-family: Merriweather; font-size: 28px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } 
-h2 { font-family: Merriweather; font-size: 24px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } 
+h2 { font-family: Merriweather; font-size: 26px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 28.4px; } 
 h3 { font-family: Merriweather; font-size: 20px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; }
-p { font-family: Merriweather; font-size: 16px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; } 
+p { font-family: Merriweather; font-size: 18px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 26px; } 
 blockquote { font-family: Merriweather; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; }
 pre { font-family: Merriweather; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
 a { font-family: Merriweather; font-size: 14px; font-weight: 400; line-height: 18.5714px; text-decoration: underline;}
