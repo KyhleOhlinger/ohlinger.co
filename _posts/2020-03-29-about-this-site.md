@@ -1,34 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-	<channel>
-		<title>Kyhle Öhlinger</title>
-		<description>Blog created using a dbyll Jekyll Theme</description>
-		<link>/</link>
-		<atom:link href="/" rel="self" type="application/rss+xml" />
-		
-			<item>
-				<title>About This Site</title>
-				<description>&lt;p&gt;
+---
+layout: post
+title: About This Site
+categories: [general, setup, demo]
+tags: [demo, dbyll, dbtek, setup]
+fullview: true
+comments: true
+---
+
+<p>
 This is the personal blog and website of Kyhle Öhlinger. I post a few different sorts of things here. My day job is in cyber security, and involves a lot of tinkering with random technologies, which I do plenty of outside of work as well.  I also write general posts about subjects I find interesting, usually related to mental wellbeing, programming and tech.
-&lt;/p&gt;
+</p>
 
-&lt;p&gt;
+<p>
 I enjoy sports, martial arts and keeping up to date with science and technology. In my free time I also enjoy reading, cooking and solving brain teasers. Most recently I have made an active effort to read a variety of business focused books in order to increase my business and customer relations knowledge. In order to keep up to date with the field of cyber security, I make an active effort to attend security conferences and meetups, including 0xC0FFEE JHB, OWASP JHB, BSides Cape Town and most recently, Defcon 27. 
-&lt;/p&gt;
+</p>
 
-&lt;p&gt;
+<p>
 If you’ve got something you’d like me to review, or a topic that you’d like me to write about, let me know in an email, and specify whether you’d like to be credited with the suggestion in the post, should one result. I do not accept guest posts, but you’re welcome to reply to me through email or webmentions.
-&lt;/p&gt;
+</p>
 
-&lt;h2&gt; Site Info &lt;/h2&gt;
-&lt;p&gt;
-This blog is powered by &lt;a style=&quot;color: #C13929&quot; href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; Jekyll and it’s hosted on a Github Pages. The theme is a combination of &lt;a style=&quot;color:#C13929&quot; href=&quot;https://github.com/dbtek/dbyll&quot;&gt;dbyll&lt;/a&gt; by dbtek and custom parts that I hacked together myself. 
-&lt;/p&gt;
-</description>
-				<pubDate>Sun, 29 Mar 2020 00:00:00 +0200</pubDate>
-				<link>/general/setup/demo/2020/03/29/about-this-site.html</link>
-				<guid isPermaLink="true">/general/setup/demo/2020/03/29/about-this-site.html</guid>
-			</item>
-		
-	</channel>
-</rss>
+<h2> Site Info </h2>
+<p>
+This blog is powered by <a style="color: #C13929" href="https://jekyllrb.com/">Jekyll</a> Jekyll and it’s hosted on a Github Pages. The theme is a combination of <a style="color:#C13929" href="https://github.com/dbtek/dbyll">dbyll</a> by dbtek and custom parts that I hacked together myself. 
+</p>
