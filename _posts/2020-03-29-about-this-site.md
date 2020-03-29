@@ -1,8 +1,6 @@
 ---
 layout: post
 title: About This Site
-categories: [general, setup, demo]
-tags: [demo, dbyll, dbtek, setup]
 fullview: true
 comments: true
 ---
