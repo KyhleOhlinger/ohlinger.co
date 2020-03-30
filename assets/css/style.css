@@ -101,6 +101,8 @@ article{
 	margin-bottom: 20px;
 }
 
+.imgTest {text-align:center;}
+
 .post-date {
 	text-transform: uppercase;
 	font-size: 14px;
@@ -110,6 +112,12 @@ article{
 article {
 	padding: 0 5% 0;
 	padding-right: 20%;
+	bottom:0px;
+}
+
+article.blogpost
+{
+	padding-right: 5%;
 }
 
 article.home div a, article.home pre a { color: #2c3e50; }
@@ -197,8 +205,8 @@ ul.dropdown-menu>li>a>i.fa {
 h1 { font-family: Merriweather; font-size: 28px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } 
 h2 { font-family: Merriweather; font-size: 26px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 28.4px; } 
 h3 { font-family: Merriweather; font-size: 20px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; }
+blockquote p{ font-family: Merriweather; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; }
 p { font-family: Merriweather; font-size: 18px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 26px; } 
-blockquote { font-family: Merriweather; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; }
 pre { font-family: Merriweather; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
 a { font-family: Merriweather; font-size: 14px; font-weight: 400; line-height: 18.5714px; text-decoration: underline; color: #C13929}
 
