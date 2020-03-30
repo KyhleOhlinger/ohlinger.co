@@ -116,7 +116,7 @@ article.home div a, article.home pre a { color: #2c3e50; }
 article.home div a:hover, article.home pre a:hover { color: #2c3e50; text-decoration: none; }
 article img { max-width: 100%; }
 
-.img-circle {width:220px}
+.img-circle {width:180px; height:210px}
 
 article.home h1,
 article.home h2,
@@ -148,9 +148,10 @@ article.home h4 a:hover {
 
 footer {
 	padding-top: 15px;
-	font-family: 'Ubuntu';
-	position: fixed;
-	bottom: 0px;
+	padding-bottom: 10px;
+	font-family: 'Merriweather';
+	position: absolute;
+    height: auto;
 }
 
 /* nav-vertical-tabs component */
@@ -199,4 +200,10 @@ h3 { font-family: Merriweather; font-size: 20px; font-style: normal; font-varian
 p { font-family: Merriweather; font-size: 18px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 26px; } 
 blockquote { font-family: Merriweather; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 30px; }
 pre { font-family: Merriweather; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
-a { font-family: Merriweather; font-size: 14px; font-weight: 400; line-height: 18.5714px; text-decoration: underline;}
+a { font-family: Merriweather; font-size: 14px; font-weight: 400; line-height: 18.5714px; text-decoration: underline; color: #C13929}
+
+
+
+
+
+
