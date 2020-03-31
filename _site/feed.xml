@@ -174,6 +174,48 @@
 			</item>
 		
 			<item>
+				<title>Hosting a Domain</title>
+				<description>&lt;p&gt;Since setting up this blog, I wanted to write a short post on what I did to get everything up and running. This post isn’t going to be super detailed, but I will reference other blog posts which cover the various aspects and questions that I had when buying my domain.&lt;/p&gt;
+
+&lt;p&gt;Before jumping into the details, why buy a domain? Why go through the effort? Well if you’re like me, it’s to learn something new, with the added benefit of owning something and being able to create whatever you want. For me it also serves as an outlet. I enjoy researching various topics and having a domain with a website allows me to share what I’ve discovered, or what I’ve learnt, or even just what I’ve found interesting at that point in time.&lt;/p&gt;
+
+&lt;h3 id=&quot;but-how-do-we-begin&quot;&gt;But how do we begin?&lt;/h3&gt;
+
+&lt;p&gt;You need to start off by buying a domain name for yourself or your business. From there, you can create a website, email address, etc. which will allow people to find you online. When I bought my domain, I wanted something associated with my surname which is why I bought &lt;a href=&quot;https://ohlinger.co&quot;&gt;Ohlinger.co&lt;/a&gt;. Buying a domain might seem really complicated, but the &lt;a href=&quot;https://www.godaddy.com/garage/how-to-buy-a-domain-name/&quot;&gt;How to Buy a Domain Name&lt;/a&gt; blog post covers the main concepts in a step-by-step process which is easy to follow. I used &lt;a href=&quot;https://godaddy.com/&quot;&gt;GoDaddy&lt;/a&gt; when I bought my personal domain, however I’ve used &lt;a href=&quot;https://uniregistry.com/&quot;&gt;Uniregistry&lt;/a&gt; for work before. I honestly prefer the management interface associated with Uniregistry but GoDaddy’s prices are better and I believe that they are in the process of acquiring Uniregistry.&lt;/p&gt;
+
+&lt;h3 id=&quot;whats-next&quot;&gt;What’s next?&lt;/h3&gt;
+
+&lt;p&gt;After purchasing a domain, you can now use it for a couple of different things, currently I’m using it for email and hosting a website. The first step for me - after purchasing the domain - was getting an email account set up. For this I’m currently using &lt;a href=&quot;https://gsuite.google.com/&quot;&gt;GSuite&lt;/a&gt;. The &lt;a href=&quot;https://support.google.com/a/answer/33353?hl=en&amp;amp;ref_topic=4445319&quot;&gt;Following guide&lt;/a&gt; provides the steps I used to set up my MX records in order to link the new domain to an email address.&lt;/p&gt;
+
+&lt;p&gt;Obviously, you are able to host your own mail server. But for simplicity I decided to start off with it being hosted using GSuite so that I didn’t have to fight with mail verification settings and the like, as described in my blog post on &lt;a href=&quot;https://ohlinger.co/infrastructure/security/2020/03/27/mail-verification.html&quot;&gt;Mail Verification&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;hosting-a-website&quot;&gt;Hosting a website&lt;/h3&gt;
+
+&lt;p&gt;The last step that I am going to speak about is hosting your website. There are a bunch of free options that you can use, including &lt;a href=&quot;https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&amp;amp;all-free-tier.sort-order=asc&quot;&gt;AWS Free Tier&lt;/a&gt;. But since I’ve set up a bunch of VMs before, I decided that I wanted to try something different. A friend of mine mentioned &lt;a href=&quot;https://pages.github.com/&quot;&gt;Github Pages&lt;/a&gt; (also free) which sounded interesting and I wanted to challenge myself to learn something new.  I found a post on &lt;a href=&quot;https://medium.com/@hossainkhan/using-custom-domain-for-github-pages-86b303d3918a&quot;&gt;Using custom domain for GitHub pages&lt;/a&gt; when I was initially looking to link my domain, and it has really good information on how to go about hosting your website with Github.&lt;/p&gt;
+
+&lt;h3 id=&quot;hosting-your-own-infrastructure&quot;&gt;Hosting your own Infrastructure&lt;/h3&gt;
+&lt;p&gt;There are a bunch of other security considerations to keep in mind, from infrastructure to web application security to mobile security if you go that far. If this is something that you are looking to do, build everything with Security in mind. Security can’t be an after thought, you need to dev it in from the start and make sure you have the basics down. I’m going to list a few important items below, but it’s is by no means comprehensive.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Restrict traffic to administrative ports to IPs that you own / use.&lt;/li&gt;
+  &lt;li&gt;Only open ports that are required, e.g. 22 and 80/443.&lt;/li&gt;
+  &lt;li&gt;Use SSH Key-Based Authentication instead of password authentication&lt;/li&gt;
+  &lt;li&gt;Use MFA!&lt;/li&gt;
+  &lt;li&gt;If you are looking to host your own mail server, keep the information I provided in my Mail Verification post in mind.&lt;/li&gt;
+  &lt;li&gt;If you are planning on creating a website that requires authentication, use TLS/SSL.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;in-summary&quot;&gt;In Summary&lt;/h3&gt;
+
+&lt;p&gt;This was a very high-level take on the approach I followed when buying and setting up my personal website. If you have the time, I would highly recommend hosting a VM using AWS, Azure, or on your own infrastructure and playing around with it. I think you can definitely learn a lot from messing around with new technologies and the best way to do that is to set up everything from scratch.&lt;/p&gt;
+
+</description>
+				<pubDate>Sun, 15 Mar 2020 00:00:00 +0200</pubDate>
+				<link>/infrastructure/2020/03/15/hosting-a-domain.html</link>
+				<guid isPermaLink="true">/infrastructure/2020/03/15/hosting-a-domain.html</guid>
+			</item>
+		
+			<item>
 				<title>Mental Wellbeing</title>
 				<description>&lt;p&gt;This post is meant as a reminder that since the new year has started, it is important to remember to take care of yourself and your personal wellbeing. We tend to get drawn in to our work life and allow ourselves to be distracted from personal issues by throwing ourselves into work without realising the harm that not taking care of ourselves can actually do. This isn’t some groundbreaking new advice, rather it’s meant as a reminder that if you see yourself slipping in to bad habits, you should definitely take a step back and reframe. This is going to be broken down into a few - probably disconnected - topics. This 30 Second Speech by Bryan Dyson - Former CEO of Coca Cola is a pretty good TL;DR of what this email aims to convey.&lt;/p&gt;
 
