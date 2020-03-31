@@ -202,16 +202,31 @@ ul.dropdown-menu>li>a>i.fa {
     width: 1.3em;
 }
 
+table {
+	border-collapse: collapse;
+	width: 100%;
+	border: none;
+}
+th, td {
+	padding: 0.25rem;
+	text-align: left;
+}
+
+th {
+	text-align:center;
+	border-bottom: #00ACEE 1px solid;
+	border-top: #00ACEE 1px solid;
+}
+
+code {
+	white-space : pre-wrap !important;
+}
+
+
 h1 { font-family: Merriweather; font-size: 28px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 26.4px; } 
 h2 { font-family: Merriweather; font-size: 26px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 28.4px; } 
 h3 { font-family: Merriweather; font-size: 20px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; }
 blockquote p{ font-family: Merriweather; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 20px; }
-p { font-family: Merriweather; font-size: 18px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 26px; } 
+p { font-family: Merriweather; font-size: 16px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 26px; } 
 pre { font-family: Merriweather; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.5714px; }
 a { font-family: Merriweather; font-size: 14px; font-weight: 400; line-height: 18.5714px; text-decoration: underline; color: #C13929}
-
-
-
-
-
-

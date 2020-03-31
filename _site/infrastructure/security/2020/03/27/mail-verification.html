@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Mail Verification</title>
+	
+	<meta name="author" content="Kyhle Öhlinger">
+
+	<!-- Enable responsive viewport -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Le styles -->
+	<link href="/assets/resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/assets/resources/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link href="/assets/resources/syntax/syntax.css" rel="stylesheet">
+	<link href="/assets/css/style.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather" />
+
+	<!-- Le fav and touch icons -->
+	<!-- Update these with your own images
+	<link rel="shortcut icon" href="images/favicon.ico">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	-->
+
+	<link rel="alternate" type="application/rss+xml" title="" href="/feed.xml">
+</head>
+
+<body>
+	<nav class="navbar navbar-default visible-xs" role="navigation">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			
+			<a type="button" class="navbar-toggle nav-link" href="http://github.com/KyhleOhlinger">
+				<i class="fa fa-github"></i>
+			</a>
+			
+			
+			<a type="button" class="navbar-toggle nav-link" href="http://twitter.com/KyhleO">
+				<i class="fa fa-twitter"></i>
+			</a>
+			
+			
+			<a type="button" class="navbar-toggle nav-link" href="mailto:kyhle@ohlinger.co">
+				<i class="fa fa-envelope"></i>
+			</a>
+			
+			<a class="navbar-brand" href="/">
+				<img src="//www.gravatar.com/avatar/?s=35" class="img-circle" />
+				Kyhle Öhlinger
+			</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/">Home</a></li>
+				<li><a href="/categories.html">Blog Posts</a></li>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</nav>
+
+	<!-- nav-menu-dropdown -->
+	<div class="btn-group hidden-xs" id="nav-menu">
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			<i class="fa fa-bars"></i>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li><a href="/"><i class="fa fa-home"></i>Home</a></li>
+			<li><a href="/categories.html"><i class="fa fa-folder"></i>Blog Posts</a></li>
+			<li class="divider"></li>
+			<li><a href="#"><i class="fa fa-arrow-up"></i>Top of Page</a></li>
+		</ul>
+	</div>
+
+	<div class="col-sm-3 sidebar hidden-xs" style="">
+		<!-- sidebar.html -->
+<header class="sidebar-header" role="banner">
+	<a href="/">
+		<img src="/assets/media/Kyhle_Icon.jpg" class="img-circle" />
+	</a>
+	<h3 class="title">
+        <a href="/">Kyhle Öhlinger</a>
+    </h3>
+</header>
+
+
+<div id="bio" class="text-center">
+	Information Security Consultant
+</div>
+
+
+<div id="contact-list" class="text-center">
+	<ul class="list-unstyled list-inline">
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="https://github.com/KyhleOhlinger">
+				<i class="fa fa-github-alt fa-lg"></i>
+			</a>
+		</li>
+		
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="https://twitter.com/KyhleO">
+				<i class="fa fa-twitter fa-lg"></i>
+			</a>
+		</li>
+		
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="mailto:kyhle@ohlinger.co">
+				<i class="fa fa-envelope fa-lg"></i>
+			</a>
+		</li>
+		
+	</ul>
+	<ul id="contact-list" class="list-unstyled list-inline">
+		
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="https://linkedin.com/in/kyhleohlinger">
+				<i class="fa fa-linkedin fa-lg"></i>
+			</a>
+		</li>
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="/">
+				<i class="fa fa-rss fa-lg"></i>
+			</a>
+		</li>
+	</ul>
+</div>
+<!-- sidebar.html end -->
+
+	</div>
+
+	<div class="col-sm-9 col-sm-offset-3">
+		<div class="page-header">
+  <h1>Mail Verification </h1>
+</div>
+	
+<article class = "blogpost">
+
+	<div class="col-sm-10">
+	 <span class="post-date">
+	   
+	   March 
+	   27th,
+	   
+	   2020
+	 </span>
+	  <div class="article_body">
+	  <p>So I’ve been interested in learning a bit more about email and the standards which are pushed with it. This lead me to trying to gain a better understanding in what SPF, DKIM, and DMARC are and how they actually work. This post is an overview of the information provided within the <em>Useful Resources</em> section at the bottom of this post. So what do the mail verification settings do? The reason that they exist is to prevent spammers from forging the <strong>From</strong> address on email messages. If spammers use your domain to send spam or junk email, your domain quality can be negatively affected. Users who get the forged emails can mark them as spam or junk, and this can impact valid messages sent from your domain.</p>
+
+<p>There are three technologies that can be used to secure mail and protect against spam &amp; spoofing:</p>
+<ul>
+  <li>DomainKey Identified Mail (DKIM)</li>
+  <li>Sender Policy Framework (SPF)</li>
+  <li>Domain-Based Message Authentication Reporting &amp; Conformance (DMARC)</li>
+</ul>
+
+<h2 id="sender-policy-framework-spf">Sender Policy Framework (SPF):</h2>
+<p>SPF allows you to specify which email servers are legitimate servers for your domain, i.e. it enables a domain to publicly state which servers may send emails on its behalf. SPF authenticates a sender’s identity by comparing the sending mail server’s IP address to the list of authorized sending IP addresses published by the sender in the respective DNS record. An important aspect to understand about SPF is that it does not validate against the <strong>From</strong> domain. Instead, SPF looks at the Return-Path value to validate the originating server. The Return-Path is the email address that receiving servers use to notify the sending mail server of delivery problems. The problem with this limitation is that the <strong>From</strong> address is what recipients see in their email clients. Furthermore, even if a message fails SPF, there’s no guarantee it won’t be delivered. That final decision about delivery is up to the receiving ISP.</p>
+
+<h3 id="so-what-does-an-spf-record-look-like">So what does an SPF record look like?</h3>
+<ul>
+  <li><em>Basic Example:</em> <code class="highlighter-rouge">TXT @ “v=spf1 a include:_spf.f-secure.com ~all”</code></li>
+  <li><em>Actual F-Secure SPF:</em> <code class="highlighter-rouge">v=spf1 ip4:46.228.134.9 ip4:46.228.136.136 include:a._spf.f-secure.com include:b._spf.f-secure.com include:_spf.salesforce.com include:msgfocus.com include:mktomail.com mx:mail6.centercode.com include:stspg-customer.com ~all</code></li>
+</ul>
+
+<p>Other domains included within an SPF, e.g. <em>include:msgfocus.com</em>, will include their SPF records as well. How does it work in practice? In short, the receiving server extracts the domains SPF record and checks that the source email is approved to send emails for the specified domain.</p>
+
+<h3 id="what-do-the-parameters-mean">What do the parameters mean?</h3>
+
+<ul>
+  <li>v - version</li>
+  <li>TXT - DNS zone record type</li>
+  <li>@ - Placeholder symbolizing the current domain</li>
+  <li>a - If your IP address of the A record is used, it will pass the check</li>
+  <li>include - Authorises the hosts specified - can also be CIDR notation</li>
+  <li>~all - Who is allowed to send email</li>
+</ul>
+
+<h3 id="syntax-action-for-the-all-parameter">Syntax Action for the all parameter:</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Mechanisms</th>
+      <th>Qualifier</th>
+      <th>Intended Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Permissive</td>
+      <td>+</td>
+      <td>Pass</td>
+      <td>Accept</td>
+    </tr>
+    <tr>
+      <td>Less permissive</td>
+      <td>~</td>
+      <td>SoftFail</td>
+      <td>Accept but Mark</td>
+    </tr>
+    <tr>
+      <td>Hard Fail</td>
+      <td>-</td>
+      <td>Fail</td>
+      <td>Reject</td>
+    </tr>
+    <tr>
+      <td>No policy statement</td>
+      <td>?</td>
+      <td>Neutral</td>
+      <td>Accept</td>
+    </tr>
+  </tbody>
+</table>
+
+<p> </p>
+
+<p>Even though <em>-all</em> flag makes this a more secure solution - if the sender does not match the SPF record, the mail will be rejected, which will probably get someone fired because then any mail server not in a pre-approved list will not be accepted and if anyone or any other department within the organisation spun up a mailbox server, then it wouldn’t go through.</p>
+
+<p>Why bother if the ISP has the final decision? The problem is without SPF or with a misconfigured SPF record, an attacker can essentially pretend to be your part of your organisation and spoof emails that appear to come from your domain. That being said, an email can pass SPF regardless of whether the <strong>From</strong> address is fake. In order to combat this, DMARC was designed to address these issues. Having an SPF policy provides an additional trust signal to ISPs so you can increase the likelihood that your emails arrive in the inbox. The SPF policy can also help mitigate the backscatter of bounce and error notifications when spammers try to abuse your domain. Ultimately, SPF won’t solve all of your delivery problems, but it’s an additional layer that, combined with DKIM and DMARC can improve your delivery rates and prevent abuse.</p>
+
+<h2 id="domainkey-identified-mail-dkim">DomainKey Identified Mail (DKIM):</h2>
+<p>The goal of DKIM is to ensure that messages weren’t altered in transit between the sending and recipient servers. It uses public-key cryptography to sign email with a private key as it leaves a sending server. Recipient servers can then use a public key published to a domain’s DNS to verify the source of the message, and that the body of the message hasn’t changed during transit. Once the hash made with the private key is verified with the public key by the recipient server, the message passes DKIM and is considered authentic.</p>
+
+<p>Why use DKIM? It’s easy to impersonate a trusted sender over SMTP, which led to spam for end users which appeared to come from legitimate sources. DMIK aims to make it more difficult to spoof email from domains. DKIM is an optional security protocol, which means that even if the mail is signed, the receiving server doesn’t need to have DKIM enabled in order to receive and read the mail. Unlike PGP, DKIM will make sure your message hasn’t been altered, but it doesn’t encrypt the contents of your message. DKIM allows you to attach a DomainKey signature to your outgoing mail. The receiving server then verifies the validity of the key and either accepts or rejects the mail based on the outcome. DKIM protects the <strong>From</strong> address by cryptographically signing messages to verify the author. Usually, DKIM signatures are not visible to end-users, the validation is done on a server level.</p>
+
+<h3 id="an-example-dkim-sigrnature-looks-like-this">An example DKIM-Sigrnature looks like this:</h3>
+
+<ul>
+  <li>DKIM-Signature: <code class="highlighter-rouge">v=1; a=rsa-sha256; c=relaxed/relaxed; d=f-secure.com; h=from : to : subject : date : message-id : references : in-reply-to : content-type : mime-version; s=msg2048; bh=pNY3oJQ1zJQXJI4H13CzpTM1KgTe5eqK6ES0DXoPT+o=; b=PJNYB6C5abyvBIxWGVj3/EOMqJsHxd6vLf0hD24iRKlPBQy4pNrPxaQ3godyVAI1TAd0 xuWVZrggtwZLLKAtAUbrW5HpVzh6Ef3qQqmYiVWPnVPK7HAWrKvdJU224dqav3+dXbVG TQWi668kmCn35y4HNaHMdMzEHzkm9cYRvDJo1Kkqy7FjQBYVB4aBOP7Hm3SdQflSXdEx lGQO2WNIdTnrFjU62WwjmCQFEWqexEUv73+XQoaVPMvIYIdyNSEf51FOGFKCEdNIC3LB iH42UdO3kB5EcsErLQoTvDFCZBcLMPmmN3fdiNMHUKuI98jUXsGOWdG8Igc/CmeUK/R6 tg==</code></li>
+</ul>
+
+<h3 id="what-do-the-parameters-mean-1">What do the parameters mean?</h3>
+<ul>
+  <li>DKIM-Signature - Header registered for DKIM signed messages</li>
+  <li>v - Version of DKIM being used by the sending server</li>
+  <li>a - Algorithm used to generate the hash for the private/public key pair. (only rsa-sha1 and rsa-sha256 are officially supported)</li>
+  <li>c - Regulates whitespace and text wrapping changes in a message. (Simple - No changes allowed, Relaxed - Allows common changes to whitespace and header line wrapping)</li>
+  <li>s - Selector used for the public DKIM key for verification.</li>
+  <li>d - Email domain that signed the message (If you’re setting DKIM up, the domain name should be used here to improve domain reputation)</li>
+  <li>i - Usually in the email address (Identity of the signer)</li>
+  <li>bh - Value of the body hash</li>
+  <li>b - cryptographic</li>
+</ul>
+
+<p>The private key must be kept secret. If a malevolent user ever gets their hands on your secret key they will be able to forge your DKIM signatures.</p>
+
+<h2 id="domain-based-message-authentication-reporting--conformance-dmarc">Domain-Based Message Authentication Reporting &amp; Conformance (DMARC):</h2>
+
+<p>In essence, DMARC specifies how your domain handles suspicious emails. DMARC is built on top of DKIM and SPF and requires both of them to be set up in order to verify that messages are authentic (DMARC only works if you have both SPF and DKIM configured). Together they are considered best practice in order to prevent email spoofing and make your emails more trustworthy. DMARC ensures that fraudulent emails get blocked before you even see them in your inbox. In addition, DMARC gives you great visibility and reports into who is sending email on behalf of your domain, ensuring only legitimate email is received.</p>
+
+<h3 id="what-does-it-do">What does it do?</h3>
+
+<p>DMARC helps email senders and receivers verify incoming messages by authenticating the sender’s domain. DMARC also defines the action to take on suspicious incoming messages. To pass the DMARC check:</p>
+<ul>
+  <li>Incoming messages must be authenticated by SPF, DKIM, or both.</li>
+  <li>The authenticated domain must align with the domain in the message From header address.</li>
+</ul>
+
+<p>When an incoming message doesn’t pass the DMARC check, the DMARC policy defines what happens to the message. There are three possible actions:</p>
+<ol>
+  <li>Take no action on the message.</li>
+  <li>Mark the message as spam and deliver to recipient’s spam folder.</li>
+  <li>Tell receiving servers to reject the message.</li>
+</ol>
+
+<h3 id="dmarc-reports">DMARC Reports:</h3>
+<p>You can set up DMARC to send you a daily report from all participating email providers. The report shows:</p>
+<ul>
+  <li>How often messages are authenticated</li>
+  <li>How often invalid messages are seen</li>
+  <li>DMARC policy actions that occur</li>
+</ul>
+
+<p>Based on what you learn from the daily reports, you can refine your DMARC policy. For example, you can change your policy from <strong>none</strong> (monitor only) to <strong>quarantine</strong> to <strong>reject</strong> after you see that valid messages are being authenticated.</p>
+
+<p>F-Secure’s DMARC Record:</p>
+<ul>
+  <li><code class="highlighter-rouge">v=DMARC1;p=none;sp=none;rua=mailto:dmarc-rua@f-secure.com</code></li>
+</ul>
+
+<h3 id="what-do-the-parameters-mean-2">What do the parameters mean?</h3>
+<ul>
+  <li>v - version</li>
+  <li>p - action - If something doesn’t pass DKIM or SPF, then do something (None, Quarantine, Reject - Use action “None” for feedback)</li>
+  <li>rua - Aggregate feedback (Basic pass/fail data)</li>
+  <li>ruf - Forensic Feedback (Specific headers of failed messages) - Optional field with the default value set to none</li>
+  <li>pct - percentage (What percentage of failed messages do you want the rule to apply to) - Optional field with the default value set to 100%</li>
+</ul>
+
+<p>The <strong>none</strong> definition essentially places DMARC into a test mode. ISP’s will check every message, but only send you reports instead of taking action on them. This allows you to start collecting details on your email sources before you do anything drastic. With SPF and DKIM, it is up to the ISP to decide what to do with the results. DMARC takes it a step further and gives you full control to set a policy to reject or quarantine emails from sources you do not know or trust, all based on the results of DKIM and SPF.</p>
+
+<h3 id="what-are-dmarc-reports">What are DMARC Reports?</h3>
+
+<p>ISPs who support DMARC will also generate reports on sending activity for your domain. The reports are XML files that are emailed to the email address specified in your DMARC record. The reports contain the sending source (domain/IP) along with whether the message passed or failed SPF and DKIM. This is one of the best aspects of DMARC. Not only does it allow you to control email security for your domain, it also gives you deep visibility into who is sending on your behalf AND if they are signing with DKIM or passing SPF.</p>
+
+<h2 id="useful-resources">Useful Resources:</h2>
+<ul>
+  <li><a href="https://blog.zsec.uk/mail-tech-spf-pt1/">ZeroSec Blog</a></li>
+  <li><a href="https://stopemailfraud.proofpoint.com/spf/">SPF Checker</a></li>
+  <li><a href="http://web.archive.org/web/20190224184030/http://www.openspf.org/SPF_Record_Syntax">OpenSPF</a></li>
+  <li><a href="https://www.youtube.com/watch?v=PHtukqtSdQc">SMTP Security in a Changing World</a></li>
+  <li><a href="https://postmarkapp.com/guides">Postmark App</a></li>
+</ul>
+
+	  </div>
+
+		
+		<ul class="tag_box list-unstyled list-inline">
+		  <li><i class="fa fa-folder-open"></i></li>
+		  
+		  
+			 
+				<li><a href="/categories.html#Infrastructure-ref">
+					Infrastructure <span>(1)</span>
+					,
+				</a></li>
+			 
+				<li><a href="/categories.html#Security-ref">
+					Security <span>(1)</span>
+					
+				</a></li>
+			
+		  
+		</ul>
+		  
+
+		  
+
+		<hr>
+    <div class="clearfix"></div>
+
+		<ul class="pager">
+		  
+		  <li class="previous"><a href="/personal/wellbeing/2020/03/01/mental-wellbeing.html" title="Mental Wellbeing">&larr; Previous</a></li>
+		  
+		  
+			<li class="next disabled"><a>Next &rarr;</a>
+		  
+		</ul>
+
+		<hr>
+	</div>
+	
+	<div class="col-sm-2 sidebar-2">
+	
+	</div>
+</article>
+<div class="clearfix"></div>
+
+		<footer>
+			<p>
+				&copy; 2020 Kyhle Öhlinger. Theme: <a href="https://github.com/dbtek/dbyll">dbyll</a> by dbtek.
+			</p>
+		</footer>
+	</div>
+	
+	<script type="text/javascript" src="/assets/resources/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/resources/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/assets/js/app.js"></script>
+</body>
+</html>
+
+
+
+<!-- Asynchronous Google Analytics snippet -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'dbyll', 'auto');
+  ga('send', 'pageview');
+</script>
+
