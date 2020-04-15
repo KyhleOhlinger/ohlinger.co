@@ -53,7 +53,7 @@ The goal of DKIM is to ensure that messages weren’t altered in transit between
 
 Why use DKIM? It's easy to impersonate a trusted sender over SMTP, which led to spam for end users which appeared to come from legitimate sources. DMIK aims to make it more difficult to spoof email from domains. DKIM is an optional security protocol, which means that even if the mail is signed, the receiving server doesn't need to have DKIM enabled in order to receive and read the mail. Unlike PGP, DKIM will make sure your message hasn’t been altered, but it doesn’t encrypt the contents of your message. DKIM allows you to attach a DomainKey signature to your outgoing mail. The receiving server then verifies the validity of the key and either accepts or rejects the mail based on the outcome. DKIM protects the **From** address by cryptographically signing messages to verify the author. Usually, DKIM signatures are not visible to end-users, the validation is done on a server level.
 
-### An example DKIM-Sigrnature looks like this:
+### An example DKIM-Signature looks like this:
 
 * DKIM-Signature: `v=1; a=rsa-sha256; c=relaxed/relaxed; d=f-secure.com; h=from : to : subject : date : message-id : references : in-reply-to : content-type : mime-version; s=msg2048; bh=pNY3oJQ1zJQXJI4H13CzpTM1KgTe5eqK6ES0DXoPT+o=; b=PJNYB6C5abyvBIxWGVj3/EOMqJsHxd6vLf0hD24iRKlPBQy4pNrPxaQ3godyVAI1TAd0 xuWVZrggtwZLLKAtAUbrW5HpVzh6Ef3qQqmYiVWPnVPK7HAWrKvdJU224dqav3+dXbVG TQWi668kmCn35y4HNaHMdMzEHzkm9cYRvDJo1Kkqy7FjQBYVB4aBOP7Hm3SdQflSXdEx lGQO2WNIdTnrFjU62WwjmCQFEWqexEUv73+XQoaVPMvIYIdyNSEf51FOGFKCEdNIC3LB iH42UdO3kB5EcsErLQoTvDFCZBcLMPmmN3fdiNMHUKuI98jUXsGOWdG8Igc/CmeUK/R6 tg==`
 
