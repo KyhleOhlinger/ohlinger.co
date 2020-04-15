@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Hosting a Domain
+title: Buying a Domain
 date: 2020-03-15 00:00:00 +0200
 img: hosting-a-domain.jpg # Add image post (optional)
 description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
