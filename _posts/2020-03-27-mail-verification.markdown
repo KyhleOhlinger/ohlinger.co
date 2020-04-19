@@ -4,8 +4,9 @@ title: Mail Verification
 date: 2020-03-27 00:00:00 +0200
 img: mail-verification.jpg # Add image post (optional)
 description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
-tags: [InfoSec]
+tags: [InfoSec, Technical]
 ---
+<script>hljs.initHighlightingOnLoad();</script>
 
 So I've been interested in learning a bit more about email and the standards which are pushed with it. This lead me to trying to gain a better understanding in what SPF, DKIM, and DMARC are and how they actually work. This post is an overview of the information provided within the *Useful Resources* section at the bottom of this post. So what do the mail verification settings do? The reason that they exist is to prevent spammers from forging the **From** address on email messages. If spammers use your domain to send spam or junk email, your domain quality can be negatively affected. Users who get the forged emails can mark them as spam or junk, and this can impact valid messages sent from your domain.
 

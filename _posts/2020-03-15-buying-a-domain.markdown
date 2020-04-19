@@ -4,7 +4,7 @@ title: Buying a Domain
 date: 2020-03-15 00:00:00 +0200
 img: hosting-a-domain.jpg # Add image post (optional)
 description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
-tags: [InfoSec]
+tags: [InfoSec, Technical]
 ---
 
 Since setting up this blog, I wanted to write a short post on what I did to get everything up and running. This post isn't going to be super detailed, but I will reference other blog posts which cover the various aspects and questions that I had when buying my domain. 

@@ -4,7 +4,7 @@ title: WFH during Covid-19
 date: 2020-04-13 00:00:00 +0200
 img: working-from-home.jpg # Add image post (optional)
 description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
-tags: [Wellbeing]
+tags: [Wellbeing, Non-Technical]
 ---
 
 The Easter weekend has come and gone, most countries are now adjusting to lockdowns across the globe, and I thought that this is as good a time as any to create a post about working from home.  It is clear that the impact of Covid-19 to the global economy is going to be significant and it is going to impact all industries in different ways. For most (as with my company), it is likely that sales will go down, there will be less work, and projects will be put on hold. 
@@ -24,14 +24,14 @@ From my side, I have been enjoying working from home. It is definitely more diff
 Working from home full time can be challenging. Separating work from life is not always as easy as it sounds, and it is important to remember to take breaks during your working hours. Additionally, use your off time (evenings and weekends) to focus on yourself, your family, and the items you've been putting off within your life because you've been "too busy".
 
 
-### Taking care of your health!
+## Taking care of your health!
 
 Taking care of your mental and physical health during this time will help you think clearly and enable you care for yourself and your loved ones. There are numerous ways to take care of your mental health during periods of self-isolation, and I'm sure there are some terrific blog posts covering that exact topic. 
 
 From a physical health perspective, unless your extremely fortunate you won't have access to a gym at the moment but that doesn't mean that you can't keep active. I'm fortunate enough to have a balcony which I am using when I exercise (assuming it's not raining). I have two 5l water bottles that I'm currently using as weights, alongside some calisthenics routines that only requires body weight. The issue that I've had is motivation. When it comes to exercise, it's a lot easier to stay focused and motivate yourself when you're not at home. This is something that I haven't been able to figure out 100% just yet, but the times that I do exercise definitely improve my mood and my ability to think clearly.
 
 
-### It's in the small things!
+## It's in the small things!
 
 Obviously at this stage it's not always possible to keep up with all your hobbies, but you can still see friends and family (virtually). Informal chats with friends and colleagues over WhatsApp, Skype, Teams, Zoom, whatever your choice of communication medium is, will be really important during times like these. Maintaining some form of normality during this time will help keep your spirits up and hopefully the human interaction will remind you to take some time for yourself.
 

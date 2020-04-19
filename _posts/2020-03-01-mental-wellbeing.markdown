@@ -4,7 +4,7 @@ title: Mental Wellbeing
 date: 2020-03-01 00:00:00 +0200
 img: mental-health.jpg # Add image post (optional)
 description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
-tags: [Wellbeing]
+tags: [Wellbeing, Non-Technical]
 ---
 
 This post is meant as a reminder that since the new year has started, it is important to remember to take care of yourself and your personal wellbeing. We tend to get drawn in to our work life and allow ourselves to be distracted from personal issues by throwing ourselves into work without realising the harm that not taking care of ourselves can actually do. This isn't some groundbreaking new advice, rather it's meant as a reminder that if you see yourself slipping in to bad habits, you should definitely take a step back and reframe. This is going to be broken down into a few - probably disconnected - topics. This 30 Second Speech by Bryan Dyson - Former CEO of Coca Cola is a pretty good TL;DR of what this blog post aims to convey.
@@ -65,8 +65,8 @@ Taking the above into consideration, just because you've been working really har
 2. so that you can apply focus in smaller periods of time. There's a technique called the pomodoro technique where it explains trying to break things up into 25 minute intervals so that you work during 25 minute periods and then take a short break for 5 minutes before starting on the next task.
 * It's good for you to get some proper human interaction every week, I'm not talking about sitting next to somebody at work every day. It's more towards spending quality time with significant people in your life or loved ones (ideally 1-2 hours) a week where it's actually just talking to them and spending time with them (once again - no technology involved here either). This level of interaction and closeness is important. 
 
-<p class="imgTest">
-<img src="/assets/img/burnout.png" width="350" class="imgTest">
+<p class="imgMiddle">
+<img src="/assets/img/burnout.png" width="350" class="imgMiddle">
 </p>
 The above diagram illustrates quite nicely where you want to be regarding stress and performance to avoid burnout.
 
