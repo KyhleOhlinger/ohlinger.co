@@ -1,0 +1,127 @@
+I"�<p>I’ve come across a lot of examples of how to set up Active Directory (AD) environments using PowerShell one-liners, various vagrant files, and any other automation tactics that you can think of. But one thing that seems to have fallen away has been people setting up their own AD lab environments manually.</p>
+
+<p>While the other methods are really fantastic if you want a fully fledged lab that you can start exploiting almost instantly, you miss out on the learning opportunities that come with setting up your own environment from scratch. The main idea of this post is to demystify a little bit of the set up of AD and let you build your own local AD lab. Since you will have this local lab instance set up, you can attempt to intentionally misconfigure your set up to be vulnerable to issues that you want to learn about and then test out the tools for both finding and exploiting each misconfiguration.</p>
+
+<p><strong>Prerequisites:</strong>
+In order to begin creating your own local AD lab environment, you will need the following:</p>
+
+<ul>
+  <li>Windows Server 2016/2019 VM</li>
+  <li>Windows 10 VM</li>
+  <li>Kali VM or related security distro (EG: ParrotOS) if you want to abuse any misconfigurations</li>
+</ul>
+
+<p>Evaluation Versions of Windows can be found at:</p>
+<ul>
+  <li><a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-10-enterprise">Windows 10</a></li>
+  <li><a href="https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2019">Windows Server</a></li>
+</ul>
+
+<p>(These work for 180 days, unless you delete the service that reboots the box after that period, then they work like normal ISOs that just prompt you to activate.)</p>
+
+<p>Non-eval versions of consumer (Pro and Home) Windows 10 can be found <a href="https://www.microsoft.com/engb/software-download/windows10">here</a> as long as you are coming from a non-windows user agent.</p>
+
+<h3 id="a-heading-in-this-so-entry"><a name="head1234"></a>A Heading in this SO entry!</h3>
+
+<p>The setup is divided into the following parts:</p>
+
+<p>https://1337red.wordpress.com/building-and-attacking-an-active-directory-lab-with-powershell/</p>
+
+<h2 id="setting-up-ad">Setting up AD</h2>
+
+<p>This section will provide the basic steps required to set up – and administer – a small domain. These sections only include the basic aspects as a point of reference, the “Useful Resources” section below contains links to resources which can be used when attempting to set up your own basic domain.</p>
+
+<h3 id="initial-setup">Initial Setup</h3>
+
+<ul>
+  <li>Install Windows server 2016 and install guest additions (Personal preference).</li>
+  <li>Rename the host to something which you are able to identify on the network.</li>
+</ul>
+
+<p>On the Windows Server installation, we are now ready to create out first Domain Controller (DC). In order to do this, we need to do the following:</p>
+
+<ol>
+  <li>Open the Start Menu, go to PowerShell (as Administrator) and type ServerManager.exe and press enter.</li>
+  <li>Within the Server Manager, click on “Add Roles and Features”.</li>
+  <li>The manager should open the “Add Roles and Features” wizard. Click on next to proceed.</li>
+  <li>Select “Active Directory Domain Services” and click “Add Features”</li>
+</ol>
+
+<p>Once the role is installed, click the “Warning sign” in server manager and select “Promote this Server to Domain Controller”</p>
+<ol>
+  <li>You will first need to create an Active Directory Forest, so select “New Forest” and enter the domain name and recovery (DSRM) password.</li>
+  <li>An error will pop up because the DNS infrastructure does not exist yet</li>
+  <li>Click through until arriving at the installation page. This page will then install AD and DNS</li>
+</ol>
+
+<p>Once the system reboots, log in to the system as before. You are still administrator, only now you are a domain administrator.</p>
+<ul>
+  <li>There are no longer local accounts on the server, Domain Controllers are the domain.</li>
+</ul>
+
+<h3 id="creating-users">Creating Users</h3>
+<p>We need to now create users within our Domain, we’ll be using “Active Directory Administrative Center” to do this.</p>
+<ul>
+  <li>We’ll be creating Organization Units or “OUs”. The only difference between OUs and Containers that we care about is that you can’t apply Group Policy to Containers.</li>
+  <li>Create a users and computers OU</li>
+  <li>Create a new windows 10 VM and then join it to the domain (AD). The DNS must be set to the domain’s default gateway.</li>
+  <li>Your PC should now be connected to the domain, right click on it under computers and move it to the newly created computers OU.</li>
+</ul>
+
+<h3 id="group-policy">Group Policy</h3>
+<p>Group Policy is one of the main reasons for AD’s success. It allows you to granularly configure User and Computer settings throughout a domain.</p>
+<ul>
+  <li>Open “Group Policy Management”, open the domains tabs until reaching Computers, right click and add “create GPO…”</li>
+  <li>Right click on the new GPO and edit it. In order to allow a specific user to modify the GPO, you would need to add the permission within the “Delegation” tab.</li>
+  <li>Computers will check for updates every 45 minutes or so. You can speed this up by running <code class="highlighter-rouge">gpupdate /force</code> on the computer that you want to update.</li>
+</ul>
+
+<h3 id="access-control-lists">Access Control Lists</h3>
+<p>Access Control Lists enable administrators to set permissions over AD objects.</p>
+<ul>
+  <li>It allows you to granularly configure User and Computer access permissions throughout a domain.</li>
+  <li>Open “Active Directory Users and Computers”, open the View tab , and enable “Advanced Features”</li>
+  <li>This will allow you to access the “Security” tab when viewing and editing AD objects ACLs.</li>
+</ul>
+
+<p>https://blogs.technet.microsoft.com/canitpro/2017/02/22/step-by-step-setting-up-active-directory-in-windows-server-2016/</p>
+
+<p>https://www.c2.lol/setting-up-an-active-directory-lab/part-1</p>
+
+<h2 id="networking">Networking</h2>
+
+<p>Within the Server Manager on the newly created DC:</p>
+<ol>
+  <li>Right click on your server - “Add Roles and Features”</li>
+  <li>Click next until “Server Roles”</li>
+  <li>Within Server Roles → Select DHCP Server and complete setup.</li>
+  <li>Click on Notifications and “Complete DHCP Configuration”</li>
+</ol>
+
+<p>Next, we need to configure DHCP. In Server Manager click on the Tools menu in the upper right and select DHCP</p>
+<ol>
+  <li>Expand your domain on the left-hand side, right click IPv4 and select Add New Scope</li>
+  <li>Click Next through the Wizard. When prompted, name your DHCP scope whatever you want</li>
+  <li>When prompted for the scope, create a range of 50 to 100 IPs within your network and set your subnet mask appropriately</li>
+  <li>Keep clicking next in the wizard until you are asked if you would like set additional options, select yes and click next</li>
+</ol>
+
+<p>If you are using VirtualBox, you can go to Network → Right Click on your host adapter, e.g. vboxnet0 → edit, and the IP Address should be there.</p>
+
+<p>Within your DC’s IPv4 Settings, Set a Static IP Address based on your Host-Only Network Settings within Virtual Box</p>
+<ul>
+  <li>IP Address should use the same 3 initial octets, you can set the final one to anything.</li>
+  <li>Set the Subnet Mask to 255.255.255.0</li>
+  <li>Set the Default Gateway to the initial 3 octets followed by 1</li>
+  <li>Set a static DNS Server to: 127.0.0.1</li>
+</ul>
+
+<h2 id="linking-a-workstation-to-the-domain">Linking a Workstation to the Domain</h2>
+
+<p>Set the IPv4 DNS Server to the DCs IP address</p>
+<ol>
+  <li>Open Control Panel → System and Security → System</li>
+  <li>Click on “Change settings”</li>
+  <li>Change the computer name → Member of: Domain → FQDN</li>
+</ol>
+:ET

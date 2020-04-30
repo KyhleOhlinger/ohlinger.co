@@ -1,0 +1,53 @@
+I"�<p>There are a number of posts out there which have catch phrases like “it’s a journey, not a destination”, “you have to do whatever it takes”, “think outside the box”, and “you must have an attackers mindset”. All of these phrases sound great and, if it’s what you wanted to hear then you’d probably find yourself nodding along, but they really don’t have any substance behind them.</p>
+
+<p>On the other hand, you have a bunch of resources telling you what you need to know if you want to have a chance of making it in the field. What tools you need to be familiar with, what certifications you need to work towards, and that in order to keep up with the industry you need to keep learning and keep pushing forward. And once again, they sound great and it sounds like they’re providing you with this invaluable advice, but honestly it’s the exact same thing that every industry and every organisation is telling it’s people. Additionally, if you’re uncertain about the field, then those resources can seem overwhelming, and you’ll always feel like you’re falling behind. The truth is, it’s the same as any other profession, if you want to succeed and you’re willing to learn and take criticism, then you’ll be a good fit for the field.</p>
+
+<p>And while that might not be anything new either, I think it’s important to realise that there is no right answer when it comes to this field. There are so many facets and so many areas that haven’t even been thought of yet, that even if not everything in the field interests you, there’s more than enough to keep yourself going. If after a few months or years you realise that pentesting isn’t everything that you thought it would be, you can always shift your focus into some of the other areas within Information Security.</p>
+
+<p>I could go on about how industry is, and how working in a relatively new and fast paced field takes time and energy, and I could let you know about the harsh realities of the world, but in this post I wanted to try and open your eyes to some things that aren’t always apparent when looking in from the outside. I’ve had a number of people ask me what it’s like being in InfoSec, or more specifically, what it’s like being a penetration tester. I gave it some thought and I also opened it up to some colleagues, the specific question I asked consisted of 3 parts:</p>
+
+<ul>
+  <li>What are some things you know about the field of InfoSec and being a consultant that you didn’t know before you started?</li>
+  <li>From a non-technical perspective, did anything in your job surprise you once you started doing client work?</li>
+  <li>Do you find that you’ve grown in areas you didn’t expect to?</li>
+</ul>
+
+<p>This post isn’t going to provide you with career paths and how to conduct pentests. Instead, I am going to try and walk you through the day to day that I have encountered while being part of this field.</p>
+
+<p class="imgLeft">
+<img src="/assets/img/Hack-the-things.jpg" width="250" />
+From my side, when I started out I expected to be hacking things day in, day out. I thought I would be constantly learning things and then pwning systems left right and center. And at the start it was exactly that - I would do challenge VMs, look at older CTFs, do pentests, strive to do certs, essentially it would be "Hack all the Things". What I guess I knew about, but didn't really grasp at that time was the fact that the job title literally included the word "Consultant". 
+</p>
+
+<p class="imgRight">
+<img src="/assets/img/No-just-hack.jpg" width="250" />
+I know it seems silly but, at the end of the day, that is the cornerstone of the job. It is not just about "hacking all the things". You need to consult with clients, you need to determine what type of assessments would best suit their needs. Once an assessment has been settled on and you've done the hacking, you need to assure them that there are ways to fix or mitigate the findings that you have. This includes a lot of meetings, interaction with the various teams involved in a specific project, internal meetings, etc.
+</p>
+
+<p>And after all of that - having hacked the systems, or applications, or networks - the client is paying you for a deliverable which in my case happens to be a report. Reporting is a massive part of my job (if you care about what you deliver to client that is - which I most certainly do) so it takes a lot of time and effort.</p>
+
+<p>In addition to my technical knowledge, I think that my soft skills are the area that I have grown the most in. This came from the abundance of client interactions that are part of the job, as well as the fact that I have been fortunate enough to be in a position where I have gained more management experience than I thought I would - both from a people management as well as a project management standpoint. The management aspect surprised me since it’s not something that I thought I would ever want or be good at (I actually fought against it initially), but management – along with the client interactions and presentations, are some of the aspects of the job that I have come to enjoy the most.</p>
+
+<h2 id="a-few-words-from-others">A few words from others</h2>
+
+<p>Now obviously that’s just my opinion, and as I said at the start, I opened this up to some colleagues. Below are some comments from those who responded:</p>
+<div class="speech bottom">
+&gt; People who are good at a wide range of things and can manage varied workloads with varied components (technical, soft skills, time management, communication components etc) are far more likely to succeed than those that are ONLY good at one thing, say technical. Have seen many examples of technical genius that gets ignored. Generalists &gt; specialists (take that with some salt, as context is important).
+</div>
+
+<div class="speech bottom">
+&gt; When I started I really just thought that it would be hacking things and then writing a report. Along the way I have seen that there is a lot of management involved as well. One of the things I was the most terrified of was the client-focused aspect of the job. I was not the most sociable person and I struggled to talk to people. It has ended up being one of my favourite parts of the job.
+</div>
+
+<blockquote>
+  <p>The longer I do this, the more I realise just how important good management is. Security has to come from the top. Also, nothing is easy. Why don’t they fix stuff? Why don’t they have requirements? More often than not there’s a reason. We can either be frustrated, or try to understand and help them.</p>
+</blockquote>
+
+<blockquote>
+  <p>I’ve grown significantly more in the soft skills &amp; presentations than I thought I would before coming here. I was initially scared of the client-facing aspect, but now I really enjoy the interactions. I’ve grown a lot more in leading/mentoring than I thought I would in such a short period.</p>
+</blockquote>
+
+<h2 id="why-share-this">Why share this?</h2>
+
+<p>Honestly, I think pentesting can be a bit hyped up sometimes and people are always feeling like they are falling behind and not <em>1337</em> enough to be in the field. In my experience, being technically capable definitely does form part of the job, but by no means is it everything that is expected or required in your day-to-day. You can learn a lot about yourself doing a consulting job. You will learn to adapt quickly, you have to keep up with the latest trends and technologies, and you need to think on your feet. At the end of the day, I believe that being a pentester has a shelf life - but it will definitely prepare you for other jobs when you’re ready for the routine and stability of an in-house role. If there is one piece of advice I can give to anyone looking to work as a consultant (irrelevant of the industry), it would be focus on your communication skills – both written and verbal. These will help you a lot more in the future than knowing everything there is to know about a technology that will be redundant in a few years.</p>
+:ET

@@ -24,6 +24,65 @@ body {
   margin: 0;
 }
 
+
+
+
+
+/*================================================================================*/
+                                /* SPEECH BUBBLES*/
+/*================================================================================*/
+
+.circular {
+  position: relative;
+  margin: auto;
+  background: #c30;
+  color: #fff;
+  border-radius: 50%;
+  padding: 50px 70px;
+  max-width: 70%;
+}
+.circular1 {
+  background: #c30;
+  width: 20px;
+  padding: 20px;
+  border-radius: 50%;
+  position: absolute;
+  right: 10px;
+  bottom: -10px;
+}
+.circular2 {
+  background: #c30;
+  width: 10px;
+  padding: 10px;
+  border-radius: 50%;
+  position: absolute;
+  right: 0;
+  bottom: -35px;
+}
+
+.circular3 {
+  background: #c30;
+  width: 20px;
+  padding: 20px;
+  border-radius: 50%;
+  position: absolute;
+  left: 10px;
+  bottom: -10px;
+}
+.circular4 {
+  background: #c30;
+  width: 10px;
+  padding: 10px;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  bottom: -35px;
+}
+
+
+/*================================================================================*/
+
+
 .sideNav{
 	color: black; 
 	text-align: center;
