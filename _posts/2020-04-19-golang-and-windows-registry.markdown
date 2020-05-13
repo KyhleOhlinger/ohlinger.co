@@ -17,13 +17,13 @@ In order to do this, I first had a look at the registry and saw that the path `â
 
 In order to test this theory (adding an exclusion to registry), I used the following PowerShell command to create a new exclusion for my "malicious" executable -- test.exe:
 
-```
+```powershell
 powershell -inputformat none -outputformat none -NonInteractive -Command Add-MpPreference -ExclusionPath "C:\Windows\Temp\test.exe"
 ```
 
 As expected, it worked and the path was added to the registry. Now why didn't I just stop here if the solution worked? Well, PowerShell is a solution, a lot of organisations are either disabling or flagging PowerShell usage, and in order to stay relatively silent in a network, new solutions need to be explored. Since I was looking into Golang at the time -- I decided to try and implement this myself. After a bunch of Googling and looking into the Golang Registry documentation, I found some code which would allow me to at least read from the registry. I decided to try this out, with the goal of potentially accessing some basic information. The code is shown below:
 
-```
+```go
 winInfo, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion`, registry.QUERY_VALUE)
 check(err)
 defer winInfo.Close()
@@ -36,7 +36,7 @@ fmt.Printf("Value: " + CurrentVersion +"\n")
 
 This returned the expected information and I thought that I was going to be able to fly through this little experiment. I updated the code and tried to write to the registry, but it kept failing and I had no idea why. In order to debug this, I used the following code to read the backup location from the Windows Defender registry key:
 
-```
+```go
 regInfo, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows Defender`, registry.QUERY_VALUE)
 check(err)
 defer regInfo.Close()
@@ -76,7 +76,7 @@ In my opinion, the following calls seemed to be relevant:
 
 Great, this was something new to go on and I tried to figure out how it was calling the functions, which lead me to the following [documentation](https://docs.microsoft.com/en-gb/previous-versions/windows/desktop/defender/msft-mppreference). It had a lot of useful information, but nothing about the registry keys that it was calling, even the following call to the `WMIObject` did not return the output that I was looking for:
 
-```
+```powershell
 Get-WmiObject -namespace "root\Microsoft\Windows\Defender" -List
 ```
 
@@ -88,7 +88,7 @@ I decided to keep looking in Procmon and eventually found that the WMI call actu
 
 As shown above, the *Everyone* Group had `Read` access to the Parent object as well as the Subkeys, and Administrators had the same permissions. This meant that for all intents and purposes, any user should have been able to read this information. I then tried using `REG QUERY` to see if that could read from the registry:
 
-```   
+```bat
 REG QUERY "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender" /v BackupLocation
 
 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender
@@ -99,13 +99,13 @@ Turns out that it could. So once again I went back to my code and decided to try
 
 
 **Windows NT version:**
-```
+```bat
 C:\Users\Kyhle\Desktop>EnumKeys.exe
 map[string]string{"BaseBuildRevisionNumber":"239", "BuildBranch":"19h1_release_svc_prod1", "BuildGUID":"ffffffff-ffff-ffff-ffff-ffffffffffff", "BuildLab":"18362.19h1_release_svc_prod1.190628-1641", "BuildLabEx":"18362.239.x86fre.19h1_release_svc_prod1.190628-1641", "CompositionEditionID":"Enterprise", "CurrentBuild":"18362", "CurrentBuildNumber":"18362", "CurrentMajorVersionNumber":"10", "CurrentMinorVersionNumber":"0", "CurrentType":"Multiprocessor Free", "CurrentVersion":"6.3", "EditionID":"Enterprise", "EditionSubManufacturer":"", "EditionSubVersion":"", "EditionSubstring":"", "InstallDate":"0", "InstallationType":"Client", "ProductName":"Windows 10 Enterprise", "RegisteredOrganization":"", "RegisteredOwner":"Kyhle", "ReleaseId":"1903", "SoftwareType":"System", "SystemRoot":"C:\\WINDOWS", "UBR":"418"}
 ```
 
 **Windows Defender:**
-```
+```bat
 C:\Users\Kyhle\Desktop>EnumKeys.exe
 map[string]string{}
 ```
@@ -115,7 +115,7 @@ As shown above, even though it could read from the Windows NT registry, it could
 ## The end
 Finally, I decided to try and implement the exact same calls using an alternative programming language, in this case python. 
 
-```
+```python
 import errno, os, winreg
 
 RawKey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows NT\CurrentVersion",0, winreg.KEY_READ)
