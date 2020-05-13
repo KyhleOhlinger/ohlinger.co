@@ -138,7 +138,7 @@ Remember I mentioned Buckets and Metrics above, you can add those checks into th
 
 ### Something Extra
 
-One thing I realised when initially setting up elasticsearch-dsl was that the queries would only return the 10 most recent results, as detailed in this [Github7 Post](https://github.com/elastic/elasticsearch-dsl-py/issues/737). Now why is this the case? The query can return a lot of data and by limiting it, it won't overload the server or your ouput. If you want to return all of the results you need to explicitly request it, and the simplest way is to slice from zero to the total number of hits (i.e. search.count()). A quick method to return all results is shown below:
+One thing I realised when initially setting up elasticsearch-dsl was that the queries would only return the 10 most recent results, as detailed in this [Github Post](https://github.com/elastic/elasticsearch-dsl-py/issues/737). Now why is this the case? The query can return a lot of data and by limiting it, it won't overload the server or your ouput. If you want to return all of the results you need to explicitly request it, and the simplest way is to slice from zero to the total number of hits (i.e. search.count()). A quick method to return all results is shown below:
 
 ```python
 total = basic_query.count()
