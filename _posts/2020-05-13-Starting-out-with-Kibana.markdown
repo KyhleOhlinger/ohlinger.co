@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Starting out with Kibana and ElasticSearch-DSL
-date: 2020-05-13 00:00:00 +0200
+date: 2020-05-13 12:00:00 +0200
 img: elkstack.jpg # Add image post (optional)
 description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
 tags: [InfoSec, Technical]
@@ -86,7 +86,7 @@ Now that everything is set up, we can start working on the script which uses ela
 
 The query shown above makes use of a wildcard (\*) which allows it to search through all of the data field while filtering by the field, *Some_Field*. In this basic script, we are going to create a main function which takes in parameters, searches for *Some_Field* and provides basic output:
 
-```
+```python
 #!/usr/bin/python3
 import argparse
 import elasticsearch
