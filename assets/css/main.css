@@ -999,6 +999,7 @@ table tfoot td {
   padding-right: 12%;
   max-width: 100%;
   position: relative;
+  /* background-image: url(/assets/img/christmas.jpg); */
 }
 
 .post, .article-page {
