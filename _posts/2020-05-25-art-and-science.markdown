@@ -33,7 +33,7 @@ This mindset makes it even more important for us to strive for a creative outlet
 
 Now that I've managed to lecture you on how the brain, how it potentially affects one's personality, and the importance of having a creative outlet, lets's get to the part that you most likely looked at this post for in the first place -- the free resources. I hope that someone will find this, at the very least, interesting and maybe take some time to appreciate the artistic side of life as opposed to just feeding the analytical portion.
 
-### Science:
+### Science
 
 When looking for sources on scientific papers, even though the sharing of knowledge is often what's preached, profit margins are normally what businesses focus on instead. [Sci-Hub](https://sci-hub.tw/) is a website that I came across which tries to rectify this. How would this work? If you find a scientific article which requires a subscription or payment, you can look for the Digital Object Identifier (DOI) related to the paper as shown below:
 
