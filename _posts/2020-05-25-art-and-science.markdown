@@ -3,7 +3,6 @@ layout: post
 title: Art and Science
 date: 2020-05-25 12:00:00 +0200
 img: art-and-science.jpg # Add image post (optional)
-description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
 tags: [Non-Technical, Wellbeing]
 ---
  

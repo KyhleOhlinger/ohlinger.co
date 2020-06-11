@@ -3,7 +3,6 @@ layout: post
 title: WFH during Covid-19
 date: 2020-04-13 12:00:00 +0200
 img: working-from-home.jpg # Add image post (optional)
-description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
 tags: [Wellbeing, Non-Technical]
 ---
 

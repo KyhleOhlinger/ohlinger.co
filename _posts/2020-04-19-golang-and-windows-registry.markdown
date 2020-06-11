@@ -3,7 +3,6 @@ layout: post
 title: Issues with Golang and Windows Registry
 date: 2020-04-19 12:00:00 +0200
 img: golang.jpg # Add image post (optional)
-description: You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. # Add post description (optional)
 tags: [InfoSec, Technical]
 ---
 
