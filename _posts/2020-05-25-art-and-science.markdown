@@ -3,6 +3,7 @@ layout: post
 title: Art and Science
 date: 2020-05-25 12:00:00 +0200
 img: art-and-science.jpg # Add image post (optional)
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
 tags: [Non-Technical, Wellbeing]
 ---
  

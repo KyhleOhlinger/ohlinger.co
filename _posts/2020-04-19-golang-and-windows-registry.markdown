@@ -3,6 +3,7 @@ layout: post
 title: Issues with Golang and Windows Registry
 date: 2020-04-19 12:00:00 +0200
 img: golang.jpg # Add image post (optional)
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
 tags: [InfoSec, Technical]
 ---
 
