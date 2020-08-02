@@ -10,8 +10,8 @@ tags: [InfoSec, Technical, Automation_Series]
 This blog post will be the first in the series where I try to automate a "mystery" process. While the initial blog posts will not provide any specific details, they will provide the building blocks used during the development process and technologies I learnt along the way.
 
 <p class="imgRight">
-<img src="/assets/img/Mystery/questionmark.png" width="100" style="border-radius: 50%;"/>
-The Mystery icon will differentiate the Automation Series blog posts from the rest. The outcome of this series be revealed in the final blog post with links to the (hopefully) completed Open Source project that I am currently working on -- the actual icon will be revealed along with the Open Source project.
+<img src="/assets/img/Mystery/questionmark.png" width="120" style="border-radius: 50%;"/>
+The Mystery icon will differentiate the Automation Series blog posts from the rest. The outcome of this series will be revealed in the final blog post with links to the (hopefully) completed Open Source project that I am currently working on -- the actual icon will be revealed along with the Open Source project.
 </p>
 
 ## Part 1: Vagrant & Ansible
