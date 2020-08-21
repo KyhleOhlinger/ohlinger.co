@@ -1062,7 +1062,6 @@ table tfoot td {
   -webkit-border-radius: 100%;
           border-radius: 100%;
   overflow: hidden;
-  background-color: #333030;
 }
 
 .about img {
@@ -1506,6 +1505,10 @@ a.newer-posts:hover {
 
 /* Small Devices, Tablets */
 @media only screen and (max-width: 768px) {
+  .wrapper {
+    max-width:100%;
+    padding-right:12%;
+  }
   .sidebar {
     position: relative;
     display: -webkit-box;
@@ -1542,8 +1545,9 @@ a.newer-posts:hover {
     margin-bottom: 10px;
   }
   .content-box {
+    max-width: 100%;
     padding: 20px 10px;
-    padding-right: 20px;
+    padding-right: 12%;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -1569,7 +1573,9 @@ a.newer-posts:hover {
 /* Extra Small Devices, Phones */
 @media only screen and (max-width: 480px) {
   .content-box {
+    max-width: 100%;
     padding: 10px;
+    padding-right: 12%;
   }
   .post {
     width: 98%;
