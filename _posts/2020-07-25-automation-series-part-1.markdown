@@ -11,7 +11,7 @@ This blog post will be the first in the series where I try to automate a "myster
 
 <p class="imgRight">
 <img src="/assets/img/Mystery/questionmark.png" width="120" style="border-radius: 50%;"/>
-The Mystery icon will differentiate the Automation Series blog posts from the rest. The outcome of this series will be revealed in the final blog post with links to the (hopefully) completed Open Source project that I am currently working on -- the actual icon will be revealed along with the Open Source project.
+The Mystery icon will differentiate the Automation Series blog posts from the rest. The outcome of this series will be revealed in the final blog post with links to the (hopefully) completed Open Source project that I am currently working on - the actual icon will be revealed along with the Open Source project.
 </p>
 
 ## Part 1: Vagrant & Ansible
@@ -222,7 +222,7 @@ vagrant destroy
 ==> default: Destroying VM and associated drives...
 ```
 
-I hope all went well and that you successfully managed to create your first VM using Vagrant and Ansible. During the next blog post we will be attempting to install and configure software using Ansible.
+I hope all went well and that you successfully managed to create your first VM using Vagrant and Ansible!
 
 ## Useful Resources:
 
