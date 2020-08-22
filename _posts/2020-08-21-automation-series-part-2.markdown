@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Automation Series Part 2&#58; Creating Bots
-date: 2020-08-09 12:00:00 +0200
+date: 2020-08-21 12:00:00 +0200
 img: mystery.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
 tags: [InfoSec, Technical, Automation_Series]
