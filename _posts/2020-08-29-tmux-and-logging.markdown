@@ -16,7 +16,8 @@ This blog post will cover the basics of Tmux, modification of the Tmux configura
 Tmux is a terminal multiplexer which lets you open multiple windows and split-views (panes). Each pane contains its own, independently running terminal instance. This allows you to have multiple terminal commands and applications running visually next to each other without the need to open multiple terminal emulator windows. After having looked into nohup and screen, Tmux is a better alternative (in my opinion) since it's more visual and simpler to use. One of my favourite benefits is that Tmux runs as a process, so if a connection dies then you are able to reconnect to the work you were doing before the interaction was interrupted. However, if you aren't interested in the process portion and are only interested in the screen split functionality, [Terminator](https://gnometerminator.blogspot.com/p/introduction.html) may be a more suitable alternative for you. IppSec has a [Youtube Video](https://www.youtube.com/watch?v=Lqehvpe_djs&t=217s) describing his Tmux configuration and he also shows some shortcuts which have come in very useful for me.
 
 ### Starting Out 
-In order to install Tmux on Linux, you can simply use `apt-get install tmux`, from there, you can start enjoying the benefits :smile:.
+
+In order to install Tmux on Linux, you can simply use `apt-get install tmux`, from there, you can start enjoying the benefits.
 
 ### Creating a Tmux Session
 

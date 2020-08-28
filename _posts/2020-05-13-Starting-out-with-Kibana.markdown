@@ -18,7 +18,7 @@ This post will cover the following:
 * Simple Python ElasticSearch Script
 * Some useful resources to help you along the way
 
-If you are not interested in the theory and the Windows Setup, you can skip towards the end where the [script](#creating-your-first-python-script) is :smile:.
+If you are not interested in the theory and the Windows Setup, you can skip towards the end where the [script](#creating-your-first-python-script) is.
 
 ## What is Elk?
 
