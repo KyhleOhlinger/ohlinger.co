@@ -10,10 +10,10 @@ tags: [InfoSec, Technical]
 Using event logs to determine whether an attack is possible has been used by blue and red teams alike. Several hacking groups such as [turla](https://www.zdnet.com/article/turla-hacker-group-steals-antivirus-logs-to-see-if-its-malware-was-detected/) have been using antivirus logs to determine whether their payloads were successful and for most red team engagements, pentesters use logs to debug their payloads. This can be essential when attempting to run successful phishing campaigns, finetune lateral movement techniques, and ensure that evasion techniques are able to bypass the relevant software in use throughout an organisation. 
 
 Recently, I have been looking into Windows event logs and I was curious as to whether it would be possible to use the Status codes returned by Windows during logon events to enumerate successful username/password combinations. This post is going to cover the following:
-1. [A look at how I investigated Error Codes returned by EventId 4264](#diving-into-eventid-4264)
+1. [A look at how I investigated Error Codes returned by EventId 4625](#diving-into-eventid-4625)
 2. [A hypothetical situation for password enumeration through the use of log files and status codes](#password-enumeration-using-log-files)
 
-## Diving into EventId 4264
+## Diving into EventId 4625
 
 I was looking into ways to bruteforce Active Directory Username/Password fields. In order to determine what was possible, I decided to look into the logon events generated during authentication to see if there was anything that suggested that you could enumerate usernames or passwords without getting the generic “Username/Password is incorrect” error message. In order to generate failed logon attempts within my small test domain, I initially used [impacket's wmiexec](https://github.com/SecureAuthCorp/impacket/blob/master/examples/wmiexec.py) with the following command:
 
