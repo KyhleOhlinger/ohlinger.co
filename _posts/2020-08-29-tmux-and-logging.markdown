@@ -24,7 +24,7 @@ In order to install Tmux on Linux, you can simply use `apt-get install tmux`, fr
 Since Tmux launches as a process, it will choose the directory that you are currently in as it's hosting directory (not super important, but something to keep in mind). When creating a session, I find it useful to give the session a name, the syntax is shown below:
 
 ```bat
-tmux -s tmux_session_name
+tmux new -s tmux_session_name
 ```
 
 The default prefix key (ctrl-b) allows you to navigate around Tmux and interact with it. This can be reconfigured to any other prefix, e.g. ctrl-a if you're used to screen, by editing the configuration file `~/.tmux.conf`. 
