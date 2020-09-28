@@ -1,18 +1,13 @@
 ---
 layout: main
-permalink: /walkthroughs/
-title: Coming Soon
+title: Walkthroughs
 ---
 
-<article class="article-page">
-    <div style="height:100%">
-        <style>
-            pre {
-                background: none;
-                border: none;
-                text-align: center;
-            }
-        </style>
-        <img src="/assets/img/comingsoon.png" style="width:100%;"/>
-    </div>
+{% for item in site.walkthroughs %}
+<article class="post-test">
+    {% if item.img %}
+    <a class="post-thumbnail-test" style="background-image: url({{"/assets/img/" | prepend: site.baseurl | append : item.img}})" href="{{item.url | prepend: site.baseurl}}"></a>
+    {% else %}
+    {% endif %}
 </article>
+{% endfor %}

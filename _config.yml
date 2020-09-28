@@ -17,6 +17,11 @@ social-github: KyhleOhlinger
 social-linkedin: kyhleohlinger
 social-email: kyhle@ohlinger.co
 
+# Collections
+collections: 
+  walkthroughs:
+    output: true
+
 # Disqus
 discus-identifier: mr-brown # add your discus identifier
 
