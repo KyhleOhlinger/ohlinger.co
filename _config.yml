@@ -30,6 +30,9 @@ analytics: # Google Analytics
 
 # Build Settings
 markdown: kramdown
+kramdown:
+  parse_block_html: true
+
 plugins:
   - jekyll-sitemap
   - jekyll-paginate

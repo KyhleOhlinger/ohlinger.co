@@ -1,0 +1,65 @@
+---
+layout: static
+title: Challenge VM Basics
+date: 2020-09-29 12:00:00 +0200
+img: ChallengeVMs/basics.jpg # Add image post (optional)
+description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, 
+
+Today is going to be the start of a new Challenge VM section. The idea behind this is to showcase how to run through some Challenge VMs, provide some ways that I generally tackle them and the way that everything works. This will eventually include a blog post on [Creating a Challenge](https://ohlinger.co) VM. I am hoping to be able to do one or two a month on top of the blog posts, so we'll see how this goes. *Quick note on walkthrough releases* -- Each writeup will be available once the machine is retired from active rotation as per the regulations set out by [HackTheBox](https://www.hackthebox.eu), but you are more than welcome to reach out to me with questions about any machine that is on the list.
+
+## Pentesting VM
+
+My base pentesting setup is available as a Vagrant installation on [Github](https://github.com/KyhleOhlinger/Vagrant_Kali). The Github page describes all of the tooling and basic configuration settings that are initially installed. In addition, I make use of [FoxyProxy](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/) in order to easily switch between proxy configuration settings and ease of use for linking to burp. When using burp, you will need to add the CA Certificate to Firefox as detailed in this [post](https://portswigger.net/support/installing-burp-suites-ca-certificate-in-firefox).
+
+## Basic Configuration Layout
+
+When starting a new challenge VM, I make use of the following directory structure:
+```
+.
+├── Configuration
+│   └── hotshoto.ovpn
+├── Challenge VM
+│   ├── logs
+│   ├── enum
+│   ├── exploit
+│   │   ├── exploit file
+├── Notes
+│   ├── HackTheBox.ctb
+
+```
+The Notes and Configuration directories generally won't change, but I will add in a new Folder for each new VM.
+
+### Using Tmux
+
+I like making use of different panes and windows for each relevant task. I have a post on [Tmux](https://ohlinger.co/tmux-and-logging/) if you are interested, but the basic idea is described below. 
+
+* I initially create 2 windows: config and enum.
+* You can rename each window by using `tmux rename-window <name>`. The config window is used to run the OpenVPN connection and the enum window is used when attempting to exploit the Challenge VM.
+* Within the enum window, I generally have 3 to 4 separate panes open at the same time for the various tasks that I am conducting. 
+
+### Taking Notes
+
+I make use of [CherryTree](https://www.giuspen.com/cherrytree/) for note taking, additionally I use tmux logging or script in order to maintain logs of what I have done during any stage of the Challange VM. This is mostly by habit -- I find having logs to be useful incase I close windows and panes and need some information that I didn't keep in CheryTree.
+
+## My Approach to Solving Challenge VMs
+
+As with security assessments that I perform, my approach to the solving challenge VMs is based off of the adapted Cyber Kill chain. The cyber kill chain -- adapted by Lockhead-Martin -- is a framework which aims to describe the phases followed when attempting to exploit a system or an organisation, from reconnaissance to the goal of data exfiltration, or in the case of challenge VMs, obtaining root/System access to the host. The image below shows the stages of the cyber kill chain:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/cyberkill.png" style="width:80%" />
+</p>
+
+ According to Lockheed Martin, threats must progress through several phases in the model, including:
+
+* **Reconnaissance**: Intruder selects target, researches it, and attempts to identify vulnerabilities in the target network.
+* **Weaponization**: Intruder creates remote access malware weapon, tailored to one or more vulnerabilities.
+* **Delivery**: Intruder transmits weapon to target (e.g., via e-mail attachments, websites or USB drives)
+* **Exploitation**: Malware weapon's program code triggers, which takes action on target network to exploit vulnerability.
+* **Installation**: Malware weapon installs access point (e.g., "backdoor") usable by intruder.
+* **Command and Control**: Malware enables intruder to have "hands on the keyboard" persistent access to target network.
+* **Actions on Objective**: Intruder takes action to achieve their goals, such as data exfiltration, data destruction, or encryption for ransom.
+
+This is definitely not the only method that can or should be followed, MITRE maintains a kill chain framework known as [MITRE ATT&CK](https://attack.mitre.org/). Depending on the difficulty of the VM, the MITRE matrix can provide a lot of useful information, however I find that I use it more for actual security assessments and tend to default towards a few of the phases described in the Lockhead Martin cyber kill chain, for challenge VMs.

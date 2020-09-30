@@ -4,7 +4,7 @@ title: HackTheBox - Blackfield
 date: 2020-09-28 12:00:00 +0200
 img: ChallengeVMs/HTB_Icons/blackfield.png # Add image post (optional)
 status: Active
-description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
+description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
 
 ## Current Status - Active
