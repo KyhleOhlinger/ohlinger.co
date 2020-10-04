@@ -1,0 +1,50 @@
+---
+layout: walkthrough
+title: HackTheBox - Cache
+date: 2020-09-26 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/cache.png # Add image post (optional)
+status: Active
+description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+## Current Status - Active
+
+This walkthrough will be released once the machine has retired on HackTheBox. If you want to get any hints or if you want to chat about the machine, feel free to reach out to me and I will help you as much as I can!
+
+
+<details>
+  <h1 id="header">Nmap Output</h1>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Cache/logs$ nmap -sC -sV 10.10.10.188
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-22 13:44 EDT
+Nmap scan report for 10.10.10.188
+Host is up (0.19s latency).
+Not shown: 998 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 a9:2d:b2:a0:c4:57:e7:7c:35:2d:45:4d:db:80:8c:f1 (RSA)
+|   256 bc:e4:16:3d:2a:59:a1:3a:6a:09:28:dd:36:10:38:08 (ECDSA)
+|_  256 57:d5:47:ee:07:ca:3a:c0:fd:9b:a8:7f:6b:4c:9d:7c (ED25519)
+80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))
+|_http-server-header: Apache/2.4.29 (Ubuntu)
+|_http-title: Cache
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 50.47 seconds
+
+```
+
+</details>
+
+
+
+
+
+
+<img src="/assets/img/comingsoon.png" alt="Coming Soon"/>
+
+
+
