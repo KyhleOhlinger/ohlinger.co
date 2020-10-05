@@ -11,11 +11,11 @@ This page will include my key takeaways / learnings from each challenge VM that 
 
 | Challenge VM  | Operating System  | Key Takeaways |
 |---|---|---|---|
+| Blackfield | Windows | <details>ASRep Roasting and exploiting whoami privileges. </details>  |
 | Tabby | Linux | <details>Tomcat manager exploitation via command line and LXD exploitation.</details>  |
-| Blunder | Linux | <details>Exploitation of the sudo vulnerability which converts user id into its username incorrectly treats -1,or its unsigned equivalent 4294967295, like 0, which is always the user ID of root user.</details>  |
+| Blunder | Linux | <details>Exploitation of a sudo vulnerability.</details>  |
 | SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>  |
 | Buff | Windows | <details>Using [Chisel](https://github.com/jpillora/chisel) to run a Python exploit through a reverse proxy.</details>  |
 | Omni | Linux | <details>Windows IoT exploitation and PowerShell secure string decryption.</details>  |
 | Passage | Linux | <details>USBCreator D-Bus Exploitation.</details>  |
-| Cache | Linux | <details>Memcache exploitation and docker priv esc.</details>  |
-| Blackfield | Windows | <details>ASRep Roasting. </details>  |
+| Cache | Linux | <details>Memcache exploitation and docker privilege escalation.</details>  |
