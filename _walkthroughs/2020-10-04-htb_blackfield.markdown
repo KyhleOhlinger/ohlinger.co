@@ -7,11 +7,15 @@ status: Retired
 description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
 
-Hi everyone, today we are going to be looking at Blackfield --`10.10.10.192`-- from HackTheBox. In order to start the VM, I need begin with the Information gathering phase.
+Hi everyone, today we are going to be looking at Blackfield --`10.10.10.192`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Blackfield/Overview.png"  style="width: 80%" />
+</p>
 
 ## Information Gathering
 
-Let's begin with a Nmap Scan.
+In order to start the VM, we start with the Information gathering phase. Let's begin with a Nmap Scan.
 
 ### Nmap Output
 <details>
