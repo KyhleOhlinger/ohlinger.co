@@ -7,7 +7,7 @@ status: Retired
 description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
 
-Hi everyone, today we are going to be looking at Blackfield --`10.10.10.192`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthough:
+Hi everyone, today we are going to be looking at Blackfield --`10.10.10.192`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
 
 <p class="imgMiddle">
 <img src="/assets/img/ChallengeVMs/Blackfield/Overview.png"  style="width: 80%" />
