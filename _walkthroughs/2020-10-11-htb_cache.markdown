@@ -253,8 +253,6 @@ I generally sort Unique afterwards and then order by length descending -- just p
 awk '{print length, $0}' cache_wordlist.lst | sort -rn | cut -d ' ' -f2-> wordlist_by_length.lst
 ```
 
-</details>
-
 This portion was very CTF based, which was not the best, but by bruteforcing the domain name, we managed to find `HMS` as another domain which was also hinted to within the  `User Profile Card` under the additional projects that ASH created, namely; HMS (Hospital Management System).
 
 ```bat
