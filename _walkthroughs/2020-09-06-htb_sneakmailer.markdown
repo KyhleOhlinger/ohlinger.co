@@ -1,7 +1,7 @@
 ---
 layout: walkthrough
 title: HackTheBox - SneakyMailer
-date: 2099-09-08 12:00:00 +0200
+date: 2000-09-08 12:00:00 +0200
 img: ChallengeVMs/HTB_Icons/sneakymailer.png # Add image post (optional)
 status: Active
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 

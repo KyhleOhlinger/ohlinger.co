@@ -1,7 +1,7 @@
 ---
 layout: walkthrough
 title: HackTheBox - Omni
-date: 2099-09-14 12:00:00 +0200
+date: 2000-09-14 12:00:00 +0200
 img: ChallengeVMs/HTB_Icons/omni.png # Add image post (optional)
 status: Active
 description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 

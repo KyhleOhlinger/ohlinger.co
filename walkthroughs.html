@@ -77,7 +77,7 @@ function myFunction() {
 }
 </script>
 
-{% for item in site.walkthroughs %}
+{% for item in site.walkthroughs reversed %}
 {% if item.title != "Challenge VM Basics" and item.title != "Key Takeaways" %} 
 <article class="post-test">
     {% if item.img %}
@@ -87,3 +87,5 @@ function myFunction() {
 </article>
 {% endif %}
 {% endfor %}
+
+{% include pagination.html %}
