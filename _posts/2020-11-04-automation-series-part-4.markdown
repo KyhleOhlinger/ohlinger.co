@@ -78,7 +78,7 @@ The version of Linux that I was using did not include the Python2 package, so I 
 sudo apt update sudo apt install python2
 ```
 
-Once Python2 has been isntalled, I used curl to download the get-pip.py script:
+Once Python2 has been installed, I used curl to download the get-pip.py script:
 ```bat 
 curl https://bootstrap.pypa.io/get-pip.py --output get-pip.py
 ```
