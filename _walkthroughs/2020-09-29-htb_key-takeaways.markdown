@@ -22,4 +22,4 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Cache | Linux | <details>Memcache exploitation and docker privilege escalation.</details>  |
 | OpenKeyS | Linux | <details>OpenBSD authentication bypass and skey OpenBSD exploit.</details>  |
 | Unbalanced | Linux | <details>rsync exploitation and Pi-Hole RCE.</details>  |
-| Worker | Windows | <details>SNV and Azure Pipeline exploitation.</details>  |
+| Worker | Windows | <details>SVN and Azure Pipeline exploitation.</details>  |
