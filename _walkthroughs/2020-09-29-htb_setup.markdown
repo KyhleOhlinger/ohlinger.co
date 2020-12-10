@@ -8,7 +8,7 @@ description: Hi all, My name is Kyhle Öhlinger and this post forms part of my c
 
 Hi everyone, 
 
-Today is going to be the start of a new Challenge VM section. The idea behind this is to showcase how to run through some Challenge VMs, provide some ways that I generally tackle them and the way that everything works. This will eventually include a blog post on [Creating a Challenge](https://ohlinger.co) VM. I am hoping to be able to do one or two a month on top of the blog posts, so we'll see how this goes. *Quick note on walkthrough releases* -- Each writeup will be available once the machine is retired from active rotation as per the regulations set out by [HackTheBox](https://www.hackthebox.eu), but you are more than welcome to reach out to me with questions about any machine that is on the list.
+Today is going to be the start of a new Challenge VM section. The idea behind this is to showcase how to run through some Challenge VMs, provide some ways that I generally tackle them and the way that everything works. This will eventually include a blog post on [Creating a Challenge VM](https://ohlinger.co/creating-a-challenge-vm/). I am hoping to be able to do one or two a month on top of the blog posts, so we'll see how this goes. *Quick note on walkthrough releases* -- Each writeup will be available once the machine is retired from active rotation as per the regulations set out by [HackTheBox](https://www.hackthebox.eu), but you are more than welcome to reach out to me with questions about any machine that is on the list.
 
 ## Pentesting VM
 
