@@ -1,8 +1,8 @@
 ---
 layout: walkthrough
-title: HackTheBox - Compromised
+title: HackTheBox - Feline
 date: 2000-09-07 12:00:00 +0200
-img: ChallengeVMs/HTB_Icons/compromised.png # Add image post (optional)
+img: ChallengeVMs/HTB_Icons/feline.png # Add image post (optional)
 status: Active
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
