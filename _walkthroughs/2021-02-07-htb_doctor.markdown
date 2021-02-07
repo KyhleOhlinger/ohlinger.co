@@ -10,7 +10,7 @@ description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of
 Hi everyone, today we are going to be looking at Doctor --`10.10.10.209`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
 
 <p class="imgMiddle">
-<img src="/assets/img/ChallengeVMs/Cache/Overview.png"  style="width: 65%" />
+<img src="/assets/img/ChallengeVMs/Doctor/Overview.png"  style="width: 65%" />
 </p>
 
 ## Information Gathering
