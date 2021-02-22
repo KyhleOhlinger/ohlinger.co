@@ -1,7 +1,7 @@
 ---
 layout: static
 title: Key Takeaways
-date: 2020-09-29 12:00:00 +0200
+date: 2021-02-22 12:00:00 +0200
 img: ChallengeVMs/key.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
@@ -23,3 +23,6 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | OpenKeyS | Linux | <details>OpenBSD authentication bypass and skey OpenBSD exploit.</details>  |
 | Unbalanced | Linux | <details>rsync exploitation and Pi-Hole RCE.</details>  |
 | Worker | Windows | <details>SVN and Azure Pipeline exploitation.</details>  |
+| Doctor | Linux | <details>Server-Side Template Injection and Splunk Forwarder exploitation. </details>|
+| Jewel | Linux | <details>Redis CacheStore Exploitation and Google Authenticator Tokens for 2FA</details>|
+| Feline | Linux | <details>Java Deserialisation, SaltStack and Docker.sock exploitation.</details>|
