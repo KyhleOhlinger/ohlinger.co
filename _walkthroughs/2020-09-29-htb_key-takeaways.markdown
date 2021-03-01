@@ -26,3 +26,4 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Doctor | Linux | <details>Server-Side Template Injection and Splunk Forwarder exploitation. </details>|
 | Jewel | Linux | <details>Redis CacheStore Exploitation and Google Authenticator Tokens for 2FA</details>|
 | Feline | Linux | <details>Java Deserialisation, SaltStack and Docker.sock exploitation.</details>|
+| Academy | Linux | <details>Larvel RCE and Composer exploit </details> |
