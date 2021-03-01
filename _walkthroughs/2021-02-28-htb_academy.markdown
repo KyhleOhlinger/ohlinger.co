@@ -1,7 +1,7 @@
 ---
 layout: walkthrough
 title: HackTheBox - Academy
-date: 2021-02-21 12:00:00 +0200
+date: 2021-02-28 12:00:00 +0200
 img: ChallengeVMs/HTB_Icons/academy.png # Add image post (optional)
 status: Retired
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
