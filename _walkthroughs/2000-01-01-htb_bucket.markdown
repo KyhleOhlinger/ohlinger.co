@@ -1,10 +1,10 @@
 ---
 layout: walkthrough
-title: HackTheBox - Passage
-date: 2000-09-20 12:00:00 +0200
-img: ChallengeVMs/HTB_Icons/passage.png # Add image post (optional)
+title: HackTheBox - Bucket
+date: 2000-01-02 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/bucket.png # Add image post (optional)
 status: Active
-description: Hi all, My name is Kyhle Öhlinger and this post forms part of my challenge VM writeups. If you enjoy any of the posts, feel free to reach out and let me know :) 
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
 
 ## Current Status - Active
