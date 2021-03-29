@@ -11,19 +11,21 @@ This page will include my key takeaways / learnings from each challenge VM that 
 
 | Challenge VM  | Operating System  | Key Takeaways |
 |---|---|---|---|
+| Academy | Linux | <details>Larvel RCE and Composer exploit </details> |
 | Blackfield | Windows | <details>ASRep Roasting and exploiting whoami privileges. </details>  |
-| Tabby | Linux | <details>Tomcat manager exploitation via command line and LXD exploitation.</details>  |
 | Blunder | Linux | <details>Exploitation of a sudo vulnerability.</details>  |
-| Fuse | Windows | <details>smbpasswd reset and exploiting whoami privileges. </details> |
-| SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>  |
 | Buff | Windows | <details>Using [Chisel](https://github.com/jpillora/chisel) to run a Python exploit through a reverse proxy.</details>  |
-| Omni | Linux | <details>Windows IoT exploitation and PowerShell secure string decryption.</details>  |
-| Passage | Linux | <details>USBCreator D-Bus Exploitation.</details>  |
 | Cache | Linux | <details>Memcache exploitation and docker privilege escalation.</details>  |
+| Doctor | Linux | <details>Server-Side Template Injection and Splunk Forwarder exploitation. </details>|
+| Feline | Linux | <details>Java Deserialisation, SaltStack and Docker.sock exploitation.</details>|
+| Fuse | Windows | <details>smbpasswd reset and exploiting whoami privileges. </details> |
+| Jewel | Linux | <details>Redis CacheStore Exploitation and Google Authenticator Tokens for 2FA</details>|
+| Luanne | Linux | <details> Lua and bozohttpd Exploitation.</details> | 
+| Omni | Linux | <details>Windows IoT exploitation and PowerShell secure string decryption.</details>  |
 | OpenKeyS | Linux | <details>OpenBSD authentication bypass and skey OpenBSD exploit.</details>  |
+| Passage | Linux | <details>USBCreator D-Bus Exploitation.</details>  |
+| Reel2 | Windows | <details> PowerShell PS-Session and PowerShell Script Blocks.</details> |
+| SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>  |
+| Tabby | Linux | <details>Tomcat manager exploitation via command line and LXD exploitation.</details>  |
 | Unbalanced | Linux | <details>rsync exploitation and Pi-Hole RCE.</details>  |
 | Worker | Windows | <details>SVN and Azure Pipeline exploitation.</details>  |
-| Doctor | Linux | <details>Server-Side Template Injection and Splunk Forwarder exploitation. </details>|
-| Jewel | Linux | <details>Redis CacheStore Exploitation and Google Authenticator Tokens for 2FA</details>|
-| Feline | Linux | <details>Java Deserialisation, SaltStack and Docker.sock exploitation.</details>|
-| Academy | Linux | <details>Larvel RCE and Composer exploit </details> |
