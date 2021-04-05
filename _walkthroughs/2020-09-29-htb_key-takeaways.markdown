@@ -27,5 +27,6 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Reel2 | Windows | <details> PowerShell PS-Session and PowerShell Script Blocks.</details> |
 | SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>  |
 | Tabby | Linux | <details>Tomcat manager exploitation via command line and LXD exploitation.</details>  |
+| Time | Linux | <details>Jackson Databind exploitation and Tarball.</details>  |
 | Unbalanced | Linux | <details>rsync exploitation and Pi-Hole RCE.</details>  |
 | Worker | Windows | <details>SVN and Azure Pipeline exploitation.</details>  |
