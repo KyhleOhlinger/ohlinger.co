@@ -24,7 +24,7 @@ Over the course of the past few years, I have tried various applications, includ
 The list goes on, and for the most part I was very fond of CherryTree, however since it ended mainstream support I decided that I needed to find a new note-taking application. After reaching out to a few colleagues, I came across [Obsidian](https://obsidian.md/).
 
 <p class="imgMiddle">
-<img src="/assets/img/Notetaking/obsidian.png"  style="width: 80%" />
+<img src="/assets/img/Notetaking/Obsidian.png"  style="width: 80%" />
 </p>
 
 > Obsidian is a powerful knowledge base that works on top of a local folder of plain text Markdown files.
