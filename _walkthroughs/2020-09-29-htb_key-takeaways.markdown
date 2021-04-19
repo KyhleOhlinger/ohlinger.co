@@ -20,6 +20,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Feline | Linux | <details>Java Deserialisation, SaltStack and Docker.sock exploitation.</details>|
 | Fuse | Windows | <details>smbpasswd reset and exploiting whoami privileges. </details> |
 | Jewel | Linux | <details>Redis CacheStore Exploitation and Google Authenticator Tokens for 2FA</details>|
+| Laboratory| Linux | <details> Gitlab and Absolute Path Exploitation. </details> |
 | Luanne | Linux | <details> Lua and bozohttpd Exploitation.</details> | 
 | Omni | Linux | <details>Windows IoT exploitation and PowerShell secure string decryption.</details>  |
 | OpenKeyS | Linux | <details>OpenBSD authentication bypass and skey OpenBSD exploit.</details>  |

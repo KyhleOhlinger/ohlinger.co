@@ -1,8 +1,8 @@
 ---
 layout: walkthrough
-title: HackTheBox - Laboratory
-date: 2000-01-01 12:00:00 +0200
-img: ChallengeVMs/HTB_Icons/laboratory.png # Add image post (optional)
+title: HackTheBox - Schooled
+date: 2000-01-02 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/schooled.png # Add image post (optional)
 status: Active
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
