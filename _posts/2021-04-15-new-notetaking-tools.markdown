@@ -33,11 +33,11 @@ The part that interested me from the start was the fact that it made use of [Mar
 
 ### Initial Installation
 
-Installing Obsidian on Windows is just a matter of downloading the application. However, if you are looking for ways to install it on Linux, the method that I used was to download the `.AppImage` file, move it to `/usr/bin` and give it executable permissions with the following commands:
+Installing Obsidian on Windows is just a matter of downloading the application. However, if you are looking for ways to install it on Linux, the method that I used was to download the `.AppImage` file, move it to `/.local/bin` and give it executable permissions with the following commands:
 
 ```bash
-mv ~/Downloads/Obsidian.AppImage ~/usr/bin/obsidian
-chmod a+x ~/usr/bin/obsidian
+mv ~/Downloads/Obsidian.AppImage ~/.local/bin/obsidian
+chmod +x ~/.local/bin/obsidian
 ```
 
 ### Issues with Obsidian
