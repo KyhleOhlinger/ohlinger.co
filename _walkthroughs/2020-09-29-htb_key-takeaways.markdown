@@ -14,6 +14,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Academy | Linux | <details>Larvel RCE and Composer exploit </details> |
 | Blackfield | Windows | <details>ASRep Roasting and exploiting whoami privileges. </details>  |
 | Blunder | Linux | <details>Exploitation of a sudo vulnerability.</details>  |
+| Bucket | Linux | <details>AWS S3 Bucket and DynamoDB Exploitation.</details> | 
 | Buff | Windows | <details>Using [Chisel](https://github.com/jpillora/chisel) to run a Python exploit through a reverse proxy.</details>  |
 | Cache | Linux | <details>Memcache exploitation and docker privilege escalation.</details>  |
 | Doctor | Linux | <details>Server-Side Template Injection and Splunk Forwarder exploitation. </details>|
@@ -26,7 +27,8 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | OpenKeyS | Linux | <details>OpenBSD authentication bypass and skey OpenBSD exploit.</details>  |
 | Passage | Linux | <details>USBCreator D-Bus Exploitation.</details>  |
 | Reel2 | Windows | <details> PowerShell PS-Session and PowerShell Script Blocks.</details> |
-| SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>  |
+| Sharp | Windows | <details> Portable Kanban password decryption  and .NET Remoting Exploitation </details> | 
+| SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>. |
 | Tabby | Linux | <details>Tomcat manager exploitation via command line and LXD exploitation.</details>  |
 | Time | Linux | <details>Jackson Databind exploitation and Tarball.</details>  |
 | Unbalanced | Linux | <details>rsync exploitation and Pi-Hole RCE.</details>  |
