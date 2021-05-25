@@ -17,6 +17,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Bucket | Linux | <details>AWS S3 Bucket and DynamoDB Exploitation.</details> | 
 | Buff | Windows | <details>Using [Chisel](https://github.com/jpillora/chisel) to run a Python exploit through a reverse proxy.</details>  |
 | Cache | Linux | <details>Memcache exploitation and docker privilege escalation.</details>  |
+| Delivery | Linux | <details>Logic Flaw and Password cracking. </details> |  
 | Doctor | Linux | <details>Server-Side Template Injection and Splunk Forwarder exploitation. </details>|
 | Feline | Linux | <details>Java Deserialisation, SaltStack and Docker.sock exploitation.</details>|
 | Fuse | Windows | <details>smbpasswd reset and exploiting whoami privileges. </details> |
@@ -26,6 +27,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Omni | Linux | <details>Windows IoT exploitation and PowerShell secure string decryption.</details>  |
 | OpenKeyS | Linux | <details>OpenBSD authentication bypass and skey OpenBSD exploit.</details>  |
 | Passage | Linux | <details>USBCreator D-Bus Exploitation.</details>  |
+| Ready | Linux | <details>Gitlab RCE and Docker Mount. </details> |
 | Reel2 | Windows | <details> PowerShell PS-Session and PowerShell Script Blocks.</details> |
 | Sharp | Windows | <details> Portable Kanban password decryption  and .NET Remoting Exploitation </details> | 
 | SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>. |

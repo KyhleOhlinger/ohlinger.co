@@ -39,6 +39,34 @@ title: Walkthroughs
   color: white;
 }
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $(".searchButton").click(function(){
+      var searching = document.getElementById("searchTerm").value.toLowerCase();
+      var all = $(".post-test");
+      var sub = $(".post-test a")
+
+      l = all.length;
+      for (i = 0; i < l; i++) {
+        writeup=sub[i].toString().substring(sub[i].toString().indexOf('htb')+4, sub[i].toString().length -1);
+        if(writeup.search(searching) !== -1){
+          all[i].style.display = "block";
+        }else{
+          all[i].style.display = "none";
+        }
+    }
+    });
+
+    $('.searchTerm').keypress(function(e){
+        if(e.which == 13){//Enter key pressed
+            $('.searchButton').click();//Trigger search button click event
+        }
+    });
+
+  });
+</script>
 </head>
 
 <div class="header">
@@ -60,6 +88,15 @@ title: Walkthroughs
             </div>
         </div>
       </div> 
+      <div class="row" style="vertical-align: middle; text-align: center;">
+        <div class="search">
+          <input type="text" id=searchTerm class="searchTerm" placeholder="What are you looking for?">
+          <button type="submit" class="searchButton">
+            <i class="fa fa-search"></i>
+         </button>
+        </div>
+      </div>
+    </br>
 </div>
 
 <script>
@@ -77,11 +114,13 @@ function myFunction() {
 }
 </script>
 
+
+
 {% for item in site.walkthroughs reversed %}
 {% if item.title != "Challenge VM Basics" and item.title != "Key Takeaways" %} 
-<article class="post-test">
+<article class="post-test" style="display:block;">
     {% if item.img %}
-    <a class="post-thumbnail-test" style="background-image: url({{"/assets/img/" | prepend: site.baseurl | append : item.img}})" href="{{item.url | prepend: site.baseurl}}"></a>
+    <a class="post-thumbnail-test" style="display:block;background-image: url({{"/assets/img/" | prepend: site.baseurl | append : item.img}})" href="{{item.url | prepend: site.baseurl}}"></a>
     {% else %}
     {% endif %}
 </article>
