@@ -29,6 +29,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Passage | Linux | <details>USBCreator D-Bus Exploitation.</details>  |
 | Ready | Linux | <details>Gitlab RCE and Docker Mount. </details> |
 | Reel2 | Windows | <details> PowerShell PS-Session and PowerShell Script Blocks.</details> |
+| ScriptKiddie | Linux | <details>MSF Template Injection.</details>. |
 | Sharp | Windows | <details> Portable Kanban password decryption  and .NET Remoting Exploitation </details> | 
 | SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>. |
 | Tabby | Linux | <details>Tomcat manager exploitation via command line and LXD exploitation.</details>  |
