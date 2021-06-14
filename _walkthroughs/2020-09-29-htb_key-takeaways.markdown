@@ -33,6 +33,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Sharp | Windows | <details> Portable Kanban password decryption  and .NET Remoting Exploitation </details> | 
 | SneakyMailer | Linux | <details>Swaks phishing and Pypi package exploitation.</details>. |
 | Tabby | Linux | <details>Tomcat manager exploitation via command line and LXD exploitation.</details>  |
+| Tenet | Linux | <details>PHP Deserialization and Race Condition exploit.</details>  |
 | Time | Linux | <details>Jackson Databind exploitation and Tarball.</details>  |
 | Unbalanced | Linux | <details>rsync exploitation and Pi-Hole RCE.</details>  |
 | Worker | Windows | <details>SVN and Azure Pipeline exploitation.</details>  |
