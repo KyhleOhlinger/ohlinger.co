@@ -26,6 +26,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Luanne | Linux | <details> Lua and bozohttpd Exploitation.</details> | 
 | Omni | Linux | <details>Windows IoT exploitation and PowerShell secure string decryption.</details>  |
 | OpenKeyS | Linux | <details>OpenBSD authentication bypass and skey OpenBSD exploit.</details>  |
+| Ophiuchi | Linux | <details>SnakeYAML Deserialization and Wasm exploitation.</details>  |
 | Passage | Linux | <details>USBCreator D-Bus Exploitation.</details>  |
 | Ready | Linux | <details>Gitlab RCE and Docker Mount. </details> |
 | Reel2 | Windows | <details> PowerShell PS-Session and PowerShell Script Blocks.</details> |
