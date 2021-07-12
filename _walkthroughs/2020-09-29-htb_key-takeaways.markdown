@@ -12,6 +12,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Challenge VM  | Operating System  | Key Takeaways |
 |---|---|---|---|
 | Academy | Linux | <details>Larvel RCE and Composer exploit </details> |
+| Atom | Windows | <details>Redis Enumeration and Electron-Builder Exploitation. </details> |
 | Blackfield | Windows | <details>ASRep Roasting and exploiting whoami privileges. </details>  |
 | Blunder | Linux | <details>Exploitation of a sudo vulnerability.</details>  |
 | Bucket | Linux | <details>AWS S3 Bucket and DynamoDB Exploitation.</details> | 
