@@ -7,7 +7,7 @@ status: Retired
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
 ---
 
-Hi everyone, today we are going to be looking at Blunder --`10.10.10.188`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+Hi everyone, today we are going to be looking at TheNotebook --`10.10.10.230`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
 
 <p class="imgMiddle">
 <img src="/assets/img/ChallengeVMs/TheNotebook/Overview.png"  style="width: 65%" />
