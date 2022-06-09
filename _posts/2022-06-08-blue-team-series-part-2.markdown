@@ -101,12 +101,12 @@ This can be done in isolation or used as talking points during the weekly catch-
 
 ## Why is this Useful?
 
-The purpose of the SOC onboarding, Training, and Meetings is to ensure that the new joiners are provided with all the infomation that they require to succeed within their role. By having meetings and shadowing opportunities within the SOC, it will not only reduce the time required for training, but it will also enforce the idea of a team.
+The purpose of the SOC onboarding, Training, and Meetings is to ensure that the new joiners are provided with all the information that they require to succeed within their role. By having meetings and shadowing opportunities within the SOC, it will not only reduce the time required for training, but it will also enforce the idea of a team.
 
 ## Coming Up
 
 In the next installment of the Blue Team Series, I will discuss the types of events and escalations that SOCs could face on a daily basis. If you have any questions or if you would like me to include specific content in the series, please do reach out!
-
+ 
 
 ## Useful Resources:
 * [Blue Team Handbook](https://www.amazon.com/Blue-Team-Handbook-condensed-Operations/dp/1726273989): Contains useful information about SOC operations and usefulness of SIEM products. I'm pretty sure that there are copies available online.
