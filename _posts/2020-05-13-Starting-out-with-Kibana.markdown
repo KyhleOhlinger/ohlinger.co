@@ -1,20 +1,11 @@
 ---
+layout: post
 title: Starting out with Kibana and ElasticSearch-DSL
-author: kyhle
 date: 2020-05-13 12:00:00 +0200
-categories: [InfoSec, Technical]
+img: elkstack.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/elkstack.jpg
-  width: 800
-  height: 500
-
+tags: [InfoSec, Technical]
 ---
-
-
-
-
-
 
 Over the course of the past few weeks, I have been looking into [Splunk](https://splunk.com) and [Kibana](https://www.elastic.co/kibana). This post isn't a comparison of the two, but there are several [posts](https://devops.com/splunk-elk-stack-side-side-comparison/) covering this topic. Splunk is a great alternative and has a host of features that are unfortunately missing from Kibana. There is a really nice [Free Fundamentals Course](https://www.splunk.com/en_us/training/free-courses/splunk-fundamentals-1.html) offered by Splunk if you are interested in learning about it and how it works. 
 

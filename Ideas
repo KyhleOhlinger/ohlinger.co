@@ -1,0 +1,105 @@
+Blog Improvements:
+* Code block styling
+* Seasonal backgrounds
+* Accreditations section in About
+* Fix categories section - make it look better because it looks like shit at the moment
+* Make better for mobile / smaller screens (Need indentation on right hand side)
+* Banner for updates? Might be useful to say "Won't be another post for a while, on holiday until xyz"
+    "Everyone you meet always asks you if you have a career, if you are married, or if you own a house - as if life was a grocery list. But no one ever asks if you are happy." ~ Heath Ledger
+* Change table (e.g. tmux table) configuration, look and feel
+
+why do clients pay for assessments? What's the point? Where should they start?
+ideas from a pentester?
+    * Most companies buy expensive tech, they spend millions, they get breached and then ask, what are you not doing?
+    * Need to start with the basics - all the tech in the world doesn't matter if the basics  / the building blocks / the foundation isn't there
+    * Logging - Link to logging 
+    * Company culture - security mindset
+    * Least Privilege - doesn't matter if it's xyz (red forest, zero, trust, whatever)
+    * Password managers - free, doesn't cost anything
+
+Gamification of Cyber Security:
+Baseline
+Good
+ESAE / RF
+
+What is Gamification? 
+What is cyber security in an organisation?
+Can they be melded?
+What would the hypothetical approach look like?
+https://www.growthengineering.co.uk/history-of-gamification/
+https://scholar.google.co.za/scholar?q=history+of+gamification&hl=en&as_sdt=0&as_vis=1&oi=scholart
+https://www.gamify.com/gamification-blog/the-history-of-gamification
+https://www.youtube.com/watch?v=MHS-htjGgSY
+
+https://robertheaton.com/a-blogging-style-guide-vol-2
+
+This blog is going to aim to convey the following:
+Strong Headline
+Compelling leading paragraph
+Clear sense of conflict
+Personal voice
+Consistent Narrative thread
+logical sequence of events
+Character development
+Powerful conclusion
+
+A problem shared is a problem halved: A survey on the dimensions of collective cyber defense through security information sharing
+Real time business intelligence in supply chain analytics
+Threat intelligence: Why people don't share
+Big data and Hadoop-A study in security perspective
+Mathematical models of computer security
+
+https://vincentyiu.com/red-team/hardware-and-gadgets/proxmark-adventures-101
+
+Series:
+Question mark logo
+Need name - part 1 will be vagrant + ansible
+part1:
+Need intro into Series
+links to other episodes
+Final part will have logo reveal
+
+Code Highlighting: https://support.codebasehq.com/articles/tips-tricks/syntax-highlighting-in-markdown
+
+
+https://github.com/stackbithq/stackbit-theme-fresh
+
+Possible looking at creating phishing emails - ideas and cool functions
+
+log files
+-windows sysmon
+
+linux  
+- hist formatter (Timestamps)
+
+Series:
+- Blue Team Series
+- NetSec Simulations Series
+
+
+BLUE TEAM SERIES:
+
+What is a SOC?
+The basic responsibilities of a SOC
+
+Meetings that I think help a SOC function as a team
+Types of events and escalations
+Potential methods for onboarding and training
+
+Note taking
+SOC projects
+
+In the final installment of the Blue Team Series, I will discuss potential methods for note taking within the SOC and potential SOC projects. If you have any questions or if you would like me to include specific content in the series, please do reach out!
+
+One of the biggest differences that I have seen between blue and red teams is knowledge sharing. With red team (offensive) content, there  is a massive community, a ton of research is published annually, groups of people work together, and a large portion of scripts and tooling is open sourced. On the other hand, blue team members seem to want to stick to themselves, they want to be in control and horde knowledge in order to make their positions seem more secure, which is often in direct conflict with the goal of a blue team. Additionally, community projects don't really exist and the tooling that is useful is exceptionally expensive. 
+
+This disparity is one of the main reasons (in my opinion) that there is a massive gap in employee retention within the cyber security field, and a almost cult like following for red teamers. I personally believe the only way to have employees want to stay within a blue team is to make them feel appreciated and to show them that they are in fact making a difference, while also giving them the space to learn.
+
+
+
+
+
+
+https://www.nojones.net/
+https://summitroute.com/blog/2021/01/12/2021_aws_security_maturity_roadmap_2021/
+https://www.marcolancini.it/2021/blog-cloud-security-roadmap/

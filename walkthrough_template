@@ -1,0 +1,59 @@
+Hi everyone, today we are going to be looking at Blunder --`10.10.10.188`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Cache/Overview.png"  style="width: 65%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, I started with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+
+<details>
+
+```bat
+
+```
+
+</details>
+
+
+From the output shown above, we can see that the machine is a Linux machine and I added `doctor.htb` to the `/etc/hosts` file. As this is a Linux machine and it only has 3 open ports, I started by doing some web enumeration. 
+
+### Basic Web Enumeration
+While browsing the web application, I ran the following scans:
+* Gobuster
+* Ffuf
+* Wfuzz
+* Nikto
+
+The output of the scans is shown below:
+
+<details>
+
+```bat
+```
+
+</details>
+
+
+## Lateral Movement using 
+
+<details>
+
+```bat
+```
+
+</details>
+
+## Privilege Escalation
+
+<details>
+
+```bat
+```
+
+</details>
+
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.

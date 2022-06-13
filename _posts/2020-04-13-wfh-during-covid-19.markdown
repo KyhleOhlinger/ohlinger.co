@@ -1,15 +1,11 @@
 ---
+layout: post
 title: WFH during Covid-19
-author: kyhle
 date: 2020-04-13 12:00:00 +0200
-categories: [Wellbeing, Non-Technical]
+img: working-from-home.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/working-from-home.jpg
-  width: 800
-  height: 500
+tags: [Wellbeing, Non-Technical]
 ---
-
 
 The Easter weekend has come and gone, most countries are now adjusting to lockdowns across the globe, and I thought that this is as good a time as any to create a post about working from home.  It is clear that the impact of Covid-19 to the global economy is going to be significant and it is going to impact all industries in different ways. For most (as with my company), it is likely that sales will go down, there will be less work, and projects will be put on hold. 
 

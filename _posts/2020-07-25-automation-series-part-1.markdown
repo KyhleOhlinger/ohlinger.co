@@ -1,23 +1,18 @@
 ---
+layout: post
 title: Automation Series Part 1&#58; Vagrant & Ansible
-author: kyhle
 date: 2020-07-25 12:00:00 +0200
-categories: [InfoSec, Technical, Automation_Series]
+img: mystery.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/mystery.jpg
-  width: 800
-  height: 500
-
---- 
-
+tags: [InfoSec, Technical, Automation_Series]
+---
 
 This blog post will be the first in the series where I try to automate a "mystery" process. While the initial blog posts will not provide any specific details, they will provide the building blocks used during the development process and technologies I learnt along the way.
 
-![Desktop View](/assets/img/Mystery/questionmark.png){: width="120" style="border-radius: 50%;max-width: 250px" .right}
+<p class="imgRight">
+<img src="/assets/img/Mystery/questionmark.png" width="120" style="border-radius: 50%;"/>
 The Mystery icon will differentiate the Automation Series blog posts from the rest. The outcome of this series will be revealed in the final blog post with links to the (hopefully) completed Open Source project that I am currently working on - the actual icon will be revealed along with the Open Source project.
-
-
+</p>
 
 ## Part 1: Vagrant & Ansible
 

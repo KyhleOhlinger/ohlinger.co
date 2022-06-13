@@ -1,16 +1,12 @@
 ---
+layout: post
 title: Art and Science
-author: kyhle
 date: 2020-05-25 12:00:00 +0200
-categories: [Non-Technical, Wellbeing]
+img: art-and-science.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/art-and-science.jpg
-  width: 800
-  height: 500
-
+tags: [Non-Technical, Wellbeing]
 ---
-
+ 
 This post is going to focus on the importance of having both an intellectual as well as an artistic outlet in ones life, and provide you with some great free resources that I have come across which will allow you to explore both facets. The first covers the left, analytical side of the brain, while the second covers the right, creative side of the brain.
 
 A while ago, I was reading a book by Ed Catmull called Creativity, Inc. which described how Pixar was formed and how the company continues to strive for originality and creativity within their workforce to this day. I believe that creativity is seemingly underappreciated in today's day and age, and the part that drew me to this book was how these incredibly intelligent people still strive to be creative within their work, to this day.

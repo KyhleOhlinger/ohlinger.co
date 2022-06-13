@@ -1,15 +1,11 @@
 ---
+layout: post
 title: Can you Motivate the Unmotivated?
-author: kyhle
 date: 2021-03-09 12:00:00 +0200
-categories: [Wellbeing, Non-Technical]
+img: motivation.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/motivation.jpg
-  width: 800
-  height: 500
-
---- 
+tags: [Wellbeing, Non-Technical]
+---
 
 In a workplace -- as with in life, it is likely that you will come across individuals who are unmotivated, sometimes that individual is you. I've experienced this several times and most people I know have gone through phases during which they seem to be unmotivated. While attempting to motivate an unmotivated person, most people tend to start out by giving them a lengthy speech, but this rarely works because motivation has to start from within. 
 

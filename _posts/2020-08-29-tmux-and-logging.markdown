@@ -1,16 +1,11 @@
 ---
+layout: post
 title: Introduction to Tmux and Audit Logs
-author: kyhle
 date: 2020-08-29 12:00:00 +0200
-categories: [InfoSec, Technical]
+img: tmux.png # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/tmux.png
-  width: 800
-  height: 500
-
---- 
-
+tags: [InfoSec, Technical]
+---
 
 While creating the [Automation Series](https://ohlinger.co/automation-series-part-1/), I have started looking into various ways to run processes in parallel using commandline. I looked into nohup, screen, etc. but I always ran into issues with automation and Python scripts. After more research I stumbled on to [Terminal Multiplexer (Tmux)](https://github.com/tmux/tmux/wiki) which lets you switch easily between several programs in one terminal, detach them (they keep running in the background) and reattach them to a different terminal.
 

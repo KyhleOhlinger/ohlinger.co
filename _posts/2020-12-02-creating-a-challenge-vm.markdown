@@ -1,17 +1,11 @@
 ---
-title:  Creating a Challenge VM
-author: kyhle
+layout: post
+title: Creating a Challenge VM
 date: 2020-12-02 12:00:00 +0200
-categories: [InfoSec, Technical]
+img: challenge.png # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/challenge.png
-  width: 800
-  height: 500
-
---- 
-
-
+tags: [InfoSec, Technical]
+---
 
 I have always been a fan of virtual machine hacking challenges (Challenge VMs / Boot2Roots) and what you can learn while solving them. However, after completing a bunch of them, I was curious about what went into creating one so I decided to create some challenge VMs with friends. Since then, several people have asked me for my thought process as well as for tips on how to create their own ones. The simple [mindmap](https://www.xmind.net/) shown below provides a high-level overview of what will be covered during this blog post!
 

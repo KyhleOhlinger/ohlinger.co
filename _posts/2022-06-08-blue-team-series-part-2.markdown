@@ -1,13 +1,10 @@
 ---
+layout: post
 title: Blue Team Series Part 2&#58; SOC Onboarding and Training
-author: kyhle
 date: 2022-06-08 10:00:00 -0400
-categories: [InfoSec, Technical, Blue_Team_Series]
+img: soc.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/soc.jpg
-  width: 800
-  height: 500
+tags: [InfoSec, Technical, Blue_Team_Series]
 ---
 
 In the previous post, we looked at what a Security Operations Center (SOC) is and the basic responsibilities of a SOC analyst. I did mention that I would discuss the meetings that I think help a SOC function as a team, types of events and escalations, as well as potential methods for onboarding and training, however, there was too much to uncover and I did not want any parts to be skipped over. That being said, during this post I will be discussing potential methods for onboarding and training and the rest will be covered in future blog posts. 

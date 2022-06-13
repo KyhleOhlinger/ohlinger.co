@@ -1,16 +1,11 @@
 ---
+layout: post
 title: Setting Goals for Work
-author: kyhle
 date: 2021-07-14 12:00:00 +0200
-categories: [InfoSec, Non-Technical]
+img: goals.jpg # Add image post (optional)
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-image:
-  path: /assets/img/goals.jpg
-  width: 800
-  height: 500
-
---- 
-
+tags: [InfoSec, Non-Technical]
+---
 
 We have already passed the half way mark for the year, and every quarter I review the previous goals that I set for myself in a work oriented fashion, and set new ones for the next quarter. This post is meant as a starting point for anyone who may be newer to thinking about progressing their career in a more concise manner.
 
