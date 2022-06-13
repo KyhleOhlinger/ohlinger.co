@@ -1,11 +1,16 @@
 ---
-layout: post
 title: My GitHub Flow
+author: kyhle
 date: 2021-10-01 12:00:00 +0200
-img: github_auto.jpg # Add image post (optional)
+categories: [InfoSec, Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [InfoSec, Technical]
----
+image:
+  path: /assets/img/github_auto.jpg
+  width: 800
+  height: 500
+
+--- 
+
 
 > GitHub, Inc. is a provider of Internet hosting for software development and version control using Git. It offers the distributed version control and source code management functionality of Git, plus its own features.
 

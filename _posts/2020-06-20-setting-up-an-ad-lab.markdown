@@ -1,12 +1,17 @@
 ---
-layout: post
 title: Setting up a Basic AD Lab Environment
+author: kyhle
 date: 2020-06-24 12:00:00 +0200
-img: active-directory.png # Add image post (optional)
+categories: [InfoSec, Non-Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [InfoSec, Technical]
----
- 
+image:
+  path: /assets/img/active-directory.png
+  width: 800
+  height: 500
+
+--- 
+
+
 I wasn't going to be making a post on this topic, but since a few of my posts refer back to having a domain set up, I thought it would be useful to explain the process of setting up your own local testing environment in the event that you find yourself wanting to play around with Active Directory (AD). I've come across a lot of examples of how to set up AD environments using PowerShell one-liners, various vagrant files, and any other automation tactics that you can think of, but one thing that seems to have fallen away has been people setting up their AD lab environments manually. 
 
 While the other methods are really fantastic if you want a fully fledged lab that you can start exploiting almost instantly, you miss out on the learning opportunities that come with setting up your own environment from scratch. The main idea of this post is to (at a high-level) demystify a bit of the set up of AD and let you build your own lab. Once you have the lab set up, you can expand and attempt to intentionally misconfigure your environment to be vulnerable to issues that you want to learn about and then test out the tools for both finding and exploiting each misconfiguration. 
@@ -25,10 +30,15 @@ Evaluation Versions of Windows can be found at:
 (These work for 180 days, unless you delete the service that reboots the box after that period, then they work like normal ISOs that just prompt you to activate).  Non-evaluation versions of consumer (Pro and Home) Windows 10 can be found [here](https://www.microsoft.com/engb/software-download/windows10) as long as you are coming from a non-windows user agent. 
 
 The setup is divided into the following parts:
-1. [Creating a Domain Controller](#setting-up-active-directory)
-2. [Networking](#networking)
-3. [AD Lab Basics](#ad-lab-basics)
-4. [Linking a Workstation to your Domain](#linking-a-workstation-to-the-domain)
+- [Setting up Active Directory](#setting-up-active-directory)
+  - [Initial Setup](#initial-setup)
+- [Networking](#networking)
+- [AD Lab Basics](#ad-lab-basics)
+  - [Creating Users](#creating-users)
+  - [Group Policy](#group-policy)
+  - [Access Control Lists](#access-control-lists)
+- [Linking a Workstation to the Domain](#linking-a-workstation-to-the-domain)
+- [Useful Resources](#useful-resources)
 
 ## Setting up Active Directory
 

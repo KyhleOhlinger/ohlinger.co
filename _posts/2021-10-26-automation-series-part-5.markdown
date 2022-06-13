@@ -1,11 +1,16 @@
 ---
-layout: post
 title: Automation Series Part 5&#58; SocBot Release
+author: kyhle
 date: 2021-10-26 12:00:00 +0200
-img: mystery.jpg # Add image post (optional)
+categories: [InfoSec, Technical, Automation_Series]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [InfoSec, Technical, Automation_Series]
----
+image:
+  path: /assets/img/mystery.jpg
+  width: 800
+  height: 500
+
+--- 
+
 
 Information Security (InfoSec) is generally "red team" focused and one of the main reasons is that in the red team space, people tend to share ideas. There is a ton of collaboration, people open source tooling, and communities get involved in order to solve a challenge. On the blue team side, most people tend to stick to themselves. Very few Open Source projects are created, and even fewer are actually useful. If you want to have something for security defence, it generally costs a lot of money and you are then tied to a vendor who attempts to sell you more products over the years.
 

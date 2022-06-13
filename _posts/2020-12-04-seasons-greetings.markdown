@@ -1,11 +1,17 @@
 ---
-layout: post
-title: Seasons Greetings
+title:  Seasons Greetings
+author: kyhle
 date: 2020-12-04 12:00:00 +0200
-img: seasons-greetings.jpg # Add image post (optional)
+categories: [Wellbeing, Non-Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [Wellbeing, Non-Technical]
----
+image:
+  path: /assets/img/seasons-greetings.jpg
+  width: 800
+  height: 500
+
+--- 
+
+
 
 Hi everyone,
 

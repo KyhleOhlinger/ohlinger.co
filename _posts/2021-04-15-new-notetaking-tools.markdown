@@ -1,11 +1,16 @@
 ---
-layout: post
 title: New Note-Taking Tools
+author: kyhle
 date: 2021-04-15 12:00:00 +0200
-img: notetaking.jpeg # Add image post (optional)
+categories: [Wellbeing, Non-Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [Wellbeing, Non-Technical]
----
+image:
+  path: /assets/img/notetaking.jpeg
+  width: 800
+  height: 500
+
+--- 
+
 
 Since the start of the new year, I've been looking for better tooling to improve the way that I conduct my daily tasks. This has taken me through a journey ranging from [Time Management](https://ohlinger.co/time-management/) to [Motivation](https://ohlinger.co/can-you-motivate-the-unmotivated/) and it has helped me remain focused and draw new inspiration from not only my work, but also my personal life.
 

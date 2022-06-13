@@ -1,11 +1,15 @@
 ---
-layout: post
 title: Routing Traffic Between Windows and Linux
+author: kyhle
 date: 2021-05-14 12:00:00 +0200
-img: routing.jpg # Add image post (optional)
+categories: [InfoSec, Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [InfoSec, Technical]
----
+image:
+  path: /assets/img/routing.jpg
+  width: 800
+  height: 500
+
+--- 
 
 I recently had a situation where I needed to exploit a Windows service but I wanted to catch the reverse shell on my Kali machine. Obviously proxychains or the like could help, but I was already connecting to the network through a Virtual Private Network (VPN). There are likely several posts describing situations similar to this one, and I am not going to do a deep dive into the semantics. Instead, I am going to provide the commands that I used below! 
 

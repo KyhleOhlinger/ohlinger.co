@@ -1,11 +1,17 @@
 ---
-layout: post
 title: Issues with Golang and Windows Registry
+author: kyhle
 date: 2020-04-19 12:00:00 +0200
-img: golang.jpg # Add image post (optional)
+categories: [InfoSec, Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [InfoSec, Technical]
+image:
+  path: /assets/img/golang.jpg
+  width: 800
+  height: 500
+
 ---
+
+
 
 I started out with the idea of creating Golang payloads which would be able to bypass Antivirus (AV) software when doing security assessments. However, many AV solutions are becoming increasingly sophisticated and, while it is by no means impossible to bypass them, I decided to try and find a solution which would be guaranteed to work every time (Under the right conditions of course). After looking in to a few different AV solutions, I realised that the ones I looked at all had an exclusions list, which is where this blog post comes in. The idea was to create a non-malicious executable which would write an entry to Windows Defender's exclusion path which could then be used to ensure that malicious payloads do not get flagged by Windows Defender. 
 

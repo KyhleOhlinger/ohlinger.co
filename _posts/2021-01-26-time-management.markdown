@@ -1,11 +1,15 @@
 ---
-layout: post
-title: Time Management
+title:  Time Management
+author: kyhle
 date: 2021-01-26 12:00:00 +0200
-img: time-management.jpg # Add image post (optional)
+categories: [Wellbeing, Non-Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [Wellbeing, Non-Technical]
----
+image:
+  path: /assets/img/time-management.jpg
+  width: 800
+  height: 500
+
+--- 
 
 
 "Time management" refers to the way that a person organises and plans how long they spend on specific activities. It may seem counter-intuitive to dedicate time to learning about time management and how to do it effectively instead of using it to get on with your work, but the benefits are enormous. Understanding time management and also understanding what works for you will increase your productivity and efficiency which will lead to a better work-life balance. During this post I am going to provide you with the current tracker that I use on a daily basis to stay organised as well as additional templates for reflection. 

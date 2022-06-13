@@ -1,10 +1,14 @@
 ---
-layout: post
 title: Digging in to EventID 4625
-date: 2020-06-08 12:00:00 +0200
-img: eventid-4624.jpeg # Add image post (optional)
+author: kyhle
+date: 2020-05-25 12:00:00 +0200
+categories: [InfoSec, Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [InfoSec, Technical]
+image:
+  path: /assets/img/eventid-4624.jpeg
+  width: 800
+  height: 500
+
 ---
 
 Using event logs to determine whether an attack is possible has been used by blue and red teams alike. Several hacking groups such as [turla](https://www.zdnet.com/article/turla-hacker-group-steals-antivirus-logs-to-see-if-its-malware-was-detected/) have been using antivirus logs to determine whether their payloads were successful and for most red team engagements, pentesters use logs to debug their payloads. This can be essential when attempting to run successful phishing campaigns, finetune lateral movement techniques, and ensure that evasion techniques are able to bypass the relevant software in use throughout an organisation. 

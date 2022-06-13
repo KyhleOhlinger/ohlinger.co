@@ -1,11 +1,15 @@
 ---
-layout: post
 title: Creating a Barebones C2 Channel
+author: kyhle
 date: 2021-06-11 12:00:00 +0200
-img: c2.jpg # Add image post (optional)
+categories: [InfoSec, Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [InfoSec, Technical]
----
+image:
+  path: /assets/img/c2.jpg
+  width: 800
+  height: 500
+
+--- 
 
 The phrase "Command and Control (C2)", which has its origins in military terminology, refers to the approach an attacker uses to take command of and exercise control over a compromised system. In the world of malware, C2 is typically used to execute arbitrary commands on a victim system, report the status of a compromise to an attacker, or exfiltrate information. C2 channels may be used to commandeer an individual host or control a botnet of millions of machines.
 

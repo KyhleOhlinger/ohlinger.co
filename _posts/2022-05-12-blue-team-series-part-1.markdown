@@ -1,10 +1,13 @@
 ---
-layout: post
 title: Blue Team Series Part 1&#58; What is a SOC?
+author: kyhle
 date: 2022-05-12 10:00:00 -0400
-img: soc.jpg # Add image post (optional)
+categories: [InfoSec, Technical, Blue_Team_Series]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [InfoSec, Technical, Blue_Team_Series]
+image:
+  path: /assets/img/soc.jpg
+  width: 800
+  height: 500
 ---
 
 The first blog post in this series is going to be very short as it aims to cover the basics of what a Security Operations Center (SOC) is and the basic responsibilities of a SOC analyst, which will lend itself to the blog posts that follow. 

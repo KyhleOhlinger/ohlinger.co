@@ -1,11 +1,16 @@
 ---
-layout: post
-title: 2020&#58; A Year in Review 
+title:  2020&#58; A Year in Review 
+author: kyhle
 date: 2021-01-03 12:00:00 +0200
-img: 2020.png # Add image post (optional)
+categories: [Wellbeing, Non-Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [Wellbeing, Non-Technical]
----
+image:
+  path: /assets/img/2020.png
+  width: 800
+  height: 500
+
+--- 
+
 
 During lockdown I decided to start this blog and I have to say, my interest in writing these posts waxes and wanes, but every now and then I add in new concept or have these sparks of energy and my enthusiasm is renewed. Last year was quite a bit of work for me, starting with creating a new blog, all the posts -- nearly 2 a month -- and the new walkthroughs section. There were a large number of drafts that did not make it, some of which will be completed this year, but I also had a busy year last year in addition to writing posts for this blog.
 

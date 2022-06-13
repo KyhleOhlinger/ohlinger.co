@@ -1,10 +1,13 @@
 ---
-layout: post
 title: Where Have I Been?
+author: kyhle
 date: 2022-05-03 10:00:00 -0400
-img: missing.png # Add image post (optional)
+categories: [Wellbeing, Non-Technical]
 description: Hi all, My name is Kyhle Öhlinger and this blog post forms part of my personal blog. If you enjoy any of the posts, feel free to reach out and let me know :) 
-tags: [Wellbeing, Non-Technical]
+image:
+  path: /assets/img/missing.png
+  width: 800
+  height: 500
 ---
 
 Hi everyone,
